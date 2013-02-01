@@ -1,0 +1,7 @@
+forward(-200)
+pen(1)
+
+repeat(36) {
+  forward(400)
+  right(170)
+}

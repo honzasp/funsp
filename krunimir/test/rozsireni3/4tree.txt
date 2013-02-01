@@ -1,0 +1,16 @@
+define segment(i, j) {
+  if (i - 4000) {
+    forward(i/1000)
+    right(30)
+    segment(i-j, i/6)
+    left(60)
+    segment(i-j, i/6)
+    left(150)
+    forward(i/1000)
+    right(180)
+  }
+}
+
+forward(-100)
+pen(1)
+segment(80000, 80000/6)

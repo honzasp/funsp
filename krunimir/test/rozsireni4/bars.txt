@@ -1,0 +1,19 @@
+define line() {
+  pen(1)
+  repeat(10) { forward(60) }
+}
+
+define seed() {
+  repeat(9) {
+    right(90)
+    forward(60)
+    left(90)
+    split { line() }
+  }
+}
+
+forward(300)right(90)forward(-300)
+
+split { seed() }
+forward(600)right(90)
+split { seed() }

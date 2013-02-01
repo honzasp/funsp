@@ -1,0 +1,19 @@
+define k() {forward(10)}
+define r() {right(90)}
+define l() {left(90)}
+
+define al() {}
+define ar() {}
+define bl() {r()ar()k()l()al()k()al()l()k()ar()r()}
+define br() {l()al()k()r()ar()k()ar()r()k()al()l()}
+define cl() {r()br()k()l()bl()k()bl()l()k()br()r()}
+define cr() {l()bl()k()r()br()k()br()r()k()bl()l()}
+define dl() {r()cr()k()l()cl()k()cl()l()k()cr()r()}
+define dr() {l()cl()k()r()cr()k()cr()r()k()cl()l()}
+define el() {r()dr()k()l()dl()k()dl()l()k()dr()r()}
+define er() {l()dl()k()r()dr()k()dr()r()k()dl()l()}
+define fl() {r()er()k()l()el()k()el()l()k()er()r()}
+
+forward(-160)left(90)forward(160)right(90)
+pen(1)
+fl()

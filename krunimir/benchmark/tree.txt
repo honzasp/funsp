@@ -1,0 +1,10 @@
+define tree(n) {
+  if(n) {
+    forward(3)
+    split { left(5) tree(n-1) }
+    split { right(5) tree(n-1) }
+  }
+}
+
+pen(1)
+tree(20)

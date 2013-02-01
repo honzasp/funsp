@@ -1,0 +1,58 @@
+define steny() {
+  pen(1)
+  repeat(4) {
+    forward(100)
+    right(90)
+  }
+  pen(0)
+}
+
+define taska() {
+  forward(2)
+  right(90)
+  forward(2)
+  left(90)
+}
+
+define stranastrechy() {
+  repeat(25) {
+    taska()
+  }
+}
+
+define strecha() {
+  forward(100)
+  pen(1)
+  stranastrechy()
+  right(90)
+  stranastrechy()
+  pen(0)
+  forward(-100)
+  left(90)
+  forward(-100)
+}
+
+define dvere() {
+  right(90)
+  forward(40)
+  left(90)
+  pen(1)
+  forward(40)
+  right(90)
+  forward(20)
+  right(90)
+  forward(20)
+  right(90)
+  forward(5)
+  forward(-5)
+  left(90)
+  forward(20)
+  pen(0)
+  right(90)
+  forward(60)
+  right(90)
+}
+
+steny()
+dvere()
+strecha()

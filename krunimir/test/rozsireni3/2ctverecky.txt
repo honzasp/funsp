@@ -1,0 +1,29 @@
+forward(300)left(90)forward(300)right(90)pen(1)
+
+repeat(15) {
+  repeat(15) {
+    repeat(4) {
+      forward(30)
+      right(90)
+      if (-4) { right(90) }
+    }
+    if ( 1 ) {
+      pen(0)
+      right(90)
+      forward(40)
+      left(90)
+      pen(1)
+    }
+  }
+  if (0) {
+    forward(35)
+  }
+  pen(0)
+  forward(-40)
+  if (42) {
+    left(90)
+    forward(600)
+    right(90)
+  }
+  pen(1)
+}

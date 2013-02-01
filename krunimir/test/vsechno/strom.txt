@@ -1,0 +1,13 @@
+define segment(i) {
+  if (i - 4000) {
+    pen(i/20000+1)
+    color(0,255-i*255/15000,0)
+    forward(i/1000)
+    split { right(30) segment(i*8/10) }
+            left(30)  segment(i*8/10)
+  }
+}
+
+forward(-100)
+pen(1)
+segment(80000)
