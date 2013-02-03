@@ -1,8 +1,12 @@
 define tree(n) {
   if(n) {
     forward(3)
-    split { left(5) tree(n-1) }
-    split { right(5) tree(n-1) }
+    left(5)
+    tree(n-1)
+    right(10)
+    tree(n-1)
+    left(5)
+    forward(-3)
   }
 }
 

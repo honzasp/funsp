@@ -6,7 +6,7 @@ import qualified Data.Map as M
 import Data.List (genericReplicate)
 
 data Turtle = Turtle
-  { getPos :: (Double,Double)
+  { getPos :: (Float,Float)
   , getAngle :: Integer
   , getColor :: (Int,Int,Int)
   , getPen :: Int
@@ -16,11 +16,13 @@ data Env = Env FunMap VarMap
 type FunMap = M.Map String Define
 type VarMap = M.Map String Integer
 
-type TI = Turtle -> Image -> (Turtle,Image)
+newtype DiffImage = DiffImage (Image -> Image)
 
 eval :: Program -> Image
-eval prog = snd $ evalStmts env stmts startTurtle EmptyImg
+eval prog = imageFun EmptyImg
   where
+  (_,DiffImage imageFun) = evalStmts env stmts startTurtle
+
   (defs,stmts) = foldl go ([],[]) (reverse prog)
     where go (ds,ss) topstmt = case topstmt of
             TopDefine def -> (def:ds,ss)
@@ -37,14 +39,14 @@ eval prog = snd $ evalStmts env stmts startTurtle EmptyImg
     , getPen = 0
     }
 
-evalStmts :: Env -> [Stmt] -> TI
-evalStmts _ [] = noop
-evalStmts env (stmt:stmts) = \turtle image ->
-  let (turtle'',image') = evalStmts env stmts turtle' image
-      (turtle',image'') = evalStmt env stmt turtle image'
-  in (turtle'',image'')
+evalStmts :: Env -> [Stmt] -> Turtle -> (Turtle,DiffImage)
+evalStmts _ [] turtle = (turtle,identityDI)
+evalStmts env (stmt:stmts) turtle = 
+  let (turtle',DiffImage imageFun) = evalStmt env stmt turtle
+      (turtle'',DiffImage imageFun') = evalStmts env stmts turtle'
+  in (turtle'',DiffImage $ imageFun . imageFun')
 
-evalStmt :: Env -> Stmt -> TI
+evalStmt :: Env -> Stmt -> Turtle -> (Turtle,DiffImage)
 evalStmt env stmt = case stmt of
   ForwardStmt e -> forward (ee e)
   LeftStmt e    -> rotate (negate $ ee e)
@@ -61,11 +63,11 @@ evalStmt env stmt = case stmt of
     in evalStmts newenv (defineStmts def)
   where ee = evalExpr env
 
-noop :: TI
-noop turtle image = (turtle,image)
+noop :: Turtle -> (Turtle,DiffImage)
+noop turtle = (turtle,identityDI)
 
-forward :: Integer -> TI
-forward len turtle image = (turtle',image') where
+forward :: Integer -> Turtle -> (Turtle,DiffImage)
+forward len turtle = (turtle',DiffImage imageFun) where
   (x,y) = getPos turtle
   ang = getAngle turtle
   p = getPen turtle
@@ -73,33 +75,33 @@ forward len turtle image = (turtle',image') where
   y' = y - cosDeg ang * fromIntegral len
   turtle' = turtle { getPos = (x',y') }
   segment = Segment (round x,round y) (round x',round y') (getColor turtle) p
-  image' = if p > 0 then SegmentImg segment image else image
+  imageFun = if p > 0 then SegmentImg segment else id
 
-rotate :: Integer -> TI
-rotate ang turtle image = (turtle',image) where
+rotate :: Integer -> Turtle -> (Turtle,DiffImage)
+rotate ang turtle = (turtle',identityDI) where
   turtle' = turtle { getAngle = getAngle turtle + ang }
 
-pen :: Integer -> TI
-pen p turtle image = (turtle',image) where
+pen :: Integer -> Turtle -> (Turtle,DiffImage)
+pen p turtle = (turtle',identityDI) where
   turtle' = turtle { getPen = fromIntegral p }
 
-color :: Integer -> Integer -> Integer -> TI
-color r g b turtle image = (turtle',image) where
+color :: Integer -> Integer -> Integer -> Turtle -> (Turtle,DiffImage)
+color r g b turtle = (turtle',identityDI) where
   turtle' = turtle { getColor = (crop r,crop g,crop b) }
   crop x
     | x < 0     = 0
     | x > 255   = 255
     | otherwise = fromIntegral x
 
-split :: TI -> TI
-split lti tur img =
-  let (_,limg) = lti tur EmptyImg
-  in (tur,SplitImg limg img)
+split :: (Turtle -> (Turtle,DiffImage)) -> Turtle -> (Turtle,DiffImage)
+split f turtle = 
+  let (_,DiffImage imageFun) = f turtle
+  in (turtle,DiffImage $ SplitImg (imageFun EmptyImg))
 
 evalExpr :: Env -> Expr -> Integer
-evalExpr _ (Literal n) = n
-evalExpr env (Variable name) = lookupVar env name
-evalExpr env (Binop op left right) =
+evalExpr _ (LiteralExpr n) = n
+evalExpr env (VariableExpr name) = lookupVar env name
+evalExpr env (BinopExpr op left right) =
   let a = evalExpr env left
       b = evalExpr env right
   in case op of
@@ -107,6 +109,7 @@ evalExpr env (Binop op left right) =
     SubOp -> a - b
     MulOp -> a * b
     DivOp -> a `div` b
+evalExpr env (NegateExpr expr) = negate $ evalExpr env expr
 
 lookupDef :: Env -> String -> Define
 lookupDef (Env funmap _) name =
@@ -123,6 +126,9 @@ lookupVar (Env _ varmap) name =
 makeEnv :: Env -> [(String,Integer)] -> Env
 makeEnv (Env funmap _) binds = Env funmap $ M.fromList binds
 
-sinDeg, cosDeg :: Integer -> Double
+sinDeg, cosDeg :: Integer -> Float
 sinDeg n = sin $ fromIntegral n * pi / 180.0
 cosDeg n = cos $ fromIntegral n * pi / 180.0
+
+identityDI :: DiffImage
+identityDI = DiffImage id

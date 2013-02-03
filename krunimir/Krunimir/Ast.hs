@@ -18,9 +18,10 @@ data Stmt =
   deriving Show
 
 data Expr =
-    Literal Integer
-  | Variable String
-  | Binop Op Expr Expr
+    LiteralExpr Integer
+  | VariableExpr String
+  | BinopExpr Op Expr Expr
+  | NegateExpr Expr
   deriving Show
 
 data Op = AddOp | SubOp | MulOp | DivOp

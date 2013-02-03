@@ -68,21 +68,24 @@ splitStmt = do
 expr = addExpr <?> "expression"
 
 addExpr = chainl1 mulExpr (addOp <* spaces)
-mulExpr = chainl1 aExpr (mulOp <* spaces)
+mulExpr = chainl1 negExpr (mulOp <* spaces)
+negExpr = (negOp <* spaces) <*> aExpr <|> aExpr
+
+negOp = NegateExpr <$ char '-'
 
 addOp = 
-  Binop AddOp <$ char '+' <|>
-  Binop SubOp <$ char '-' 
+  BinopExpr AddOp <$ char '+' <|>
+  BinopExpr SubOp <$ char '-' 
 
 mulOp =
-  Binop MulOp <$ char '*' <|>
-  Binop DivOp <$ char '/' 
+  BinopExpr MulOp <$ char '*' <|>
+  BinopExpr DivOp <$ char '/' 
 
 aExpr = litExpr <|> varExpr <|> parens expr
-varExpr = Variable <$> identifier
-litExpr = Literal <$> integer
+varExpr = VariableExpr <$> identifier
+litExpr = LiteralExpr <$> integer
 
-integer = read <$> ((++) <$> option "" (string "-") <*> many1 digit <* spaces)
+integer = read <$> many1 digit <* spaces
 identifier = many1 lower <* spaces
 
 keyword s = string s >> notFollowedBy alphaNum >> spaces

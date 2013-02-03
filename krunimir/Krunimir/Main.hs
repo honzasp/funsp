@@ -11,7 +11,7 @@ import Data.Time.Clock
 import Krunimir.Parser(parse)
 import Krunimir.Evaluator(eval)
 import Krunimir.Painter(paint)
-import Krunimir.Image(limit,imageNodes,imageToSegss)
+import Krunimir.Image(limit)
 
 main :: IO ()
 main = do
@@ -33,13 +33,13 @@ main = do
       hPutStrLn stderr $ show err
       exitFailure
 
-  (let fullImage = eval ast
-       limitedImage = case steps of
-         Nothing -> fullImage
-         Just count -> limit count fullImage
-       outputFile = replaceExtension inputFile ".test.png"
-   in paint (imageToSegss limitedImage) outputFile)
--- in putStrLn $ "Image has " ++ show (imageNodes limitedImage) ++ " nodes"
+  let fullImage = eval ast
+      limitedImage = case steps of
+        Nothing -> fullImage
+        Just count -> limit count fullImage
+      outputFile = replaceExtension inputFile ".test.png"
+  --print limitedImage
+  paint limitedImage outputFile
 
   endTime <- getCurrentTime
   putStrLn $ show (diffUTCTime endTime startTime) ++ " : " ++ inputFile
