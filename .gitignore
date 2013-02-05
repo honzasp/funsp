@@ -2,3 +2,6 @@
 .*.sw*
 *.test.png
 krunimir/basic.*
+paper.aux
+paper.log
+paper.pdf

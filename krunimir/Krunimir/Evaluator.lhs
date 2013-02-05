@@ -1,3 +1,4 @@
+\begin{code}
 module Krunimir.Evaluator (eval) where
 import Krunimir.Image
 import Krunimir.Ast
@@ -56,7 +57,7 @@ evalStmt env stmt = case stmt of
   RepeatStmt e stmts -> evalStmts env $ concat $ genericReplicate (ee e) stmts
   IfStmt e stmts -> if ee e > 0 then evalStmts env stmts else noop
   SplitStmt stmts -> split $ evalStmts env stmts
-  FunStmt name args -> let
+  CallStmt name args -> let
       def = lookupDef env name
       binds = zip (defineParams def) (map ee args)
       newenv = makeEnv env binds
@@ -132,3 +133,4 @@ cosDeg n = cos $ fromIntegral n * pi / 180.0
 
 identityDI :: DiffImage
 identityDI = DiffImage id
+\end{code}

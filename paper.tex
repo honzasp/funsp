@@ -1,0 +1,28 @@
+\documentclass[a4paper,oneside,12pt]{report}
+\usepackage[czech]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{microtype}
+\usepackage{listings}
+\usepackage{lmodern}
+
+\lstloadlanguages{Haskell}
+\lstnewenvironment{code}
+    {\lstset{}%
+      \csname lst@SetFirstLabel\endcsname}
+    {\csname lst@SaveFirstLabel\endcsname}
+    \lstset{
+      basicstyle=\small\ttfamily,
+      flexiblecolumns=false,
+      basewidth={0.5em,0.45em},
+      language=Haskell,
+      showstringspaces=false,
+      }
+
+%\lstMakeShortInline[basicstyle=\small\ttfamily]|
+\DisableLigatures[>,<]{encoding = T1,family=tt*} %
+
+\begin{document}
+Žluťoučký kůň úpěl ďábelské ódy.
+\input{krunimir/krunimir.tex}
+\end{document}
