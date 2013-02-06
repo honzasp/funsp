@@ -39,7 +39,7 @@ a @t{steps}, což je @t{Just \textit{početKroků}} pokud máme zadaný
 počet kroků, nebo @t{Nothing} pokud jej zadaný nemáme (takže předpokládáme
 že uživatel chce vykreslit celý obrázek).\footnote{V zadání je specifikováno, že
 nula zadaná jako počet kroků znamená vykreslit celý obrázek, a chování našeho
-programu je odlišné - nevykreslí nic.}
+programu je odlišné -- nevykreslí nic.}
 
 \begin{code}
   args <- getArgs

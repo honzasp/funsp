@@ -62,8 +62,8 @@ data Define = Define
 \subsubsection{Programy}
 
 Na nejvyšší úrovni v programu se mohou nacházet jak definice funkcí, tak
-příkazy, což odráží typ @t{TopStmt}. Želví program je pak jen seznam těchto
-\uv{top-příkazů}.
+příkazy, což odráží typ @t{TopStmt}. Těmto strukturám budeme říkat
+\emph{top-příkazy}. Želví program je pak jen seznam těchto \uv{top-příkazů}.
 
 \begin{code}
 type Program = [TopStmt]

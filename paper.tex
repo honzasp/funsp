@@ -8,6 +8,7 @@
 \usepackage{marginnote}
 \usepackage{syntax}
 \usepackage{at}
+\usepackage{hyperref}
 
 \lstloadlanguages{Haskell}
 \lstnewenvironment{code}
@@ -37,7 +38,18 @@
 
 \newatcommand t[1]{\texttt{#1}}
 
+\hypersetup{
+    unicode=true,          % non-Latin characters in Acrobat’s bookmarks
+    pdftitle={TITULEK !!!!!},    % title
+    pdfauthor={Jan Špaček},     % author
+    hidelinks=true,
+}
+
 \begin{document}
 @t{Žluťoučký kůň úpěl ďábelské ódy.}
+
+\tableofcontents
+
 \input{krunimir/krunimir.tex}
+
 \end{document}

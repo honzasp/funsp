@@ -1,3 +1,10 @@
+\section{@t{Krunimir.Evaluator}}
+
+Nyní se dostáváme k jádru problému, totiž samotnému \emph{vyhodnocování}
+Krunimírova programu, implementováno funkcí @t{eval}. Vstupem této funkce je
+syntaktický strom v podobě typu @t{Program} (což je jen synonym pro
+@t{[TopStmt]}), výstupem stopa želvy jako typ @t{Trace}.
+
 \begin{code}
 module Krunimir.Evaluator (eval) where
 import Krunimir.Trace
@@ -5,32 +12,109 @@ import Krunimir.Ast
 
 import qualified Data.Map as M
 import Data.List (genericReplicate)
+\end{code}
 
+Funkce @t{genericReplicate} je verze funkce @t{replicate} ze standardního
+@t{Prelude}, které můžeme předat jakýkoli celočíselný typ, není omezena pouze na
+@t{Int} (my jí budeme předávat @t{Integer}).
+
+Definujeme si datový typ @t{Turtle}, který zahrnuje celý stav želvy -- její
+pozici, natočení a barvu a tloušťku pera.
+
+\begin{code}
 data Turtle = Turtle
   { getPos :: (Float,Float)
   , getAngle :: Integer
   , getColor :: (Int,Int,Int)
   , getPen :: Int
   }
+\end{code}
 
-data Env = Env FunMap VarMap
-type FunMap = M.Map String Define
+V průběhu vyhodnocování musíme mít uloženy informace o definovaných procedurách
+a aktuálních hodnotách argumentů (proměnných). K tomu slouží typ @t{Env}.
+Definujeme si synonyma @t{ProcMap} a @t{VarMap}, mapující jména na definice
+procedur, respektive proměnných.
+
+\begin{code}
+data Env = Env ProcMap VarMap
+type ProcMap = M.Map String Define
 type VarMap = M.Map String Integer
+\end{code}
 
+Nyní se musíme rozhodnout, jak přesně budeme vyhodnocování stopy v syntaktickém
+stromu implementovat. Určitě bude vhodné vytvořit funkci na vyhodnocení jednoho
+příkazu a jednoho výrazu.
+
+Jaké informace potřebujeme k tomu, abychom mohli spočítat hodnotu výrazu?
+Vzhledem k tomu, že se ve výrazu můžou vyskytovat argumenty aktuální procedury,
+budeme potřebovat @t{Env}, z něhož získáme hodnoty aktuálních proměnných
+(argumentů). Z toho nám plyne typ pro funkci @t{evalExpr}:
+
+\begin{code}% níže je funkce definovaná i s typem, proto ho prozatím ignorujme
+evalExpr :: Env -> Expr -> Integer
+\end{code}
+
+Dále bude třeba vytvořit funkci, která vyhodnotí příkaz. Parametry této funkce
+bude učitě znovu @t{Env} (potřebujeme znát, jaké procedury existují) a
+@t{Turtle} (musíme vědět, jaký je aktuální stav želvy). 
+
+Jakou hodnotu bychom měli vrátit? Každý příkaz změní stav želvy, proto bychom
+novou želvu měli vrátit jako část výsledku. Hlavní je ale to, jestli příkaz
+nezmění stopu, kterou za sebou želva zanechává. Jakým způsobem ale tuto
+\uv{změnu} reprezentovat? Nemůžeme použít přímo typ @t{Trace}, jelikož ten
+reprezentuje \emph{celou} želvinu trasu, kdežto my spočteme jen její
+\emph{začátek}.
+
+Nejlepší bude, když vrátíme \emph{funkci}, která jako argument dostane @t{Trace}
+získaný z \emph{následujících} příkazů a vrátí novou @t{Trace}.
+
+Tím získáváme typ:
+
+\begin{code}% ještě vlastně ne
+evalStmt :: Env -> Stmt -> Turtle -> (Turtle,Trace -> Trace)
+\end{code}
+
+S funkcemi typu @t{Trace -> Trace} budeme pracovat často, proto si vytvoříme
+\emph{nový typ}.
+
+\begin{code}
 newtype DiffTrace = DiffTrace (Trace -> Trace)
+\end{code}
 
+\marginnote{Co takhle použít field applyDI?}
+
+S tímto novým typem, který reprezentuje \emph{rozdíl} nebo \emph{změnu} stopy
+@t{Trace}, bude typ funkce @t{evalStmt} vypadat takto:
+
+\begin{code}% už to je správné, ale pravý Haskell si necháme na později
+evalStmt :: Env -> Stmt -> Turtle -> (Turtle,DiffTrace)
+\end{code}
+
+Tuto deklaraci typu můžeme chápat takto: \uv{@t{evalStmt} je funkce vyžadující
+mapu procedur a proměnných uložených v typu @t{Env}, dále příkaz k vyhodnocení a
+stav želvy; vrátí změněný stav želvy a \emph{změnu}, kterou tento příkaz vyvolá
+na stopě želvy.}
+
+I když toto typové kung-fu může vypadat na první pohled zbytečně komplikovaně a
+složitě, opak je pravdou -- umožní nám vyhodnocování příkazů implementovat velmi
+elegantně a jednoduše.
+
+Pojďme se podívat, jak vypadá funkce @t{eval}, která vyhodnotí celý program.
+
+\begin{code}
 eval :: Program -> Trace
-eval prog = diff EmptyTrace
+eval prog = 
+  let (_,DiffTrace diff) = evalStmts env stmts startTurtle
+  in diff EmptyTrace
   where
-  (_,DiffTrace diff) = evalStmts env stmts startTurtle
 
   (defs,stmts) = foldl go ([],[]) (reverse prog)
     where go (ds,ss) topstmt = case topstmt of
             TopDefine def -> (def:ds,ss)
             TopStmt stmt -> (ds,stmt:ss)
 
-  env = Env funMap varMap
-  funMap = M.fromList [(defineName def,def) | def <- defs]
+  env = Env procMap varMap
+  procMap = M.fromList [(defineName def,def) | def <- defs]
   varMap = M.empty
 
   startTurtle = Turtle
@@ -39,7 +123,23 @@ eval prog = diff EmptyTrace
     , getColor = (0,0,0)
     , getPen = 0
     }
+\end{code}
 
+Nejdříve si rozeberme klauzuli @t{where}. Nejprve průchodem seznamu @t{prog}
+funkcí @t{foldl} získáme seznam definic @t{defs} a seznam příkazů @t{stmts},
+které extrahujeme z top-příkazů.
+
+Ze seznamu definic vytvoříme mapu procedur @t{procMap}. Na nejvyšší úrovni se v
+programu nenachází žádné proměnné, proto je mapa proměnných prázdná.
+@t{startTurtle} je počáteční stav želvy -- nachází se uprostřed obrázku s
+vypnutým černým perem a je otočená směrem nahoru.
+
+V samotném těle funkce @t{eval} nejprve vyhodnotíme pomocí funkce @t{evalStmts}
+seznam příkazů, čímž získáme @t{diff}, funkci která reprezentuje změnu, jenž
+program vykoná na celkové stopě želvy. Tuto změnu aplikujeme na prázdnou stopu,
+čímž získáme kýženou hodnotu @t{Trace}.
+
+\begin{code}
 evalStmts :: Env -> [Stmt] -> Turtle -> (Turtle,DiffTrace)
 evalStmts _ [] turtle = (turtle,identityDT)
 evalStmts env (stmt:stmts) turtle = 
@@ -113,10 +213,10 @@ evalExpr env (BinopExpr op left right) =
 evalExpr env (NegateExpr expr) = negate $ evalExpr env expr
 
 lookupDef :: Env -> String -> Define
-lookupDef (Env funmap _) name =
-  case M.lookup name funmap of
+lookupDef (Env procmap _) name =
+  case M.lookup name procmap of
     Just def -> def
-    Nothing -> error $ "Undefined function " ++ name
+    Nothing -> error $ "Undefined procedure " ++ name
 
 lookupVar :: Env -> String -> Integer
 lookupVar (Env _ varmap) name =
@@ -125,7 +225,7 @@ lookupVar (Env _ varmap) name =
     Nothing -> error $ "Undefined variable " ++ name
 
 makeEnv :: Env -> [(String,Integer)] -> Env
-makeEnv (Env funmap _) binds = Env funmap $ M.fromList binds
+makeEnv (Env procmap _) binds = Env procmap $ M.fromList binds
 
 sinDeg, cosDeg :: Integer -> Float
 sinDeg n = sin $ fromIntegral n * pi / 180.0

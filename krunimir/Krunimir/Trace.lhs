@@ -1,7 +1,9 @@
 \section{\texttt{Krunimir.Trace}}
 
-Modul @t{Krunimir.Trace} poskytuje datové typy pro práci se stopami složenými z
-čar, které za sebou zanechává želva pochodující po písku.
+Než představíme vyhodnocování programu reprezentovaného syntaktickým stromem,
+musíme ukázat modul @t{Krunimir.Trace}, který poskytuje datové typy pro práci se
+stopami složenými z čar, které za sebou zanechává želva pochodující po písku.
+Tyto stopy jsou výstupem funkce @t{Krunimir.Evaluator.eval}.
 
 \begin{code}
 module Krunimir.Trace
@@ -19,10 +21,10 @@ konstruktory:
 
 \begin{description}
 \item[@t{EmptyTrace}] je prázdná stopa, tedy nic.
-\item[@t{SplitTrace}] reprezentuje dva obrázky, které vzniknou jako důsledek
-  \uv{rozdělení} želvy příkazem @t{split}.
-\item[@t{SegmentTrace}] je obrázek tvořený jedním @t{Segment}em (úsečkou) a dalším
-  obrázkem.
+\item[@t{SplitTrace}] reprezentuje rozdělení stopy na dvě v místě příkazu
+  @t{split}.
+\item[@t{SegmentTrace}] je stopa tvořená úsečkou, za kterou následuje další
+  stopa.
 \end{description}
 
 \begin{code}
@@ -48,11 +50,12 @@ obrázek.}
 
 \subsection{Funkce}
 
-V ostatních modulech budeme rovněž potřebovat tyto pomocné funkce.
+V ostatních modulech budeme potřebovat pomocné funkce @t{prune} a
+@t{traceToSegss}.
 
 \subsubsection{Funkce @t{prune}}
 
-Funkce @t{prune} omezí počet kroků, které
+Funkce @t{prune} omezí počet \emph{tahů}, které stopa zahrnuje.
 
 \begin{code}
 prune :: Integer -> Trace -> Trace
@@ -66,6 +69,12 @@ prune n img
 
 \subsubsection{Funkce @t{traceToSegss}}
 
+Funkce @t{traceToSegss} transformuje stopu do seznamu seznamů segmentů.
+\uv{Vnější} seznam reprezentuje jednotlivé segmenty jednoho tahu. Tato funkce se
+využívá při vykreslování a seřazení jednotlivých segmentů podle tahů zajišťuje
+korektní překrytí čar.\footnote{Kdybychom se rozhodli vzájemné překrytí čar
+zanedbat, celý program by byl \emph{výrazně} jednodušší.}
+
 \begin{code}
 traceToSegss :: Trace -> [[Segment]]
 traceToSegss EmptyTrace = []
@@ -78,3 +87,9 @@ traceToSegss (SplitTrace limg rimg) = zipSegs (traceToSegss limg) (traceToSegss 
   zipSegs [] rss = rss
   zipSegs (ls:lss) (rs:rss) = (ls ++ rs):zipSegs lss rss
 \end{code}
+
+\marginnote{Skoro se to tu nevleze :-P}
+
+V případě @t{SplitTrace} nejprve vyhodnotíme seznamy seznamů segmentů pro
+každou stranu zvlášt a pak je pomocnou funkcí @t{zipSegs} \uv{slijeme}
+dohromady.
