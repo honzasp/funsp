@@ -18,6 +18,8 @@ Funkce @t{genericReplicate} je verze funkce @t{replicate} ze standardního
 @t{Prelude}, které můžeme předat jakýkoli celočíselný typ, není omezena pouze na
 @t{Int} (my jí budeme předávat @t{Integer}).
 
+\subsection{Pomocné typy}
+
 Definujeme si datový typ @t{Turtle}, který zahrnuje celý stav želvy -- její
 pozici, natočení a barvu a tloušťku pera.
 
@@ -40,6 +42,8 @@ data Env = Env ProcMap VarMap
 type ProcMap = M.Map String Define
 type VarMap = M.Map String Integer
 \end{code}
+
+\subsection{Představení @t{DiffImage}}
 
 Nyní se musíme rozhodnout, jak přesně budeme vyhodnocování stopy v syntaktickém
 stromu implementovat. Určitě bude vhodné vytvořit funkci na vyhodnocení jednoho
@@ -78,10 +82,14 @@ S funkcemi typu @t{Trace -> Trace} budeme pracovat často, proto si vytvoříme
 \emph{nový typ}.
 
 \begin{code}
-newtype DiffTrace = DiffTrace (Trace -> Trace)
+newtype DiffTrace = DiffTrace { applyDT :: Trace -> Trace }
 \end{code}
 
-\marginnote{Co takhle použít field applyDI?}
+Jaký typ bude mít funkce @t{applyDT}? Z hodnoty typu @t{DiffTrace} extrahuje
+hodnotu typu @t{Trace -> Trace}, tudíž její typ bude @t{DiffTrace -> (Trace ->
+Trace)}, neboli @t{DiffTrace -> Trace -> Trace}. To znamená, že na @t{applyDT}
+můžeme nahlížet jako na funkci se dvěmi argumenty, která \emph{aplikuje}
+změnu -- @t{DiffTrace} -- na @t{Trace}, čímž získáme novou @t{Trace}.
 
 S tímto novým typem, který reprezentuje \emph{rozdíl} nebo \emph{změnu} stopy
 @t{Trace}, bude typ funkce @t{evalStmt} vypadat takto:
@@ -99,13 +107,13 @@ I když toto typové kung-fu může vypadat na první pohled zbytečně kompliko
 složitě, opak je pravdou -- umožní nám vyhodnocování příkazů implementovat velmi
 elegantně a jednoduše.
 
-Pojďme se podívat, jak vypadá funkce @t{eval}, která vyhodnotí celý program.
+\subsection{Funkce @t{eval}}
+
+Funkce @t{eval}, která vyhodnotí celý program.
 
 \begin{code}
 eval :: Program -> Trace
-eval prog = 
-  let (_,DiffTrace diff) = evalStmts env stmts startTurtle
-  in diff EmptyTrace
+eval prog = applyDT (snd $ evalStmts env stmts startTurtle) EmptyTrace
   where
 
   (defs,stmts) = foldl go ([],[]) (reverse prog)
@@ -139,14 +147,20 @@ seznam příkazů, čímž získáme @t{diff}, funkci která reprezentuje změnu
 program vykoná na celkové stopě želvy. Tuto změnu aplikujeme na prázdnou stopu,
 čímž získáme kýženou hodnotu @t{Trace}.
 
+Funkce @t{evalStmts}, která vyhodnotí seznam příkazů, vždy vyhodnotí jeden
+příkaz, poté seznam následujících příkazů a vrátí výslednou želvu a složený
+@t{DiffTrace}.
+
 \begin{code}
 evalStmts :: Env -> [Stmt] -> Turtle -> (Turtle,DiffTrace)
 evalStmts _ [] turtle = (turtle,identityDT)
 evalStmts env (stmt:stmts) turtle = 
-  let (turtle',DiffTrace diff) = evalStmt env stmt turtle
-      (turtle'',DiffTrace diff') = evalStmts env stmts turtle'
-  in (turtle'',DiffTrace $ diff . diff')
+  let (turtle',dt) = evalStmt env stmt turtle
+      (turtle'',dt') = evalStmts env stmts turtle'
+  in (turtle'',DiffTrace { applyDT = applyDT dt . applyDT dt' })
+\end{code}
 
+\begin{code}
 evalStmt :: Env -> Stmt -> Turtle -> (Turtle,DiffTrace)
 evalStmt env stmt = case stmt of
   ForwardStmt e -> forward (ee e)
@@ -196,8 +210,9 @@ color r g b turtle = (turtle',identityDT) where
 
 split :: (Turtle -> (Turtle,DiffTrace)) -> Turtle -> (Turtle,DiffTrace)
 split f turtle = 
-  let (_,DiffTrace diff) = f turtle
-  in (turtle,DiffTrace $ SplitTrace (diff EmptyTrace))
+  let (_,dt) = f turtle
+      branch = applyDT dt EmptyTrace
+  in (turtle,DiffTrace { applyDT = SplitTrace branch })
 
 evalExpr :: Env -> Expr -> Integer
 evalExpr _ (LiteralExpr n) = n
@@ -232,5 +247,5 @@ sinDeg n = sin $ fromIntegral n * pi / 180.0
 cosDeg n = cos $ fromIntegral n * pi / 180.0
 
 identityDT :: DiffTrace
-identityDT = DiffTrace id
+identityDT = DiffTrace { applyDT = id }
 \end{code}
