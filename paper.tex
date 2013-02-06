@@ -1,34 +1,37 @@
-\documentclass[a4paper,oneside,12pt]{report}
+\documentclass[a4paper,oneside,11pt]{report}
+\usepackage[a4paper]{geometry}
+\usepackage{fullpage}
 \usepackage[czech]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
+\usepackage{hyperref}
 \usepackage{microtype}
 \usepackage{listings}
 \usepackage{lmodern}
 \usepackage{marginnote}
 \usepackage{syntax}
 \usepackage{at}
-\usepackage{hyperref}
+\usepackage{makeidx}
 
 \lstloadlanguages{Haskell}
 \lstnewenvironment{code}
-    {\lstset{}%
-      \csname lst@SetFirstLabel\endcsname}
-    {\csname lst@SaveFirstLabel\endcsname}
-    \lstset{
-      basicstyle=\small\ttfamily,
-      flexiblecolumns=false,
-      basewidth={0.5em,0.45em},
-      language=Haskell,
-      showstringspaces=false,
-      keywords={ % use only real Haskell keywords
-        case,class,data,default,deriving,do,else
-        ,foreign,if,import,in,infix,infixl
-        ,infixr,instance,let,module,newtype,of
-        ,then,type,where
-      },
-      otherkeywords={_}
-      }
+  {\lstset{}%
+    \csname lst@SetFirstLabel\endcsname}
+  {\csname lst@SaveFirstLabel\endcsname}
+  \lstset{
+    basicstyle=\small\ttfamily,
+    flexiblecolumns=false,
+    basewidth={0.5em,0.45em},
+    language=Haskell,
+    showstringspaces=false,
+    keywords={ % use only real Haskell keywords
+      case,class,data,default,deriving,do,else
+      ,foreign,if,import,in,infix,infixl
+      ,infixr,instance,let,module,newtype,of
+      ,then,type,where
+    },
+    otherkeywords={_}
+    }
 
 \DisableLigatures[>,<]{encoding = T1,family=tt*} %
 \setlength{\grammarparsep}{5pt plus 1pt minus 1pt} 
@@ -38,11 +41,17 @@
 
 \newatcommand t[1]{\texttt{#1}}
 
+\makeindex
+\newatcommand idx[1]{\index{#1@\texttt{#1}}}
+\newatcommand Idx[1]{\index{#1@\texttt{#1}|textbf}}
+
 \hypersetup{
-    unicode=true,          % non-Latin characters in Acrobat’s bookmarks
-    pdftitle={TITULEK !!!!!},    % title
-    pdfauthor={Jan Špaček},     % author
-    hidelinks=true,
+  unicode=true,          % non-Latin characters in Acrobat’s bookmarks
+  pdftitle={TITULEK !!!!!},    % title
+  pdfauthor={Jan Špaček},     % author
+  hidelinks=true,
+  hyperindex=true,
+  linktoc=all,
 }
 
 \begin{document}
@@ -51,5 +60,7 @@
 \tableofcontents
 
 \input{krunimir/krunimir.tex}
+
+\printindex
 
 \end{document}

@@ -1,4 +1,5 @@
 \section{@t{Krunimir.Ast}}
+@Idx{Krunimir.Ast}
 
 V tomto modulu definujeme datové typy popisující syntaktický strom, které
 využijeme v modulech @t{Krunimir.Parser} a @t{Krunimir.Evaluator}.
@@ -14,6 +15,7 @@ module Krunimir.Ast where
 Příkaz je reprezentován datovým typem @t{Stmt}, který obsahuje konstruktor
 pro každý z příkazů želvího jazyka.
 
+@Idx{Krunimir.Ast.Stmt}
 \begin{code}
 data Stmt = 
     ForwardStmt Expr
@@ -32,6 +34,8 @@ data Stmt =
 
 Reprezentace výrazů je podobně přímočará:
 
+@Idx{Krunimir.Ast.Expr}
+@Idx{Krunimir.Ast.Op}
 \begin{code}
 data Expr =
     LiteralExpr Integer
@@ -51,6 +55,10 @@ typ s pojmenovanými prvky (záznam).
 
 % TODO: anglický název
 
+@Idx{Krunimir.Ast.Define}
+@Idx{Krunimir.Ast.defineName}
+@Idx{Krunimir.Ast.defineParams}
+@Idx{Krunimir.Ast.defineStmts}
 \begin{code}
 data Define = Define
   { defineName :: String
@@ -65,6 +73,8 @@ Na nejvyšší úrovni v programu se mohou nacházet jak definice funkcí, tak
 příkazy, což odráží typ @t{TopStmt}. Těmto strukturám budeme říkat
 \emph{top-příkazy}. Želví program je pak jen seznam těchto \uv{top-příkazů}.
 
+@Idx{Krunimir.Ast.Program}
+@Idx{Krunimir.Ast.TopStmt}
 \begin{code}
 type Program = [TopStmt]
 

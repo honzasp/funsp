@@ -1,4 +1,5 @@
 \section{@t{Krunimir.Parser}}
+@Idx{Krunimir.Parser}
 
 Pro syntaktickou analýzu (\uv{parsování}) použijeme knihovnu @t{parsec}.
 Jedná se o \textit{de-facto} standardní nástroj na tvorbu parserů v Haskellu.
@@ -38,6 +39,7 @@ Abychom nemuseli neustále opakovat @t{Parsec String () ...}, nadefinujeme
 \emph{typový synonym}, který využijeme i při prezentaci jednotlivých
 kombinátorů.
 
+@Idx{Krunimir.Parser.Parser}
 \begin{code}
 type Parser a = Parsec String () a
 \end{code}
@@ -135,6 +137,7 @@ operace:
 \end{description}
 
 \subsection{Funkce @t{parse}}
+@Idx{Krunimir.Parser.parse}
 
 Funkce @t{parse} představuje \uv{uživatelské rozhraní} modulu
 @t{Krunimir.Parser}. Vstupem je jméno parsovaného souboru (použije se v
@@ -156,6 +159,7 @@ parse filename txt =
 Na začátku programu může být libovolné množství prázdných znaků\, následuje nula a více top-příkazů
 a konec souboru.
 
+@Idx{Krunimir.Parser.program}
 \begin{code}
 program :: Parser Program
 program = spaces *> many topStmt <* eof
@@ -182,6 +186,7 @@ příslušející stejnojmennému typu (ve výrazu @t{\emph{TopStmt} <\$> stmt})
 V Haskellu se s takovýmito případy, kdy definujeme datový typ se stejnojmenným
 konstruktorem, setkáváme poměrně často.}
 
+@Idx{Krunimir.Parser.topStmt}
 \begin{code}
 topStmt :: Parser TopStmt
 topStmt = 
@@ -195,6 +200,7 @@ Definice procedur v Krunimírově jazyku začínají klíčovým slovem @t{defin
 následovaným jménem procedury, za kterým je v závorkách nula a více parametrů.
 Tělo procedury je uzavřeno ve složených závorkách.
 
+@Idx{Krunimir.Parser.define}
 \begin{code}
 define :: Parser Define
 define = do
@@ -213,6 +219,7 @@ Použili jsme pomocné funkce @t{parens} a @t{braces}, které slouží k
 K parsování \emph{příkazů} slouží @t{stmt}, která jen aplikuje další
 pomocné parsery a pojmenuje případnou chybu.
 
+@Idx{Krunimir.Parser.stmt}
 \begin{code}
 stmt :: Parser Stmt
 stmt =
@@ -233,6 +240,7 @@ příslušný uzel syntaktického stromu.
 Volání začíná jménem volané procedury a následuje v závorkách seznam argumentů,
 který může být prázdný, závorky ale vynechat nelze.
 
+@Idx{Krunimir.Parser.procStmt}
 \begin{code}
 procStmt :: Parser Stmt
 procStmt = do
@@ -264,6 +272,8 @@ a @t{pen}, které všechny vyžadují jeden argument.
 Syntaxe pro @t{if} a @t{repeat} je velmi podobná -- nejprve klíčové
 slovo, poté v závorkách výraz a nakonec seznam příkazů ve složených závorkách.
 
+@Idx{Krunimir.Parser.repeatStmt}
+@Idx{Krunimir.Parser.ifStmt}
 \begin{code}
 repeatStmt :: Parser Stmt
 repeatStmt = do
@@ -294,6 +304,7 @@ zajistíme, že jsme opravdu narazili na celé slovo @t{if}.
 Syntaxe pro @t{split} je přímočará, za klíčovým slovem následují rovnou
 složené závorky se seznamem příkazů.
 
+@Idx{Krunimir.Parser.splitStmt}
 \begin{code}
 splitStmt :: Parser Stmt
 splitStmt = do
@@ -348,6 +359,8 @@ Parser (a -> a -> a) -> Parser a}. @t{chainl p op} zparsuje jeden a více
 výskytů @t{p} oddělených @t{op}. Výsledky z @t{p} postupně odleva
 \uv{spojí} pomocí funkcí vrácených z @t{op}.
 
+@Idx{Krunimir.Parser.expr}
+% indexovat i pomocne dilci vyrazy?
 \begin{code}
 expr :: Parser Expr
 expr = addExpr <?> "expression"
@@ -384,6 +397,11 @@ Nakonec si nadefinujeme drobné parsery, které jsme použili. Každý z nich
 zkonzumuje i všechny prázdné znaky, které se za ním nachází, takže se s jejich
 ošetřením nemusíme zabývat ve \uv{vyšších} parserech.
 
+@Idx{Krunimir.Parser.integer}
+@Idx{Krunimir.Parser.identifier}
+@Idx{Krunimir.Parser.keyword}
+@Idx{Krunimir.Parser.parens}
+@Idx{Krunimir.Parser.braces}
 \begin{code}
 integer :: Parser Integer
 integer = read <$> many1 digit <* spaces

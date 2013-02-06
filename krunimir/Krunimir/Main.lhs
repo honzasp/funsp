@@ -1,4 +1,5 @@
 \section{@t{Krunimir.Main}}
+@Idx{Krunimir.Main}
 
 \begin{code}
 module Krunimir.Main (main) where
@@ -25,6 +26,7 @@ import Krunimir.Trace(prune)
 main :: IO ()
 main = do
 \end{code}
+@Idx{Krunimir.Main.main}
 
 Uložíme si čas na začátku, bude se nám hodit až budeme chtít zjistit, jak dlouho
 výpočet trval.
@@ -59,6 +61,7 @@ Nyní můžeme přečíst požadovaný soubor a jeho obsah předat funkci @t{par
 z modulu @t{Krunimir.Parser}. Pokud dostaneme chybu, zobrazíme ji na
 chybový výstup a program přerušíme.
 
+@idx{Krunimir.Parser.parse}
 \begin{code}
   txt <- readFile inputFile
   ast <- case parse inputFile txt of
@@ -75,6 +78,8 @@ celou (@t{prunedTrace}).
 
 Jméno výstupního souboru necháme stejné jako vstupního, jen změníme příponu.
 
+@idx{Krunimir.Evaluator.eval}
+@idx{Krunimir.Trace.prune}
 \begin{code}
   let fullTrace = eval ast
       prunedTrace = case steps of
@@ -85,6 +90,7 @@ Jméno výstupního souboru necháme stejné jako vstupního, jen změníme př�
 
 Zbývá jen vykreslit
 
+@idx{Krunimir.Renderer.render}
 \begin{code}
   render prunedTrace outputFile
 \end{code}

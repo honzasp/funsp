@@ -1,4 +1,5 @@
 \section{@t{Krunimir.Evaluator}}
+@Idx{Krunimir.Evaluator}
 
 Nyní se dostáváme k jádru problému, totiž samotnému \emph{vyhodnocování}
 Krunimírova programu, implementováno funkcí @t{eval}. Vstupem této funkce je
@@ -23,6 +24,7 @@ Funkce @t{genericReplicate} je verze funkce @t{replicate} ze standardního
 Definujeme si datový typ @t{Turtle}, který zahrnuje celý stav želvy -- její
 pozici, natočení a barvu a tloušťku pera.
 
+@Idx{Krunimir.Evaluator.Turtle}
 \begin{code}
 data Turtle = Turtle
   { getPos :: (Float,Float)
@@ -37,13 +39,17 @@ a aktuálních hodnotách argumentů (proměnných). K tomu slouží typ @t{Env}
 Definujeme si synonyma @t{ProcMap} a @t{VarMap}, mapující jména na definice
 procedur, respektive proměnných.
 
+@Idx{Krunimir.Evaluator.Env}
+@Idx{Krunimir.Evaluator.ProcMap}
+@Idx{Krunimir.Evaluator.VarMap}
 \begin{code}
 data Env = Env ProcMap VarMap
 type ProcMap = M.Map String Define
 type VarMap = M.Map String Integer
 \end{code}
 
-\subsection{Představení @t{DiffImage}}
+\subsection{Představení @t{DiffTrace}}
+@idx{Krunimir.Evaluator.DiffTrace}
 
 Nyní se musíme rozhodnout, jak přesně budeme vyhodnocování stopy v syntaktickém
 stromu implementovat. Určitě bude vhodné vytvořit funkci na vyhodnocení jednoho
@@ -54,6 +60,7 @@ Vzhledem k tomu, že se ve výrazu můžou vyskytovat argumenty aktuální proce
 budeme potřebovat @t{Env}, z něhož získáme hodnoty aktuálních proměnných
 (argumentů). Z toho nám plyne typ pro funkci @t{evalExpr}:
 
+@idx{Krunimir.Evaluator.evalExpr}
 \begin{code}% níže je funkce definovaná i s typem, proto ho prozatím ignorujme
 evalExpr :: Env -> Expr -> Integer
 \end{code}
@@ -81,6 +88,8 @@ evalStmt :: Env -> Stmt -> Turtle -> (Turtle,Trace -> Trace)
 S funkcemi typu @t{Trace -> Trace} budeme pracovat často, proto si vytvoříme
 \emph{nový typ}.
 
+@Idx{Krunimir.Evaluator.DiffTrace}
+@Idx{Krunimir.Evaluator.applyDT}
 \begin{code}
 newtype DiffTrace = DiffTrace { applyDT :: Trace -> Trace }
 \end{code}
@@ -94,6 +103,7 @@ změnu -- @t{DiffTrace} -- na @t{Trace}, čímž získáme novou @t{Trace}.
 S tímto novým typem, který reprezentuje \emph{rozdíl} nebo \emph{změnu} stopy
 @t{Trace}, bude typ funkce @t{evalStmt} vypadat takto:
 
+@idx{Krunimir.Evaluator.evalStmt}
 \begin{code}% už to je správné, ale pravý Haskell si necháme na později
 evalStmt :: Env -> Stmt -> Turtle -> (Turtle,DiffTrace)
 \end{code}
@@ -108,6 +118,7 @@ složitě, opak je pravdou -- umožní nám vyhodnocování příkazů implement
 elegantně a jednoduše.
 
 \subsection{Funkce @t{eval}}
+@Idx{Krunimir.Evaluator.eval}
 
 Funkce @t{eval}, která vyhodnotí celý program.
 
@@ -151,6 +162,7 @@ Funkce @t{evalStmts}, která vyhodnotí seznam příkazů, vždy vyhodnotí jede
 příkaz, poté seznam následujících příkazů a vrátí výslednou želvu a složený
 @t{DiffTrace}.
 
+@Idx{Krunimir.Evaluator.evalStmts}
 \begin{code}
 evalStmts :: Env -> [Stmt] -> Turtle -> (Turtle,DiffTrace)
 evalStmts _ [] turtle = (turtle,identityDT)
@@ -160,6 +172,7 @@ evalStmts env (stmt:stmts) turtle =
   in (turtle'',DiffTrace { applyDT = applyDT dt . applyDT dt' })
 \end{code}
 
+@Idx{Krunimir.Evaluator.evalStmt}
 \begin{code}
 evalStmt :: Env -> Stmt -> Turtle -> (Turtle,DiffTrace)
 evalStmt env stmt = case stmt of
@@ -177,10 +190,16 @@ evalStmt env stmt = case stmt of
       newenv = makeEnv env binds
     in evalStmts newenv (defineStmts def)
   where ee = evalExpr env
+\end{code}
 
+@Idx{Krunimir.Evaluator.noop}
+\begin{code}
 noop :: Turtle -> (Turtle,DiffTrace)
 noop turtle = (turtle,identityDT)
+\end{code}
 
+@Idx{Krunimir.Evaluator.forward}
+\begin{code}
 forward :: Integer -> Turtle -> (Turtle,DiffTrace)
 forward len turtle = (turtle',DiffTrace diff) where
   (x,y) = getPos turtle
@@ -191,15 +210,24 @@ forward len turtle = (turtle',DiffTrace diff) where
   turtle' = turtle { getPos = (x',y') }
   segment = Segment (round x,round y) (round x',round y') (getColor turtle) p
   diff = if p > 0 then SegmentTrace segment else id
+\end{code}
 
+@Idx{Krunimir.Evaluator.rotate}
+\begin{code}
 rotate :: Integer -> Turtle -> (Turtle,DiffTrace)
 rotate ang turtle = (turtle',identityDT) where
   turtle' = turtle { getAngle = getAngle turtle + ang }
+\end{code}
 
+@Idx{Krunimir.Evaluator.pen}
+\begin{code}
 pen :: Integer -> Turtle -> (Turtle,DiffTrace)
 pen p turtle = (turtle',identityDT) where
   turtle' = turtle { getPen = fromIntegral p }
+\end{code}
 
+@Idx{Krunimir.Evaluator.color}
+\begin{code}
 color :: Integer -> Integer -> Integer -> Turtle -> (Turtle,DiffTrace)
 color r g b turtle = (turtle',identityDT) where
   turtle' = turtle { getColor = (crop r,crop g,crop b) }
@@ -207,13 +235,19 @@ color r g b turtle = (turtle',identityDT) where
     | x < 0     = 0
     | x > 255   = 255
     | otherwise = fromIntegral x
+\end{code}
 
+@Idx{Krunimir.Evaluator.split}
+\begin{code}
 split :: (Turtle -> (Turtle,DiffTrace)) -> Turtle -> (Turtle,DiffTrace)
 split f turtle = 
   let (_,dt) = f turtle
       branch = applyDT dt EmptyTrace
   in (turtle,DiffTrace { applyDT = SplitTrace branch })
+\end{code}
 
+@Idx{Krunimir.Evaluator.evalExpr}
+\begin{code}
 evalExpr :: Env -> Expr -> Integer
 evalExpr _ (LiteralExpr n) = n
 evalExpr env (VariableExpr name) = lookupVar env name
@@ -226,7 +260,11 @@ evalExpr env (BinopExpr op left right) =
     MulOp -> a * b
     DivOp -> a `div` b
 evalExpr env (NegateExpr expr) = negate $ evalExpr env expr
+\end{code}
 
+@Idx{Krunimir.Evaluator.lookupDef}
+@Idx{Krunimir.Evaluator.lookupVar}
+\begin{code}
 lookupDef :: Env -> String -> Define
 lookupDef (Env procmap _) name =
   case M.lookup name procmap of
@@ -238,14 +276,22 @@ lookupVar (Env _ varmap) name =
   case M.lookup name varmap of
     Just num -> num
     Nothing -> error $ "Undefined variable " ++ name
+\end{code}
 
+@Idx{Krunimir.Evaluator.makeEnv}
+\begin{code}
 makeEnv :: Env -> [(String,Integer)] -> Env
 makeEnv (Env procmap _) binds = Env procmap $ M.fromList binds
+\end{code}
 
+\begin{code}
 sinDeg, cosDeg :: Integer -> Float
 sinDeg n = sin $ fromIntegral n * pi / 180.0
 cosDeg n = cos $ fromIntegral n * pi / 180.0
+\end{code}
 
+@Idx{Krunimir.Evaluator.identityDT}
+\begin{code}
 identityDT :: DiffTrace
 identityDT = DiffTrace { applyDT = id }
 \end{code}

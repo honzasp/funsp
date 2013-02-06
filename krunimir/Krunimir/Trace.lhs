@@ -1,4 +1,5 @@
 \section{\texttt{Krunimir.Trace}}
+@Idx{Krunimir.Trace}
 
 Než představíme vyhodnocování programu reprezentovaného syntaktickým stromem,
 musíme ukázat modul @t{Krunimir.Trace}, který poskytuje datové typy pro práci se
@@ -15,6 +16,7 @@ module Krunimir.Trace
 \end{code}
 
 \subsection{Typy}
+@Idx{Krunimir.Trace.Trace}
 
 Nejdůležitějším typem je @t{Trace}, reprezentující stopu želvy. @t{Trace} má tři
 konstruktory:
@@ -35,6 +37,7 @@ data Trace
   deriving Show
 \end{code}
 
+@Idx{Krunimir.Trace.Segment}
 Typ @t{Segment} představuje úsečku mezi dvěma body, která má barvu a tloušťku.
 
 \begin{code}
@@ -54,6 +57,7 @@ V ostatních modulech budeme potřebovat pomocné funkce @t{prune} a
 @t{traceToSegss}.
 
 \subsubsection{Funkce @t{prune}}
+@Idx{Krunimir.Trace.prune}
 
 Funkce @t{prune} omezí počet \emph{tahů}, které stopa zahrnuje.
 
@@ -68,6 +72,7 @@ prune n img
 \end{code}
 
 \subsubsection{Funkce @t{traceToSegss}}
+@Idx{Krunimir.Trace.traceToSegss}
 
 Funkce @t{traceToSegss} transformuje stopu do seznamu seznamů segmentů.
 \uv{Vnější} seznam reprezentuje jednotlivé segmenty jednoho tahu. Tato funkce se
