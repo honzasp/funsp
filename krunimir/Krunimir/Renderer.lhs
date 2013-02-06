@@ -1,13 +1,13 @@
 \begin{code}
 module Krunimir.Renderer(render) where
-import Krunimir.Image
+import Krunimir.Trace
 import qualified Graphics.GD as GD
 
-render :: Image -> FilePath -> IO ()
-render img fpath = do
+render :: Trace -> FilePath -> IO ()
+render trace fpath = do
   gimg <- GD.newImage (701,701)
   GD.fillImage (GD.rgb 255 255 255) gimg
-  mapM_ (mapM_ $ drawSegment gimg) (imageToSegss img)
+  mapM_ (mapM_ $ drawSegment gimg) (traceToSegss trace)
   GD.savePngFile fpath gimg
 
 drawSegment :: GD.Image -> Segment -> IO ()

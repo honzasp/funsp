@@ -20,37 +20,40 @@ vás.
 Takto začíná zadání finální úlohy Soutěže v programování z roku 2010. Popisuje
 jednoduchý procedurální jazyk na generování želví grafiky, inspirovaný jazykem
 Logo, a úkolem je vytvořit interpret tohoto jazyka, jehož vstupem je text
-programu a výstupem obrázek s vykresleným výsledkem.
+programu a výstupem vykreslený obrázek.
+
+\marginnote{Hodil by se nějaký popsaný obrázek s výsledkem Krunimírovy práce,
+třeba některý ze stromů.}
 
 \section{Popis jazyka}
 
 Uživatel má k dispozici několik primitivních kreslících funkcí:
 
 \begin{description}
-\item[\texttt{forward(d)}] Želva se posune vpřed o \texttt{d} jednotek (pixelů).
+\item[@t{forward(d)}] Želva se posune vpřed o @t{d} jednotek (pixelů).
 Pokud je tloušťka pera kladná, zanechá za sebou čáru vedoucí z původní pozice do
 nové. Takovýto pohyb se považuje za jeden \emph{tah}.
-\item[\texttt{right(a)}, \texttt{left(a)}] Želva se otočí doprava, resp. doleva o
-\texttt{a} stupňů.
-\item[\texttt{pen(s)}] Nastaví tloušťku pera na \texttt{s}
-\item[\texttt{color(r, g, b)}] Nastaví barvu pera, \texttt{r}, \texttt{g} a
-\texttt{b} jsou jednotlivé složky modelu RGB v rozsahu 0 až 255.
+\item[@t{right(a)}, @t{left(a)}] Želva se otočí doprava, resp. doleva o
+@t{a} stupňů.
+\item[@t{pen(s)}] Nastaví tloušťku pera na @t{s}
+\item[@t{color(r, g, b)}] Nastaví barvu pera, @t{r}, @t{g} a
+@t{b} jsou jednotlivé složky modelu RGB v rozsahu 0 až 255.
 \end{description}
 
 Jazyk dále umožňuje použít jednoduchou podmínku a cyklus:
 
 \begin{description}
-\item[\texttt{if(x) \{ ... \}}] Vykoná příkazy v těle podmínky právě když je
-\texttt{x} kladné.
-\item[\texttt{repeat(x) \{ ... \}}] Vykoná příkazy \texttt{x}-krát, je-li
-\texttt{x} kladné.
+\item[@t{if(x) \{ ... \}}] Vykoná příkazy v těle podmínky právě když je
+@t{x} kladné.
+\item[@t{repeat(x) \{ ... \}}] Vykoná příkazy @t{x}-krát, je-li
+@t{x} kladné.
 \end{description}
 
 Uživatel může definovat vlastní procedury a volat je:
 
 \begin{description}
 
-\item[\texttt{define 
+\item[@t{define 
   \textit{procedura}(\textit{p1},\textit{p2},...)
   \{ ... \}
 }]
@@ -58,7 +61,7 @@ Uživatel může definovat vlastní procedury a volat je:
   (\textit{p1}, \textit{p2}, ...). Tyto parametry mohou být v těle procedury
   použity ve výrazech a nabývají hodnoty předané v místě volání.
 
-\item[\texttt{\textit{procedura}(\textit{arg1},\textit{arg2},...)}]
+\item[@t{\textit{procedura}(\textit{arg1},\textit{arg2},...)}]
   Zavolá proceduru \textit{procedura} s argumenty (\textit{arg1}, \textit{arg2},
   ...). Procedura musí být definována \textit{před} svým voláním a může být
   rekurzivní.
@@ -68,22 +71,25 @@ Uživatel může definovat vlastní procedury a volat je:
 Poslední a nejzajímavější struktura je rozdvojení:
 
 \begin{description}
-\item[\texttt{split \{ ... \}}] Vytvoří klon aktuální želvy, která vykoná
-příkazy v těle struktury \texttt{split}, přičemž původní želva pokračuje ve vykonávání
+\item[@t{split \{ ... \}}] Vytvoří klon aktuální želvy, která vykoná
+příkazy v těle struktury @t{split}, přičemž původní želva pokračuje ve vykonávání
 dalších příkazů. Všechny želvy se pohybují paralelně, vždy všechny provedou
 jeden \emph{krok}, poté druhý atd.
 \end{description}
 
 Jako argumenty při volání procedur lze používat výrazy vytvořené z celočíselných
-literálů, parametrů aktuální funkce, binárních operátorů \texttt{+}, \texttt{-},
-\texttt{*} a \texttt{/} (celočíselné dělení) a negace pomocí operátoru
-\texttt{-}. Ve výrazech je možno používat závorky \texttt{(} a \texttt{)},
+literálů, parametrů aktuální procedury, binárních operátorů @t{+}, @t{-},
+@t{*} a @t{/} (celočíselné dělení) a negace pomocí operátoru
+@t{-}. Ve výrazech je možno používat závorky @t{(} a @t{)},
 priorita a asociativita operátorů je jako v matematice.
 
 \subsection{Příklady}
 
+\marginnote{Chtělo by to několik příkladů i s krátkým popisem a obrázkem.}
+
 \subsubsection{Kreslení čtverce}
 
+% TODO: vytvořit styl pro Krunimíra
 \begin{verbatim}
 pen(1)
 repeat(4) { forward(100) right(90) }
@@ -101,9 +107,9 @@ Problém si můžeme rozdělit na tři části:
   formě, která je jednoduše zpracovatelná v dalších fázích.
 
 \item Následuje \emph{vyhodnocení}, kdy ze syntaktického stromu vypočteme
-  výsledný obrázek (ve vektorové podobě jako seznam úseček).
+  výslednou stopu (ve vektorové podobě jako seznam úseček).
 
-\item Poslední částí je \emph{vykreslení}, které vykreslí vyhodnocený obrázek do
+\item Poslední částí je \emph{vykreslení}, které vykreslí vyhodnocenou stopu do
   formátu PNG.
 
 \end{enumerate}
@@ -113,21 +119,21 @@ modulů:
 
 \begin{description}
 
-\item \texttt{Krunimir.Main} exportuje \texttt{main}, která slouží jako rozhraní s
-uživatelem. \footnote{Podobně jako funkce \texttt{main()} v jazyku C}
+\item @t{Krunimir.Main} exportuje @t{main}, která slouží jako rozhraní s
+uživatelem. \footnote{Podobně jako funkce @t{main()} v jazyku C}
 
-\item \texttt{Krunimir.Parser} exportuje funkci \texttt{parse}, která z textového
+\item @t{Krunimir.Parser} exportuje funkci @t{parse}, která z textového
 zápisu programu vytvoří syntaktický strom (nebo syntaktickou chybu).
 
-\item \texttt{Krunimir.Ast} definuje datové typy, které reprezentují syntaktický
+\item @t{Krunimir.Ast} definuje datové typy, které reprezentují syntaktický
 strom.
 
-\item \texttt{Krunimir.Evaluator} poskytuje funkci \texttt{eval}, která ze
-syntaktického stromu vypočte výsledný obrázek.
+\item @t{Krunimir.Evaluator} poskytuje funkci @t{eval}, která ze
+syntaktického stromu vypočte výslednou stopu.
 
-\item \texttt{Krunimir.Image} definuje datové typy a funkce spojené s obrázky.
+\item @t{Krunimir.Trace} definuje datové typy a funkce spojené se stopou želvy.
 
-\item \texttt{Krunimir.Renderer} exportuje funkci \texttt{render}, která vykreslí PNG
+\item @t{Krunimir.Renderer} exportuje funkci @t{render}, která vykreslí PNG
 obrázek do souboru.
 
 \end{description}
@@ -135,3 +141,4 @@ obrázek do souboru.
 \input{krunimir/Krunimir/Main.lhs}
 \input{krunimir/Krunimir/Ast.lhs}
 \input{krunimir/Krunimir/Parser.lhs}
+\input{krunimir/Krunimir/Trace.lhs}

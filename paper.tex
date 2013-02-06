@@ -5,6 +5,9 @@
 \usepackage{microtype}
 \usepackage{listings}
 \usepackage{lmodern}
+\usepackage{marginnote}
+\usepackage{syntax}
+\usepackage{at}
 
 \lstloadlanguages{Haskell}
 \lstnewenvironment{code}
@@ -17,12 +20,24 @@
       basewidth={0.5em,0.45em},
       language=Haskell,
       showstringspaces=false,
+      keywords={ % use only real Haskell keywords
+        case,class,data,default,deriving,do,else
+        ,foreign,if,import,in,infix,infixl
+        ,infixr,instance,let,module,newtype,of
+        ,then,type,where
+      },
+      otherkeywords={_}
       }
 
-%\lstMakeShortInline[basicstyle=\small\ttfamily]|
 \DisableLigatures[>,<]{encoding = T1,family=tt*} %
+\setlength{\grammarparsep}{5pt plus 1pt minus 1pt} 
+\setlength{\grammarindent}{12em}
+
+\renewcommand*{\marginfont}{\scriptsize}
+
+\newatcommand t[1]{\texttt{#1}}
 
 \begin{document}
-Žluťoučký kůň úpěl ďábelské ódy.
+@t{Žluťoučký kůň úpěl ďábelské ódy.}
 \input{krunimir/krunimir.tex}
 \end{document}

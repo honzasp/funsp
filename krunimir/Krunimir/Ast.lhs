@@ -1,14 +1,17 @@
-\section{\texttt{Krunimir.Ast}}
+\section{@t{Krunimir.Ast}}
 
-V tomto modulu definujeme datové typy popisující syntaktický strom.
+V tomto modulu definujeme datové typy popisující syntaktický strom, které
+využijeme v modulech @t{Krunimir.Parser} a @t{Krunimir.Evaluator}.
+
+\subsection{Definice typů}
 
 \begin{code}
 module Krunimir.Ast where
 \end{code}
 
-\subsection{Příkazy}
+\subsubsection{Příkazy}
 
-Příkaz je reprezentován datovým typem \texttt{Stmt}, který obsahuje konstruktor
+Příkaz je reprezentován datovým typem @t{Stmt}, který obsahuje konstruktor
 pro každý z příkazů želvího jazyka.
 
 \begin{code}
@@ -25,7 +28,7 @@ data Stmt =
   deriving Show
 \end{code}
 
-\subsection{Výrazy}
+\subsubsection{Výrazy}
 
 Reprezentace výrazů je podobně přímočará:
 
@@ -41,7 +44,7 @@ data Op = AddOp | SubOp | MulOp | DivOp
   deriving Show
 \end{code}
 
-\subsection{Definice}
+\subsubsection{Definice}
 
 Poslední strukturou je definice uživatelské procedury, pro kterou použijeme datový
 typ s pojmenovanými prvky (záznam).
@@ -56,10 +59,10 @@ data Define = Define
   } deriving Show
 \end{code}
 
-\subsection{Programy}
+\subsubsection{Programy}
 
 Na nejvyšší úrovni v programu se mohou nacházet jak definice funkcí, tak
-příkazy, což odráží typ \texttt{TopStmt}. Želví program je pak jen seznam těchto
+příkazy, což odráží typ @t{TopStmt}. Želví program je pak jen seznam těchto
 \uv{top-příkazů}.
 
 \begin{code}
@@ -70,6 +73,9 @@ data TopStmt = TopDefine Define | TopStmt Stmt
 
 \end{code}
 
-\subsection{Příkad}
+\subsection{Příklady}
+
+\marginnote{Sem se dá jeden z dříve uvedených příkladů a jeho reprezentace v
+AST.}
 
 % TODO

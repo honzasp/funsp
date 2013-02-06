@@ -1,6 +1,6 @@
 \begin{code}
 module Krunimir.Evaluator (eval) where
-import Krunimir.Image
+import Krunimir.Trace
 import Krunimir.Ast
 
 import qualified Data.Map as M
@@ -17,12 +17,12 @@ data Env = Env FunMap VarMap
 type FunMap = M.Map String Define
 type VarMap = M.Map String Integer
 
-newtype DiffImage = DiffImage (Image -> Image)
+newtype DiffTrace = DiffTrace (Trace -> Trace)
 
-eval :: Program -> Image
-eval prog = imageFun EmptyImg
+eval :: Program -> Trace
+eval prog = diff EmptyTrace
   where
-  (_,DiffImage imageFun) = evalStmts env stmts startTurtle
+  (_,DiffTrace diff) = evalStmts env stmts startTurtle
 
   (defs,stmts) = foldl go ([],[]) (reverse prog)
     where go (ds,ss) topstmt = case topstmt of
@@ -40,14 +40,14 @@ eval prog = imageFun EmptyImg
     , getPen = 0
     }
 
-evalStmts :: Env -> [Stmt] -> Turtle -> (Turtle,DiffImage)
-evalStmts _ [] turtle = (turtle,identityDI)
+evalStmts :: Env -> [Stmt] -> Turtle -> (Turtle,DiffTrace)
+evalStmts _ [] turtle = (turtle,identityDT)
 evalStmts env (stmt:stmts) turtle = 
-  let (turtle',DiffImage imageFun) = evalStmt env stmt turtle
-      (turtle'',DiffImage imageFun') = evalStmts env stmts turtle'
-  in (turtle'',DiffImage $ imageFun . imageFun')
+  let (turtle',DiffTrace diff) = evalStmt env stmt turtle
+      (turtle'',DiffTrace diff') = evalStmts env stmts turtle'
+  in (turtle'',DiffTrace $ diff . diff')
 
-evalStmt :: Env -> Stmt -> Turtle -> (Turtle,DiffImage)
+evalStmt :: Env -> Stmt -> Turtle -> (Turtle,DiffTrace)
 evalStmt env stmt = case stmt of
   ForwardStmt e -> forward (ee e)
   LeftStmt e    -> rotate (negate $ ee e)
@@ -64,11 +64,11 @@ evalStmt env stmt = case stmt of
     in evalStmts newenv (defineStmts def)
   where ee = evalExpr env
 
-noop :: Turtle -> (Turtle,DiffImage)
-noop turtle = (turtle,identityDI)
+noop :: Turtle -> (Turtle,DiffTrace)
+noop turtle = (turtle,identityDT)
 
-forward :: Integer -> Turtle -> (Turtle,DiffImage)
-forward len turtle = (turtle',DiffImage imageFun) where
+forward :: Integer -> Turtle -> (Turtle,DiffTrace)
+forward len turtle = (turtle',DiffTrace diff) where
   (x,y) = getPos turtle
   ang = getAngle turtle
   p = getPen turtle
@@ -76,28 +76,28 @@ forward len turtle = (turtle',DiffImage imageFun) where
   y' = y - cosDeg ang * fromIntegral len
   turtle' = turtle { getPos = (x',y') }
   segment = Segment (round x,round y) (round x',round y') (getColor turtle) p
-  imageFun = if p > 0 then SegmentImg segment else id
+  diff = if p > 0 then SegmentTrace segment else id
 
-rotate :: Integer -> Turtle -> (Turtle,DiffImage)
-rotate ang turtle = (turtle',identityDI) where
+rotate :: Integer -> Turtle -> (Turtle,DiffTrace)
+rotate ang turtle = (turtle',identityDT) where
   turtle' = turtle { getAngle = getAngle turtle + ang }
 
-pen :: Integer -> Turtle -> (Turtle,DiffImage)
-pen p turtle = (turtle',identityDI) where
+pen :: Integer -> Turtle -> (Turtle,DiffTrace)
+pen p turtle = (turtle',identityDT) where
   turtle' = turtle { getPen = fromIntegral p }
 
-color :: Integer -> Integer -> Integer -> Turtle -> (Turtle,DiffImage)
-color r g b turtle = (turtle',identityDI) where
+color :: Integer -> Integer -> Integer -> Turtle -> (Turtle,DiffTrace)
+color r g b turtle = (turtle',identityDT) where
   turtle' = turtle { getColor = (crop r,crop g,crop b) }
   crop x
     | x < 0     = 0
     | x > 255   = 255
     | otherwise = fromIntegral x
 
-split :: (Turtle -> (Turtle,DiffImage)) -> Turtle -> (Turtle,DiffImage)
+split :: (Turtle -> (Turtle,DiffTrace)) -> Turtle -> (Turtle,DiffTrace)
 split f turtle = 
-  let (_,DiffImage imageFun) = f turtle
-  in (turtle,DiffImage $ SplitImg (imageFun EmptyImg))
+  let (_,DiffTrace diff) = f turtle
+  in (turtle,DiffTrace $ SplitTrace (diff EmptyTrace))
 
 evalExpr :: Env -> Expr -> Integer
 evalExpr _ (LiteralExpr n) = n
@@ -131,6 +131,6 @@ sinDeg, cosDeg :: Integer -> Float
 sinDeg n = sin $ fromIntegral n * pi / 180.0
 cosDeg n = cos $ fromIntegral n * pi / 180.0
 
-identityDI :: DiffImage
-identityDI = DiffImage id
+identityDT :: DiffTrace
+identityDT = DiffTrace id
 \end{code}

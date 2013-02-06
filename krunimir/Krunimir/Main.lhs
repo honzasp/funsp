@@ -1,4 +1,4 @@
-\section{\texttt{Krunimir.Main}}
+\section{@t{Krunimir.Main}}
 
 \begin{code}
 module Krunimir.Main (main) where
@@ -20,7 +20,7 @@ a také námi definované funkce z ostatních modulů
 import Krunimir.Parser(parse)
 import Krunimir.Evaluator(eval)
 import Krunimir.Renderer(render)
-import Krunimir.Image(prune)
+import Krunimir.Trace(prune)
 
 main :: IO ()
 main = do
@@ -34,9 +34,9 @@ výpočet trval.
 \end{code}
 
 Nejprve se podíváme, jaké argumenty jsme dostali na příkazové řádce, a podle
-toho nastavíme proměnnou \texttt{inputFile} obsahující jméno vstupního souboru,
-a \texttt{steps}, což je \texttt{Just \textit{početKroků}} pokud máme zadaný
-počet kroků, nebo \texttt{Nothing} pokud jej zadaný nemáme (takže předpokládáme
+toho nastavíme proměnnou @t{inputFile} obsahující jméno vstupního souboru,
+a @t{steps}, což je @t{Just \textit{početKroků}} pokud máme zadaný
+počet kroků, nebo @t{Nothing} pokud jej zadaný nemáme (takže předpokládáme
 že uživatel chce vykreslit celý obrázek).\footnote{V zadání je specifikováno, že
 nula zadaná jako počet kroků znamená vykreslit celý obrázek, a chování našeho
 programu je odlišné - nevykreslí nic.}
@@ -52,11 +52,11 @@ programu je odlišné - nevykreslí nic.}
       exitFailure
 \end{code}
 
-\texttt{exitFailure} je speciální IO operace, která způsobí že program skončí s
+@t{exitFailure} je speciální IO operace, která způsobí že program skončí s
 návratovým kódem, který signalizuje selhání.
 
-Nyní můžeme přečíst požadovaný soubor a jeho obsah předat funkci \texttt{parse}
-z modulu \texttt{Krunimir.Parser}. Pokud dostaneme chybu, zobrazíme ji na
+Nyní můžeme přečíst požadovaný soubor a jeho obsah předat funkci @t{parse}
+z modulu @t{Krunimir.Parser}. Pokud dostaneme chybu, zobrazíme ji na
 chybový výstup a program přerušíme.
 
 \begin{code}
@@ -68,25 +68,25 @@ chybový výstup a program přerušíme.
       exitFailure
 \end{code}
 
-Úspěšně přečtený syntaktický strom můžeme předat funkci \texttt{eval} a
-dostaneme vykreslený obrázek (\texttt{fullImage}). Pokud uživatel zadal omezení
-počtu kroků, pomocí funkce \texttt{prune} obrázek ořežeme, pokud ne, necháme jej
-celý (\texttt{prunedImage}).
+Úspěšně přečtený syntaktický strom můžeme předat funkci @t{eval} a
+dostaneme výslednou stopu v písku (@t{fullTrace}). Pokud uživatel zadal omezení
+počtu kroků, pomocí funkce @t{prune} stopu omezíme, pokud ne, necháme ji
+celou (@t{prunedTrace}).
 
 Jméno výstupního souboru necháme stejné jako vstupního, jen změníme příponu.
 
 \begin{code}
-  let fullImage = eval ast
-      prunedImage = case steps of
-        Nothing -> fullImage
-        Just count -> prune count fullImage
+  let fullTrace = eval ast
+      prunedTrace = case steps of
+        Nothing -> fullTrace 
+        Just count -> prune count fullTrace
       outputFile = replaceExtension inputFile ".test.png"
 \end{code}
 
 Zbývá jen vykreslit
 
 \begin{code}
-  render prunedImage outputFile
+  render prunedTrace outputFile
 \end{code}
 
 a vypsat řádek, který nás informuje o délce výpočtu.
