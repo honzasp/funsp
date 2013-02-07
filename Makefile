@@ -21,6 +21,6 @@ force: clean paper.pdf
 .PHONY: watch
 WATCHED = tex krunimir/Krunimir
 watch:
-	while inotifywait --recursive --event modify $(WATCHED) ; do\
+	while inotifywait --recursive --event modify --exclude 'swp' $(WATCHED) ; do\
 		make paper.pdf; \
 	done;
