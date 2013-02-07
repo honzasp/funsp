@@ -1,6 +1,7 @@
 **/dist/**
 .*.sw*
 *.test.png
+*.test.svg
 krunimir/basic.*
 paper.aux
 paper.log

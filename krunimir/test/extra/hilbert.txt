@@ -1,0 +1,56 @@
+define hilbertL(n,step) {
+  left(90)
+  if(n) {
+    hilbertR(n-1,step)
+    left(90)
+    forward(step)
+    hilbertL(n-1,step)
+    right(90)
+    forward(step)
+    right(90)
+    hilbertL(n-1,step)
+    forward(step)
+    left(90)
+    hilbertR(n-1,step)
+  }
+  left(90)
+}
+
+define hilbertR(n,step) {
+  right(90)
+  if(n) {
+    hilbertL(n-1,step)
+    right(90)
+    forward(step)
+    hilbertR(n-1,step)
+    left(90)
+    forward(step)
+    left(90)
+    hilbertR(n-1,step)
+    forward(step)
+    right(90)
+    hilbertL(n-1,step)
+  }
+  right(90)
+}
+
+define hilbertEdge(n,step) {
+  if(n) {
+    forward(step)
+    right(90)
+    forward(step)
+    left(90)
+    hilbertEdge(n-1,step)
+    hilbertEdge(n-1,step)
+  }
+}
+
+define centerHilbert(n,step,p) {
+  pen(0)
+  hilbertEdge(n-1,step)
+  right(180)
+  pen(p)
+  hilbertR(n,step)
+}
+
+centerHilbert(8,2,1)

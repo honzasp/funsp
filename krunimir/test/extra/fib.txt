@@ -1,0 +1,12 @@
+define fib(n) {
+  if(n) {
+    forward(30+2*n)
+    split { left(30) fib(n-1) }
+    split { right(30) fib(n-2) }
+  }
+}
+
+forward(-150)
+pen(1)
+color(127,127,127)
+fib(10)

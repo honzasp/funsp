@@ -1,0 +1,53 @@
+define arrowheadL(n,step) {
+  if(n) {
+    left(60)
+    arrowheadR(n-1,step)
+    right(60)
+    arrowheadL(n-1,step)
+    right(60)
+    arrowheadR(n-1,step)
+    left(60)
+  }
+  if(1-n) {
+    forward(step)
+  }
+}
+
+define arrowheadR(n,step) {
+  if(n) {
+    right(60)
+    arrowheadL(n-1,step)
+    left(60)
+    arrowheadR(n-1,step)
+    left(60)
+    arrowheadL(n-1,step)
+    right(60)
+  }
+  if(1-n) {
+    forward(step)
+  }
+}
+
+define arrowheadGo(n,step) {
+  if(n) {
+    arrowheadGo(n-1,step)
+    arrowheadGo(n-1,step)
+  }
+  if(1-n) {
+    forward(step)
+  }
+}
+
+define arrowheadCenter(n,step,p) {
+  pen(0)
+  right(90)
+  arrowheadGo(n-2,step)
+  left(60)
+  arrowheadGo(n-1,step)
+  left(120)
+
+  pen(p)
+  arrowheadL(n,step)
+}
+
+arrowheadCenter(8,2,1)

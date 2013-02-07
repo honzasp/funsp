@@ -1,5 +1,5 @@
 module Main(main) where
-import qualified Krunimir.Main
+import qualified Krunimir.MainPlus
 
 main :: IO ()
-main = Krunimir.Main.main
+main = Krunimir.MainPlus.main
