@@ -17,3 +17,10 @@ clean:
 
 .PHONY: force
 force: clean paper.pdf
+
+.PHONY: watch
+WATCHED = tex krunimir/Krunimir
+watch:
+	while inotifywait --recursive --event modify $(WATCHED) ; do\
+		make paper.pdf; \
+	done;
