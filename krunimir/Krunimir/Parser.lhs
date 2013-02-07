@@ -205,7 +205,7 @@ Tělo procedury je uzavřeno ve složených závorkách.
 define :: Parser Define
 define = do
   string "define" >> skipMany1 space
-  name <- many1 lower
+  name <- identifier
   params <- parens $ identifier `sepBy` comma
   stmts <- braces $ many stmt
   return $ Define name params stmts
@@ -397,6 +397,9 @@ Nakonec si nadefinujeme drobné parsery, které jsme použili. Každý z nich
 zkonzumuje i všechny prázdné znaky, které se za ním nachází, takže se s jejich
 ošetřením nemusíme zabývat ve \uv{vyšších} parserech.
 
+V identifikátorech povolíme i velká písmena a číslice, pokud se nenachází na
+začátku.
+
 @Idx{Krunimir.Parser.integer}
 @Idx{Krunimir.Parser.identifier}
 @Idx{Krunimir.Parser.keyword}
@@ -406,7 +409,7 @@ ošetřením nemusíme zabývat ve \uv{vyšších} parserech.
 integer :: Parser Integer
 integer = read <$> many1 digit <* spaces
 identifier :: Parser String
-identifier = many1 lower <* spaces
+identifier = (:) <$> letter <*> many alphaNum <* spaces
 
 keyword :: String -> Parser ()
 keyword s = string s >> notFollowedBy alphaNum >> spaces

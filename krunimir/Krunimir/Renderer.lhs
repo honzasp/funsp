@@ -1,11 +1,18 @@
 \section{@t{Krunimir.Renderer}}
 @Idx{Krunimir.Renderer}
 
+K renderování výsledných stop použijeme knihovnu \emph{GD}. Její výhodou je, že
+je velmi jednoduchá na použití. Nevýhoda je, že neumožňuje vykreslovat čáry jiné
+tloušťky než 1~px, takže informaci o tloušťce pera nemůžeme využít.
+
 \begin{code}
 module Krunimir.Renderer(render) where
 import Krunimir.Trace
 import qualified Graphics.GD as GD
 \end{code}
+
+Veškeré operace s obrázky jsou v knihovně GD implementovány jako operace v
+monádě IO.
 
 @Idx{Krunimir.Renderer.render}
 \begin{code}

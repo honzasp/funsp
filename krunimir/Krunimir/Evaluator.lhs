@@ -22,7 +22,10 @@ Funkce @t{genericReplicate} je verze funkce @t{replicate} ze standardního
 \subsection{Pomocné typy}
 
 Definujeme si datový typ @t{Turtle}, který zahrnuje celý stav želvy -- její
-pozici, natočení a barvu a tloušťku pera.
+pozici, natočení a barvu a tloušťku pera.\footnote{Typ @t{Float} jsme použili
+namísto obvyklého @t{Double} pro ušetření paměti, měl by totiž vyžadovat pouze 4
+bajty namísto 8. Jelikož Krunimírovy programy pracující s desetitisíci želvami
+nejsou žádnou výjimkou, ušetřené bajty se na výkonu programu pozitivně projeví.}
 
 @Idx{Krunimir.Evaluator.Turtle}
 \begin{code}
@@ -100,6 +103,14 @@ Trace)}, neboli @t{DiffTrace -> Trace -> Trace}. To znamená, že na @t{applyDT}
 můžeme nahlížet jako na funkci se dvěmi argumenty, která \emph{aplikuje}
 změnu -- @t{DiffTrace} -- na @t{Trace}, čímž získáme novou @t{Trace}.
 
+Nadefinujeme si také operaci @t{identity}, tj. žádná změna se neprovede.
+
+@Idx{Krunimir.Evaluator.identityDT}
+\begin{code}
+identityDT :: DiffTrace
+identityDT = DiffTrace { applyDT = id }
+\end{code}
+
 S tímto novým typem, který reprezentuje \emph{rozdíl} nebo \emph{změnu} stopy
 @t{Trace}, bude typ funkce @t{evalStmt} vypadat takto:
 
@@ -158,6 +169,8 @@ seznam příkazů, čímž získáme @t{diff}, funkci která reprezentuje změnu
 program vykoná na celkové stopě želvy. Tuto změnu aplikujeme na prázdnou stopu,
 čímž získáme kýženou hodnotu @t{Trace}.
 
+\subsection{Vyhodnocování příkazů}
+
 Funkce @t{evalStmts}, která vyhodnotí seznam příkazů, vždy vyhodnotí jeden
 příkaz, poté seznam následujících příkazů a vrátí výslednou želvu a složený
 @t{DiffTrace}.
@@ -171,6 +184,9 @@ evalStmts env (stmt:stmts) turtle =
       (turtle'',dt') = evalStmts env stmts turtle'
   in (turtle'',DiffTrace { applyDT = applyDT dt . applyDT dt' })
 \end{code}
+
+V @t{evalStmt} použijeme velký @t{case}, v němž patřičně reagujeme na každý druh
+příkazu.
 
 @Idx{Krunimir.Evaluator.evalStmt}
 \begin{code}
@@ -192,11 +208,37 @@ evalStmt env stmt = case stmt of
   where ee = evalExpr env
 \end{code}
 
+Primitivní operace s želvou jsme ošetřili pomocnými funkcemi, které
+implementujeme později. Podmínka a cyklus v podobě @t{RepeatStmt} a @t{IfStmt}
+jsou implementovány pomocí @t{evalStmts}, stejně jako volání procedury, kde ale
+musíme vytvořit novou mapu proměnných z předaných argumentů.
+
+\subsection{Jednotlivé příkazy}
+
+Nyní se dostáváme k implementaci jednotlivých funkcí použitých v @t{evalStmt}.
+Všimněte si, že jsme využili \emph{curryingu} -- ač @t{evalStmt} vyžaduje tři
+argumenty, definovali jsme ji pouze pro první dva (@t{env} a @t{stmt}), tudíž na
+pravé straně musíme vrátit funkci @t{Turtle -> (Turtle,DiffTrace} (viz typovou
+deklaraci funkce @t{evalStmt}). Tímto se zbavíme neustálého opakování a
+předávání argumentu @t{Turtle} jednotlivým specializovaným funkcím.
+
+\subsubsection{Prázdná operace}
+
+Funkci @t{noop} jsme využili v příkazu @t{IfStmt} na ošetření situace, když
+podmínka neplatí, a její chování je jednoduché -- nedělá nic, takže vrátí
+nezměněnou želvu a \emph{identitu}.
+
 @Idx{Krunimir.Evaluator.noop}
 \begin{code}
 noop :: Turtle -> (Turtle,DiffTrace)
 noop turtle = (turtle,identityDT)
 \end{code}
+
+\subsubsection{Posun vpřed}
+
+Při pohybu vpřed musíme želvu posunout na nové místo a zkontrolovat, jestli za
+sebou nezanechala čáru. Pokud ano, vrátíme @t{DiffImage}, který tuto změnu
+zachycuje, pokud ne, dostaneme identitu.
 
 @Idx{Krunimir.Evaluator.forward}
 \begin{code}
@@ -207,10 +249,17 @@ forward len turtle = (turtle',DiffTrace diff) where
   p = getPen turtle
   x' = x + sinDeg ang * fromIntegral len
   y' = y - cosDeg ang * fromIntegral len
-  turtle' = turtle { getPos = (x',y') }
+  turtle' = turtle { getPos = (x',y') } 
   segment = Segment (round x,round y) (round x',round y') (getColor turtle) p
   diff = if p > 0 then SegmentTrace segment else id
 \end{code}
+
+Funkce @t{sinDeg} a @t{cosDeg}, které počítají sinus a kosinus úhlu ve stupních,
+si definujeme později.
+
+\subsubsection{Otáčení a změny pera}
+
+Tyto operace jednoduše změní jednotlivé vlastnosti želvy.
 
 @Idx{Krunimir.Evaluator.rotate}
 \begin{code}
@@ -226,6 +275,9 @@ pen p turtle = (turtle',identityDT) where
   turtle' = turtle { getPen = fromIntegral p }
 \end{code}
 
+Při změně barvy musíme dbát na to, ať se nějaká ze složek RGB modelu nedostane
+mimo povolený rozsah 0 až 255.
+
 @Idx{Krunimir.Evaluator.color}
 \begin{code}
 color :: Integer -> Integer -> Integer -> Turtle -> (Turtle,DiffTrace)
@@ -237,6 +289,16 @@ color r g b turtle = (turtle',identityDT) where
     | otherwise = fromIntegral x
 \end{code}
 
+\subsubsection{Rozdvojení želvy}
+
+Zbývá nám funkce @t{split}, která implementuje rozdělení želvy. Prvním
+parametrem je funkce reprezentující \uv{vedlejší větev}, tedy tělo příkazu
+@t{split \{ ... \}}. Této funkci předáme aktuální želvu, získáme z ní
+@t{DiffTrace}, který následně aplikujeme na @t{EmptyTrace}, čímž získáme hodnotu
+@t{Trace} reprezentující stopu, kterou \uv{naklonovaná} želva za sebou
+zanechala. Vrátíme stav původní želvy a ve výsledné hodnotě @t{DiffTrace}
+uložíme částečně aplikovaný konstruktor @t{SplitTrace}.
+
 @Idx{Krunimir.Evaluator.split}
 \begin{code}
 split :: (Turtle -> (Turtle,DiffTrace)) -> Turtle -> (Turtle,DiffTrace)
@@ -245,6 +307,11 @@ split f turtle =
       branch = applyDT dt EmptyTrace
   in (turtle,DiffTrace { applyDT = SplitTrace branch })
 \end{code}
+
+\subsection{Vyhodnocení výrazů}
+
+Typ funkce @t{evalExpr} jsme si představili již dříve, její implementace je
+přímočará:
 
 @Idx{Krunimir.Evaluator.evalExpr}
 \begin{code}
@@ -262,6 +329,11 @@ evalExpr env (BinopExpr op left right) =
 evalExpr env (NegateExpr expr) = negate $ evalExpr env expr
 \end{code}
 
+\subsection{Pomocné funkce}
+
+Zbývá nám definovat jen pomocné funkce pro vyhledávání proměnných a procedur v
+@t{Env}:
+
 @Idx{Krunimir.Evaluator.lookupDef}
 @Idx{Krunimir.Evaluator.lookupVar}
 \begin{code}
@@ -278,20 +350,21 @@ lookupVar (Env _ varmap) name =
     Nothing -> error $ "Undefined variable " ++ name
 \end{code}
 
+Funkce @t{makeEnv} vytvoří nový @t{Env} s hodnotami proměnných z
+\emph{asociativního seznamu} @t{binds}:
+
 @Idx{Krunimir.Evaluator.makeEnv}
 \begin{code}
 makeEnv :: Env -> [(String,Integer)] -> Env
 makeEnv (Env procmap _) binds = Env procmap $ M.fromList binds
 \end{code}
 
+A nakonec funkce sinus a kosinus na stupních:
+
+@Idx{Krunimir.Evaluator.sinDeg}
+@Idx{Krunimir.Evaluator.cosDeg}
 \begin{code}
 sinDeg, cosDeg :: Integer -> Float
 sinDeg n = sin $ fromIntegral n * pi / 180.0
 cosDeg n = cos $ fromIntegral n * pi / 180.0
-\end{code}
-
-@Idx{Krunimir.Evaluator.identityDT}
-\begin{code}
-identityDT :: DiffTrace
-identityDT = DiffTrace { applyDT = id }
 \end{code}
