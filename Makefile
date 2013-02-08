@@ -1,8 +1,9 @@
 TEXS = $(shell find . -name '*.tex' -o -name '*.lhs')
+IMGS = $(shell find img)
 STUFF = paper.aux paper.idx paper.ilg paper.ind paper.log \
 				paper.out paper.pdf paper.toc
 
-paper.pdf: $(TEXS)
+paper.pdf: $(TEXS) $(IMGS)
 	pdflatex paper
 	makeindex paper
 	pdflatex paper
@@ -13,7 +14,7 @@ show: paper.pdf
 
 .PHONY: clean
 clean:
-	rm $(STUFF)
+	rm $(STUFF) 
 
 .PHONY: force
 force: clean paper.pdf
