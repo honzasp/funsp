@@ -20,7 +20,8 @@ a také námi definované funkce z ostatních modulů
 \begin{code}
 import Krunimir.Parser(parse)
 import Krunimir.Evaluator(eval)
-import Krunimir.Renderer(render)
+import Krunimir.PngRenderer(renderPng)
+import Krunimir.SvgRenderer(renderSvg)
 import Krunimir.Trace(prune)
 
 main :: IO ()
@@ -76,7 +77,8 @@ dostaneme výslednou stopu v písku (@t{fullTrace}). Pokud uživatel zadal omeze
 počtu kroků, pomocí funkce @t{prune} stopu omezíme, pokud ne, necháme ji
 celou (@t{prunedTrace}).
 
-Jméno výstupního souboru necháme stejné jako vstupního, jen změníme příponu.
+Jména výstupních souborů (jak PNG, tak SVG) odvodíme ze jména souboru vstupního,
+jen změníme příponu.
 
 @idx{Krunimir.Evaluator.eval}
 @idx{Krunimir.Trace.prune}
@@ -85,14 +87,17 @@ Jméno výstupního souboru necháme stejné jako vstupního, jen změníme př�
       prunedTrace = case steps of
         Nothing -> fullTrace 
         Just count -> prune count fullTrace
-      outputFile = replaceExtension inputFile ".test.png"
+      outputPng = replaceExtension inputFile ".test.png"
+      outputSvg = replaceExtension inputFile ".test.svg"
 \end{code}
 
 Zbývá jen vykreslit
 
-@idx{Krunimir.Renderer.render}
+@idx{Krunimir.PngRenderer.renderPng}
+@idx{Krunimir.SvgRenderer.renderSvg}
 \begin{code}
-  render prunedTrace outputFile
+  renderPng prunedTrace outputPng
+  renderSvg prunedTrace outputSvg
 \end{code}
 
 a vypsat řádek, který nás informuje o délce výpočtu.

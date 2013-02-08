@@ -112,11 +112,12 @@ Problém si můžeme rozdělit na tři části:
   výslednou stopu (ve vektorové podobě jako seznam úseček).
 
 \item Poslední částí je \emph{vykreslení}, které vykreslí vyhodnocenou stopu do
-  formátu PNG.
+  obrázku. Budeme exportovat do rastrových obrázků formátu PNG a vektorových
+  formátu SVG.
 
 \end{enumerate}
 
-Pomocí tohoto jednoduchého rozdělení můžeme naše řešení rozvrhnout do šesti
+Pomocí tohoto jednoduchého rozdělení můžeme naše řešení rozvrhnout do sedmi
 modulů:
 
 \begin{description}
@@ -143,10 +144,15 @@ syntaktického stromu vypočte výslednou stopu.
 \item @t{Krunimir.Trace} definuje datové typy a funkce spojené se stopou želvy.
   @idx{Krunimir.Trace}
 
-\item @t{Krunimir.Renderer} exportuje funkci @t{render}, která vykreslí PNG
-obrázek do souboru.
-  @idx{Krunimir.Renderer}
-  @idx{Krunimir.Renderer.render}
+\item @t{Krunimir.PngRenderer} exportuje funkci @t{renderPng}, která vykreslí
+  stopu jako PNG obrázek.
+  @idx{Krunimir.PngRenderer}
+  @idx{Krunimir.PngRenderer.renderPng}
+
+\item @t{Krunimir.SvgRenderer} poskytuje funkci @t{renderSvg}, jenž uloží stopu
+  ve vektorovém formátu SVG.
+  @idx{Krunimir.SvgRenderer}
+  @idx{Krunimir.SvgRenderer.renderSvg}
 
 \end{description}
 
@@ -155,4 +161,5 @@ obrázek do souboru.
 \input{krunimir/Krunimir/Parser.lhs}
 \input{krunimir/Krunimir/Trace.lhs}
 \input{krunimir/Krunimir/Evaluator.lhs}
-\input{krunimir/Krunimir/Renderer.lhs}
+\input{krunimir/Krunimir/PngRenderer.lhs}
+\input{krunimir/Krunimir/SvgRenderer.lhs}
