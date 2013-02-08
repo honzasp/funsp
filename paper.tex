@@ -13,6 +13,9 @@
 \usepackage{at}
 \usepackage{makeidx}
 \usepackage{graphicx}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
 
 \lstloadlanguages{Haskell}
 \lstnewenvironment{code}
@@ -33,6 +36,14 @@
     },
     otherkeywords={_}
     }
+
+\lstdefinestyle{krunimir}{
+    basicstyle=\small\ttfamily,
+    flexiblecolumns=false,
+    keywords={
+      forward,left,right,color,pen,split,if,repeat,define
+    },
+}
 
 \DisableLigatures[>,<]{encoding = T1,family=tt*} %
 \setlength{\grammarparsep}{5pt plus 1pt minus 1pt} 

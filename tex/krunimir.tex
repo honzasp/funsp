@@ -15,8 +15,6 @@ však poradil: \uv{Tak si nech napsat program, který ji nakreslí za Tebe.}
 Protože se ale s tlapami a zobákem moc dobře neprogramuje, najali si želváci
 vás.
 
-\includegraphics[width=11cm]{img/sierpinski}
-
 \end{quotation}
 
 Takto začíná zadání finální úlohy Soutěže v programování z roku 2010. Popisuje
@@ -87,16 +85,49 @@ priorita a asociativita operátorů je jako v matematice.
 
 \subsection{Příklady}
 
-\marginnote{Chtělo by to několik příkladů i s krátkým popisem a obrázkem.}
+Výstupy těchto příkladů jsou na obrázku \ref{fig:krunimir-examples}.
 
-\subsubsection{Kreslení čtverce}
+\subsubsection{Čtverec (\ref{fig:krunimir-square1})}
 
-% TODO: vytvořit styl pro Krunimíra
-\begin{verbatim}
-pen(1)
-repeat(4) { forward(100) right(90) }
-\end{verbatim}
+Jednoduchý kód, který vykreslí čtverec. 
+\lstinputlisting[style=krunimir]{krunimir/examples/square1.txt}
 
+\subsubsection{Mřížka čtverců (\ref{fig:krunimir-squares})}
+
+V této ukázce využijeme procedury, abychom kód rozdělili na menší a přehlednější
+části.
+\lstinputlisting[style=krunimir]{krunimir/examples/squares.txt}
+
+\subsubsection{Binární strom (\ref{fig:krunimir-bintree})}
+
+Při vykreslování stromů prokáže svoji užitečnost příkaz @t{split}.
+\lstinputlisting[style=krunimir]{krunimir/examples/bintree.txt}
+
+% příklady a jejich výsledky by opravdu neměly utéct někam pryč, proto H
+\begin{figure}[H]
+  \centering
+
+  \begin{subfigure}{0.3\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{krunimir/examples/square1}
+    \caption{Čtverec}\label{fig:krunimir-square1}
+  \end{subfigure}
+  ~
+  \begin{subfigure}{0.3\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{krunimir/examples/squares}
+    \caption{Mřížka čtverců}\label{fig:krunimir-squares}
+  \end{subfigure}
+  ~
+  \begin{subfigure}{0.3\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{krunimir/examples/bintree}
+    \caption{Binární strom}\label{fig:krunimir-bintree}
+  \end{subfigure}
+
+  \caption{Výsledné obrázky z příkladů}
+  \protect\label{fig:krunimir-examples}
+\end{figure}
 
 \section{Analýza}
 

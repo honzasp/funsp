@@ -4,6 +4,7 @@ STUFF = paper.aux paper.idx paper.ilg paper.ind paper.log \
 				paper.out paper.pdf paper.toc
 
 paper.pdf: $(TEXS) $(IMGS)
+	$(MAKE) -C krunimir/examples pdfs
 	pdflatex paper
 	makeindex paper
 	pdflatex paper
@@ -14,14 +15,15 @@ show: paper.pdf
 
 .PHONY: clean
 clean:
-	rm $(STUFF) 
+	rm $(STUFF) || true
 
 .PHONY: force
 force: clean paper.pdf
 
 .PHONY: watch
-WATCHED = tex krunimir/Krunimir
+WATCHED = paper.tex tex krunimir/Krunimir
 watch:
+	make paper.pdf
 	while inotifywait --recursive --event modify --exclude 'swp' $(WATCHED) ; do\
 		make paper.pdf; \
 	done;
