@@ -44,7 +44,7 @@ Typ @t{Segment} představuje úsečku mezi dvěma body, která má barvu a tlou�
 data Segment = Segment Point Point Color Int 
   deriving Show
 
-type Point = (Int,Int)
+type Point = (Float,Float)
 type Color = (Int,Int,Int)
 \end{code}
 

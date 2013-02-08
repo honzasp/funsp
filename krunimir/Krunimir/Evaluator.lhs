@@ -148,7 +148,7 @@ eval prog = applyDT (snd $ evalStmts env stmts startTurtle) EmptyTrace
   varMap = M.empty
 
   startTurtle = Turtle
-    { getPos = (351,351)
+    { getPos = (350.5,350.5)
     , getAngle = 0
     , getColor = (0,0,0)
     , getPen = 0
@@ -250,7 +250,7 @@ forward len turtle = (turtle',DiffTrace diff) where
   x' = x + sinDeg ang * fromIntegral len
   y' = y - cosDeg ang * fromIntegral len
   turtle' = turtle { getPos = (x',y') } 
-  segment = Segment (round x,round y) (round x',round y') (getColor turtle) p
+  segment = Segment (x,y) (x',y') (getColor turtle) p
   diff = if p > 0 then SegmentTrace segment else id
 \end{code}
 

@@ -26,6 +26,6 @@ render trace fpath = do
 
 \begin{code}
 drawSegment :: GD.Image -> Segment -> IO ()
-drawSegment gimg (Segment from to (r,g,b) _pen) =
-  GD.drawLine from to (GD.rgb r g b) gimg
+drawSegment gimg (Segment (x1,y1) (x2,y2) (r,g,b) _pen) =
+  GD.drawLine (floor x1,floor y1) (floor x2,floor y2) (GD.rgb r g b) gimg
 \end{code}

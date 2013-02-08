@@ -14,9 +14,9 @@ renderSVG trace fpath =
     svgFooter = "</svg>\n"
 
     svgSegment (Segment (x1,y1) (x2,y2) (r,g,b) pen) =
-      "<line x1=\"" ++ show x1 ++ ".5\"\
-           \ y1=\"" ++ show y1 ++ ".5\"\
-           \ x2=\"" ++ show x2 ++ ".5\"\
-           \ y2=\"" ++ show y2 ++ ".5\"\
+      "<line x1=\"" ++ show x1 ++ "\"\
+           \ y1=\"" ++ show y1 ++ "\"\
+           \ x2=\"" ++ show x2 ++ "\"\
+           \ y2=\"" ++ show y2 ++ "\"\
            \ stroke=\"rgb(" ++ show r ++ "," ++ show g ++ "," ++ show b ++  ")\"\
            \ stroke-width=\"" ++ show pen ++ "\"/>"
