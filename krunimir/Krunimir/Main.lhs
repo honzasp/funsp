@@ -1,4 +1,4 @@
-\section{@t{Krunimir.Main}}
+\section{\texorpdfstring{@t{Krunimir.Main}}{Krunimir.Main}}
 @Idx{Krunimir.Main}
 
 \begin{code}

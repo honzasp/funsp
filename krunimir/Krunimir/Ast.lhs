@@ -1,4 +1,4 @@
-\section{@t{Krunimir.Ast}}
+\section{\texorpdfstring{@t{Krunimir.Ast}}{Krunimir.Ast}}
 @Idx{Krunimir.Ast}
 
 V tomto modulu definujeme datové typy popisující syntaktický strom, které
@@ -96,7 +96,7 @@ následující za @t{-}@t{-} jsou komentáře):
 
 % -- se musí rozdělit na - a -, protože dohromady se "spojí" na pomlčku
 
-\begin{code}% není součást vlastního kódu
+\begin{code*}
 [
   -- nejprve definice procedury `tree'
   TopDefine (Define {
@@ -130,4 +130,4 @@ následující za @t{-}@t{-} jsou komentáře):
   TopStmt (PenStmt (LiteralExpr 1)),
   TopStmt (CallStmt "tree" [LiteralExpr 5])
 ]
-\end{code}
+\end{code*}

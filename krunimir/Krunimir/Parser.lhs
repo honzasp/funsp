@@ -1,4 +1,4 @@
-\section{@t{Krunimir.Parser}}
+\section{\texorpdfstring{@t{Krunimir.Parser}}{Krunimir.Parser}}
 @Idx{Krunimir.Parser}
 
 Pro syntaktickou analýzu (\uv{parsování}) použijeme knihovnu @t{parsec}.
@@ -136,7 +136,7 @@ operace:
 
 \end{description}
 
-\subsection{Funkce @t{parse}}
+\subsection{Funkce \texorpdfstring{@t{parse}}{parse}}
 @Idx{Krunimir.Parser.parse}
 
 Funkce @t{parse} představuje \uv{uživatelské rozhraní} modulu

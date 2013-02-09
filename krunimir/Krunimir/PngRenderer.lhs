@@ -1,4 +1,4 @@
-\section{@t{Krunimir.PngRenderer}}
+\section{\texorpdfstring{@t{Krunimir.PngRenderer}}{Krunimir.PngRenderer}}
 @Idx{Krunimir.PngRenderer}
 
 K renderování stop ve formátu PNG použijeme knihovnu \emph{GD}. Její výhodou je,

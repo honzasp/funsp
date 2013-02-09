@@ -1,4 +1,4 @@
-\section{@t{Krunimir.SvgRenderer}}
+\section{\texorpdfstring{@t{Krunimir.SvgRenderer}}{Krunimir.SvgRenderer}}
 @Idx{Krunimir.SvgRenderer}
 
 Na exportování do SVG nebudeme potřebovat žádnou speciální knihovnu,

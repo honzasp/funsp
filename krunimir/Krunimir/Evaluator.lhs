@@ -1,4 +1,4 @@
-\section{@t{Krunimir.Evaluator}}
+\section{\texorpdfstring{@t{Krunimir.Evaluator}}{Krunimir.Evaluator}}
 @Idx{Krunimir.Evaluator}
 
 Nyní se dostáváme k jádru problému, totiž samotnému \emph{vyhodnocování}
@@ -51,7 +51,7 @@ type ProcMap = M.Map String Define
 type VarMap = M.Map String Integer
 \end{code}
 
-\subsection{Představení @t{DiffTrace}}
+\subsection{Představení \texorpdfstring{@t{DiffTrace}}{DiffTrace}}
 @idx{Krunimir.Evaluator.DiffTrace}
 
 Nyní se musíme rozhodnout, jak přesně budeme vyhodnocování stopy v syntaktickém
@@ -64,9 +64,9 @@ budeme potřebovat @t{Env}, z něhož získáme hodnoty aktuálních proměnnýc
 (argumentů). Z toho nám plyne typ pro funkci @t{evalExpr}:
 
 @idx{Krunimir.Evaluator.evalExpr}
-\begin{code}% níže je funkce definovaná i s typem, proto ho prozatím ignorujme
+\begin{code*}
 evalExpr :: Env -> Expr -> Integer
-\end{code}
+\end{code*}
 
 Dále bude třeba vytvořit funkci, která vyhodnotí příkaz. Parametry této funkce
 bude učitě znovu @t{Env} (potřebujeme znát, jaké procedury existují) a
@@ -84,9 +84,9 @@ získaný z \emph{následujících} příkazů a vrátí novou @t{Trace}.
 
 Tím získáváme typ:
 
-\begin{code}% ještě vlastně ne
+\begin{code*}
 evalStmt :: Env -> Stmt -> Turtle -> (Turtle,Trace -> Trace)
-\end{code}
+\end{code*}
 
 S funkcemi typu @t{Trace -> Trace} budeme pracovat často, proto si vytvoříme
 \emph{nový typ}.
@@ -115,9 +115,9 @@ S tímto novým typem, který reprezentuje \emph{rozdíl} nebo \emph{změnu} sto
 @t{Trace}, bude typ funkce @t{evalStmt} vypadat takto:
 
 @idx{Krunimir.Evaluator.evalStmt}
-\begin{code}% už to je správné, ale pravý Haskell si necháme na později
+\begin{code*}
 evalStmt :: Env -> Stmt -> Turtle -> (Turtle,DiffTrace)
-\end{code}
+\end{code*}
 
 Tuto deklaraci typu můžeme chápat takto: \uv{@t{evalStmt} je funkce vyžadující
 mapu procedur a proměnných uložených v typu @t{Env}, dále příkaz k vyhodnocení a
@@ -128,7 +128,7 @@ I když toto typové kung-fu může vypadat na první pohled zbytečně kompliko
 složitě, opak je pravdou -- umožní nám vyhodnocování příkazů implementovat velmi
 elegantně a jednoduše.
 
-\subsection{Funkce @t{eval}}
+\subsection{Funkce \texorpdfstring{@t{eval}}{eval}}
 @Idx{Krunimir.Evaluator.eval}
 
 Funkce @t{eval}, která vyhodnotí celý program.

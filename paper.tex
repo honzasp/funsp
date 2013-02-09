@@ -18,32 +18,35 @@
 \usepackage{subcaption}
 
 \lstloadlanguages{Haskell}
-\lstnewenvironment{code}
-  {\lstset{}%
-    \csname lst@SetFirstLabel\endcsname}
-  {\csname lst@SaveFirstLabel\endcsname}
-  \lstset{
-    basicstyle=\small\ttfamily,
-    flexiblecolumns=false,
-    basewidth={0.5em,0.45em},
-    language=Haskell,
-    showstringspaces=false,
-    keywords={ % use only real Haskell keywords
-      case,class,data,default,deriving,do,else
-      ,foreign,if,import,in,infix,infixl
-      ,infixr,instance,let,module,newtype,of
-      ,then,type,where
-    },
-    otherkeywords={_},
-    texcl=true,
-    }
+
+\lstdefinestyle{haskell}{
+  basicstyle=\small\ttfamily,
+  flexiblecolumns=false,
+  basewidth=0.5em,
+  language=Haskell,
+  showstringspaces=false,
+  keywords={ % use only real Haskell keywords
+    case,class,data,default,deriving,do,else
+    ,foreign,if,import,in,infix,infixl
+    ,infixr,instance,let,module,newtype,of
+    ,then,type,where
+  },
+  otherkeywords={_},
+  texcl=true,
+}
+
+% code chunks in literate haskell
+\lstnewenvironment{code}{\lstset{style=haskell}}{}
+% code chunks which should NOT be processed by literate haskell
+\lstnewenvironment{code*}{\lstset{style=haskell}}{}
 
 \lstdefinestyle{krunimir}{
-    basicstyle=\small\ttfamily,
-    flexiblecolumns=false,
-    keywords={
-      forward,left,right,color,pen,split,if,repeat,define
-    },
+  basicstyle=\small\ttfamily,
+  flexiblecolumns=false,
+  basewidth=0.5em,
+  keywords={
+    forward,left,right,color,pen,split,if,repeat,define
+  },
 }
 
 \DisableLigatures[>,<]{encoding = T1,family=tt*} %
@@ -62,8 +65,10 @@
   unicode=true,          % non-Latin characters in Acrobat’s bookmarks
   pdftitle={TITULEK !!!!!},    % title
   pdfauthor={Jan Špaček},     % author
-  hidelinks=true,
-  hyperindex=true,
+  hidelinks,
+  % hyperindex should be true by default, hyperref shows warning 
+  % "Option `hyperindex' has already been used,"
+  % hyperindex=true,
   linktoc=all,
 }
 

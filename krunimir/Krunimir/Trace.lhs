@@ -1,4 +1,4 @@
-\section{\texttt{Krunimir.Trace}}
+\section{\texorpdfstring{@t{Krunimir.Trace}}{Krunimir.Trace}}
 @Idx{Krunimir.Trace}
 
 Než představíme vyhodnocování programu reprezentovaného syntaktickým stromem,
@@ -56,7 +56,7 @@ obrázek.}
 V ostatních modulech budeme potřebovat pomocné funkce @t{prune} a
 @t{traceToSegss}.
 
-\subsubsection{Funkce @t{prune}}
+\subsubsection{Funkce \texorpdfstring{@t{prune}}{prune}}
 @Idx{Krunimir.Trace.prune}
 
 Funkce @t{prune} omezí počet \emph{tahů}, které stopa zahrnuje.
@@ -71,7 +71,7 @@ prune n img
     SegmentTrace seg x -> SegmentTrace seg $ prune (n-1) x
 \end{code}
 
-\subsubsection{Funkce @t{traceToSegss}}
+\subsubsection{Funkce \texorpdfstring{@t{traceToSegss}}{traceToSegss}}
 @Idx{Krunimir.Trace.traceToSegss}
 
 Funkce @t{traceToSegss} transformuje stopu do seznamu seznamů segmentů.
