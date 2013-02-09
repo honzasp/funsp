@@ -1,31 +1,17 @@
-define dragonA(n,step) {
+define dragon(n,sign) {
   if(n) {
-    right(45)
-    dragonA(n-1,step)
-    left(90)
-    dragonB(n-1,step)
-    right(45)
+    right(45*sign)
+    dragon(n-1,1)
+    left(90*sign)
+    dragon(n-1,-1)
+    right(45*sign)
   }
   if(1-n) {
-    forward(step)
+    forward(5)
   }
 }
 
-define dragonB(n,step) {
-  if(n) {
-    left(45)
-    dragonA(n-1,step)
-    right(90)
-    dragonB(n-1,step)
-    left(45)
-  }
-  if(1-n) {
-    forward(step)
-  }
-}
-
-left(95)
-forward(250)
-right(95)
-pen(1)
-dragonA(15,4)
+left(90) forward(150)
+left(90) forward(150)
+right(180) right(20) pen(1)
+dragon(13,1)

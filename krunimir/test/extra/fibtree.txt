@@ -1,0 +1,25 @@
+define fibtree(n,width) {
+  color(15*n,0,0)
+  if(n) {
+    forward(10+3*n)
+    split {
+      left(60)
+      forward(width*577/2000)
+      right(60)
+      fibtree(n-1,width/2)
+    }
+    split {
+      right(60)
+      forward(width*577/2000)
+      left(60)
+      fibtree(n-2,width/2)
+    }
+  }
+  if(1-n) {
+    forward(5)
+  }
+}
+
+forward(-300)
+pen(1)
+fibtree(9,701)
