@@ -92,9 +92,11 @@ jednou zopakujeme jeho kód:
 \lstinputlisting[style=krunimir]{krunimir/examples/bintree.txt}
 
 Tento program je reprezentován pomocí výše uvedených typů následovně (text
-následující za @t{--} jsou komentáře):
+následující za @t{-}@t{-} jsou komentáře):
 
-\begin{code}% not a part of the real source
+% -- se musí rozdělit na - a -, protože dohromady se "spojí" na pomlčku
+
+\begin{code}% není součást vlastního kódu
 [
   -- nejprve definice procedury `tree'
   TopDefine (Define {
