@@ -326,7 +326,7 @@ Gramatiku našich výrazů můžeme zapsat v BNF formě jako
 <add-expr> ::= <add-expr> add-op <neg-expr>
 \alt <neg-expr>
 
-<neg-expr> ::= `-' <mul-expr>
+<neg-expr> ::= "-" <mul-expr>
 \alt <mul-expr>
 
 <mul-expr> ::= <mul-expr> mul-op <a-expr>
@@ -334,21 +334,24 @@ Gramatiku našich výrazů můžeme zapsat v BNF formě jako
 
 <a-expr> ::= variable
 \alt integer
-\alt `(' <expr> `)'
+\alt "(" <expr> ")"
 \end{grammar}
 
 Problém je, že pravidla pro sčítání/odčítání a násobení/dělení jsou rekurzivní
 zleva, takže je nelze zpracovávat pomocí gramatiky PEG. Proto je musíme
 přeformulovat do podoby
 
-\marginnote{Něco jiného než verbatim a ať vypadá jinak než Haskell}
-\begin{verbatim}
-expr      = add-expr
-add-expr  = neg-expr (add-op neg-expr)*
-neg-expr  = `-'? mul-expr
-mul-expr  = a-expr (mul-op a-expr)*
-a-expr    = variable | integer | `(' expr `)'
-\end{verbatim}
+\begin{grammar}
+<expr>      = <add-expr>
+
+<add-expr>  = <neg-expr> (add-op <neg-expr>)*
+
+<neg-expr>  = "-"? <mul-expr>
+
+<mul-expr>  = <a-expr> (mul-op <a-expr>)*
+
+<a-expr>    = variable | integer | "(" <expr> ")"
+\end{grammar}
 
 Tuto PEG gramatiku již můžeme použít, ale struktura gramatiky již neodpovídá
 struktuře syntaktického stromu. @t{parsec} naštěstí obsahuje pomocné
