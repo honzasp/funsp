@@ -83,9 +83,49 @@ data TopStmt = TopDefine Define | TopStmt Stmt
 
 \end{code}
 
-\subsection{Příklady}
+\subsection{Příklad}
 
-\marginnote{Sem se dá jeden z dříve uvedených příkladů a jeho reprezentace v
-AST.}
+Využijeme program, který nakreslí binární strom a který jsme již jednou uvedli
+(jeho výstup je na obrázku \ref{fig:krunimir-bintree}). Pro přehlednost ještě
+jednou zopakujeme jeho kód:
 
-% TODO
+\lstinputlisting[style=krunimir]{krunimir/examples/bintree.txt}
+
+Tento program je reprezentován pomocí výše uvedených typů následovně (text
+následující za @t{--} jsou komentáře):
+
+\begin{code}% not a part of the real source
+[
+  -- nejprve definice procedury `tree'
+  TopDefine (Define {
+    defineName = "tree", -- jméno definované procedury
+    defineParams = ["n"], -- seznam parametrů
+    defineStmts = [ -- seznam příkazů v těle procedury
+      IfStmt (VariableExpr "n") [
+        -- příkaz `forward(40+20*n)'
+        ForwardStmt (BinopExpr AddOp
+          (LiteralExpr 40)
+          -- podvýraz `20*n'
+          (BinopExpr MulOp (LiteralExpr 20) (VariableExpr "n"))),
+        -- příkaz `split \{ left(5+3*n) tree(n-1) \}'
+        SplitStmt [
+          LeftStmt (BinopExpr AddOp
+            (LiteralExpr 5)
+            (BinopExpr MulOp (LiteralExpr 3) (VariableExpr "n"))),
+          CallStmt "tree" [BinopExpr SubOp (VariableExpr "n") (LiteralExpr 1)]
+        ],
+        -- příkaz `right(5+3*n)'
+        RightStmt (BinopExpr AddOp 
+          (LiteralExpr 5) 
+          (BinopExpr MulOp (LiteralExpr 3) (VariableExpr "n"))),
+        -- příkaz `tree(n-1)'
+        CallStmt "tree" [BinopExpr SubOp (VariableExpr "n") (LiteralExpr 1)]
+      ]
+    ]
+  }),
+  -- trojice příkazů následujících za definicí procedury
+  TopStmt (ForwardStmt (NegateExpr (LiteralExpr 250))),
+  TopStmt (PenStmt (LiteralExpr 1)),
+  TopStmt (CallStmt "tree" [LiteralExpr 5])
+]
+\end{code}
