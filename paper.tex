@@ -16,6 +16,9 @@
 \usepackage{float}
 \usepackage{caption}
 \usepackage{subcaption}
+\usepackage[fixlanguage]{babelbib}
+
+\selectbiblanguage{czech}
 
 \lstloadlanguages{Haskell}
 
@@ -80,5 +83,8 @@
 \input{tex/krunimir.tex}
 
 \printindex
+
+\bibliographystyle{babplain}
+\bibliography{bibliography}
 
 \end{document}

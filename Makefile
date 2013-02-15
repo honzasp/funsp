@@ -1,12 +1,15 @@
 TEXS = $(shell find . -name '*.tex' -o -name '*.lhs')
 IMGS = $(shell find img)
+BIBS = $(shell find . -name '*.bib')
 STUFF = paper.aux paper.idx paper.ilg paper.ind paper.log \
 				paper.out paper.pdf paper.toc
 
-paper.pdf: $(TEXS) $(IMGS)
+paper.pdf: $(TEXS) $(IMGS) $(BIBS)
 	$(MAKE) -C krunimir/examples pdfs
 	pdflatex paper
 	makeindex paper
+	bibtex paper
+	pdflatex paper
 	pdflatex paper
 
 .PHONY: show
@@ -21,9 +24,9 @@ clean:
 force: clean paper.pdf
 
 .PHONY: watch
-WATCHED = paper.tex tex krunimir/Krunimir
+WATCHED = paper.tex $(BIBS) tex krunimir/Krunimir
 watch:
 	make paper.pdf
-	while inotifywait --recursive --event modify --exclude 'swp' $(WATCHED) ; do\
+	while inotifywait --recursive --event modify --exclude 'swp' $(WATCHED) || true; do\
 		make paper.pdf; \
 	done;

@@ -1,9 +1,9 @@
 \section{\texorpdfstring{@t{Krunimir.PngRenderer}}{Krunimir.PngRenderer}}
 @Idx{Krunimir.PngRenderer}
 
-K renderování stop ve formátu PNG použijeme knihovnu \emph{GD}. Její výhodou je,
-že je velmi jednoduchá na použití. Bohužel neumožňuje vykreslovat čáry jiné
-tloušťky než 1~px, takže informaci o tloušťce pera nemůžeme využít.
+K renderování stop ve formátu PNG použijeme knihovnu \emph{GD} \cite{gd}. Její
+výhodou je, že je velmi jednoduchá na použití. Bohužel neumožňuje vykreslovat
+čáry jiné tloušťky než 1~px, takže informaci o tloušťce pera nemůžeme využít.
 
 \begin{code}
 module Krunimir.PngRenderer(renderPng) where

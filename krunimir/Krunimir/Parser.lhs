@@ -1,8 +1,9 @@
 \section{\texorpdfstring{@t{Krunimir.Parser}}{Krunimir.Parser}}
 @Idx{Krunimir.Parser}
 
-Pro syntaktickou analýzu (\uv{parsování}) použijeme knihovnu @t{parsec}.
-Jedná se o \textit{de-facto} standardní nástroj na tvorbu parserů v Haskellu.
+Pro syntaktickou analýzu (\uv{parsování}) použijeme knihovnu @t{parsec}
+\cite{parsec}. Jedná se o \textit{de-facto} standardní nástroj na tvorbu
+parserů v Haskellu.
 
 Narozdíl od generátorů jako GNU Bison, které vyžadují speciální soubor s
 definicí gramatiky a strojově jej překládají do cílového jazyka, se
