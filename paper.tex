@@ -1,5 +1,5 @@
 \documentclass[a4paper,twoside,11pt]{report}
-\usepackage[a4paper]{geometry}
+\usepackage{geometry}
 \usepackage{fullpage}
 \usepackage[czech]{babel}
 \usepackage[utf8]{inputenc}
@@ -20,6 +20,11 @@
 \usepackage{tabularx}
 \usepackage{changepage}
 
+\geometry{
+  marginparsep=0.3cm,marginparwidth=1.5cm,
+  inner=2.5cm,outer=3.0cm,
+  top=2cm,bottom=2cm,
+}
 \selectbiblanguage{czech}
 
 \lstloadlanguages{Haskell}
@@ -43,7 +48,7 @@
 % code chunks in literate haskell
 \lstnewenvironment{code}{\lstset{style=haskell}}{}
 % code chunks which should NOT be processed by literate haskell
-\lstnewenvironment{code*}{\lstset{style=haskell}}{}
+\lstnewenvironment{haskell}{\lstset{style=haskell}}{}
 
 \lstdefinestyle{krunimir}{
   basicstyle=\small\ttfamily,
@@ -55,11 +60,13 @@
 }
 
 \DisableLigatures[>,<]{encoding = T1,family=tt*} %
+
 \setlength{\grammarparsep}{5pt plus 1pt minus 1pt} 
 \setlength{\grammarindent}{12em}
 
 \renewcommand*{\marginfont}{\scriptsize}
 
+\newcommand{\comment}[1]{}
 \newatcommand t[1]{\texttt{#1}}
 
 \makeindex
@@ -79,7 +86,9 @@
 
 \begin{document}
 \input{tex/title.tex}
+\input{tex/abstract.tex}
 \tableofcontents
+\input{tex/intro.tex}
 \input{tex/krunimir.tex}
 \printindex
 

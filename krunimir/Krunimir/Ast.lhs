@@ -96,7 +96,7 @@ následující za @t{-}@t{-} jsou komentáře):
 
 % -- se musí rozdělit na - a -, protože dohromady se "spojí" na pomlčku
 
-\begin{code*}
+\begin{haskell}
 [
   -- nejprve definice procedury `tree'
   TopDefine (Define {
@@ -130,4 +130,4 @@ následující za @t{-}@t{-} jsou komentáře):
   TopStmt (PenStmt (LiteralExpr 1)),
   TopStmt (CallStmt "tree" [LiteralExpr 5])
 ]
-\end{code*}
+\end{haskell}

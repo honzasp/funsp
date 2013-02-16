@@ -64,9 +64,9 @@ budeme potřebovat @t{Env}, z něhož získáme hodnoty aktuálních proměnnýc
 (argumentů). Z toho nám plyne typ pro funkci @t{evalExpr}:
 
 @idx{Krunimir.Evaluator.evalExpr}
-\begin{code*}
+\begin{haskell}
 evalExpr :: Env -> Expr -> Integer
-\end{code*}
+\end{haskell}
 
 Dále bude třeba vytvořit funkci, která vyhodnotí příkaz. Parametry této funkce
 bude učitě znovu @t{Env} (potřebujeme znát, jaké procedury existují) a
@@ -84,9 +84,9 @@ získaný z \emph{následujících} příkazů a vrátí novou @t{Trace}.
 
 Tím získáváme typ:
 
-\begin{code*}
+\begin{haskell}
 evalStmt :: Env -> Stmt -> Turtle -> (Turtle,Trace -> Trace)
-\end{code*}
+\end{haskell}
 
 S funkcemi typu @t{Trace -> Trace} budeme pracovat často, proto si vytvoříme
 \emph{nový typ}.
@@ -115,9 +115,9 @@ S tímto novým typem, který reprezentuje \emph{rozdíl} nebo \emph{změnu} sto
 @t{Trace}, bude typ funkce @t{evalStmt} vypadat takto:
 
 @idx{Krunimir.Evaluator.evalStmt}
-\begin{code*}
+\begin{haskell}
 evalStmt :: Env -> Stmt -> Turtle -> (Turtle,DiffTrace)
-\end{code*}
+\end{haskell}
 
 Tuto deklaraci typu můžeme chápat takto: \uv{@t{evalStmt} je funkce vyžadující
 mapu procedur a proměnných uložených v typu @t{Env}, dále příkaz k vyhodnocení a
