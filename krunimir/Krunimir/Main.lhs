@@ -77,9 +77,6 @@ dostaneme výslednou stopu v písku (@t{fullTrace}). Pokud uživatel zadal omeze
 počtu kroků, pomocí funkce @t{prune} stopu omezíme, pokud ne, necháme ji
 celou (@t{prunedTrace}).
 
-Jména výstupních souborů (jak PNG, tak SVG) odvodíme ze jména souboru vstupního,
-jen změníme příponu.
-
 @idx{Krunimir.Evaluator.eval}
 @idx{Krunimir.Trace.prune}
 \begin{code}
@@ -87,11 +84,22 @@ jen změníme příponu.
       prunedTrace = case steps of
         Nothing -> fullTrace 
         Just count -> prune count fullTrace
-      outputPng = replaceExtension inputFile ".test.png"
+\end{code}
+
+Všimněte si, že díky línému vyhodnocování se v případě, kdy je počet kroků
+omezen, vypočítá jen část stopy, která nás zajímá. Máme tedy zajištěno, že i
+když bude mít stopa desetitisíce kroků a uživatel bude chtít zobrazit jen
+prvních několik, nebudeme počítat celou stopu, ale jen zobrazenou část. Naše
+implementace dokonce umožňuje spouštět nekonečné programy, samozřejmě pouze
+pokud uživatel specifikuje počet kroků, jež si přeje vykonat.
+
+\begin{code}
+  let outputPng = replaceExtension inputFile ".test.png"
       outputSvg = replaceExtension inputFile ".test.svg"
 \end{code}
 
-Zbývá jen vykreslit
+Jména výstupních souborů (jak PNG, tak SVG) odvodíme ze jména souboru vstupního,
+jen změníme příponu. Zbývá jen vykreslit
 
 @idx{Krunimir.PngRenderer.renderPng}
 @idx{Krunimir.SvgRenderer.renderSvg}

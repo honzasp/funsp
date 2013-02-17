@@ -1,26 +1,152 @@
 \chapter{Úvod}
 
-Naprostá většina z dnešních široce využívaných jazyků (C, C++, C\#, Java,
-Pascal, JavaScript, Ruby, Python, PHP...) je \emph{imperativní}, což znamená, že
-algoritmy jsou v nich vyjádřeny jako posloupnost příkazů, které mění stav
-programu.
+\section{Co je to Haskell}
 
-Alternativní přístup nabízí jazyky \emph{funkcionální}. Výpočty se v nich
-provádí vyhodnocováním výrazů, základní operací je aplikace (volání) funkce na
-její argumenty. Základní rozdíl oproti imperativním jazykům je v tom, že
-výsledek funkce závisí pouze na předaných argumentech. Taková funkce nemůže mít
-žádný jiný efekt než vrácení svého výsledku. Tato vlastnost se nazývá
+Haskell je \textit{de-facto} standardní líný čistě funkcionální jazyk. Jeho
+vývoj začal v září roku 1987, přičemž první verze jazyka (Haskell 1.0) byla
+vydána 1. března 1990. Postupně následovaly verze 1.1 až 1.4. V roce 1999 byla
+vytvořena \uv{stabilní} verze Haskell 98\comment{cite Haskell 98 Report}, která
+byla později revidována.\comment{cite Haskell 98 Revised Report}
+
+\marginnote{Citace, citace, citace!}
+
+Od roku 2006 probíhá proces nazývaný Haskell' (Haskell Prime), jehož cílem je
+vytvářet nové revize standardu každý rok. První a zatím poslední revizí je
+Haskell 2010.\comment{cite Haskell 2010 Report}
+
+\marginnote{úvodní odstavec k vlastnostem}
+
+\subsection{Čistě funkcionální}
+
+V \emph{imperativních} programovacích jazycích (C, C++, Java, Ruby, JavaScript,
+Befunge, PHP...) jsou algoritmy vyjádřeny jako sekvence kroků -- příkazů, které
+mění stav programu, zvláště hodnoty proměnných.  Tento přístup přímo vychází ze
+strojového kódu počítačů a v dnešní době jde o dominantní programovací styl.
+
+\emph{Funkcionální} jazyky jsou oproti tomu založeny na vyhodnocování výrazů a
+jejich fundamentálním typem je \emph{funkce}. Narozdíl od imperativních jazyků,
+kde vyhodnocování výrazů a volání procedur (metod) může mít \emph{vedlejší
+účinky}, např. změnu hodnoty proměnných nebo vypsání řetězce na obrazovku,
+jediný účinek, který má \uv{zavolání} (aplikace) funkce ve funkcionálním jazyku,
+je získání jejího výsledku. Jelikož neexistuje žádný stav, na němž by výsledek
+funkce mohl záviset, je garantováno, že aplikujeme-li funkci vícekrát na stejné
+argumenty, dostaneme vždy stejný výsledek. Tato vlastnost se nazývá
 \emph{referenční transparentnost}.
 
-Pro funkcionální programování je typické, že nespecifikujeme \emph{jak} se
-dostaneme k výsledky, ale \emph{co} je výsledek. Programy jsou kratší a často i
-přehlednější, u funkcí je snadné dokazovat jejich korektnost.
+Na funkce je tedy možno nahlížet jako na funkce v matematice, takže pro
+programátora i pro kompilátor je snadné zjišťovat a \emph{dokazovat} chování
+funkce.
 
-\marginnote{Co je Haskell? Proč Haskell?}
+\marginnote{velmi snadná paralelizace!}
 
-Další vlastností Haskellu je jeho \emph{líné vyhodnocování}. To znamená, že
-hodnota výrazu je zjišťována až když je to nezbytně nutné. Tímto se nejen
-zbavíme zbytečných výpočtů, jejichž výsledky nejsou zapotřebí, ale také můžeme
-snadno pracovat i s nekonečnými strukturami.
+\subsection{Líně vyhodnocovaný}
 
-\marginnote{Co řešíme? Proč zrovna tyto úlohy?}
+\emph{Líné vyhodnocování} znamená, že hodnoty výrazů se počítají až ve chvíli,
+kdy je to nezbytně nutné. Tím se nejen zvýší efektivita programu (výpočty se
+provedou jen když jsou zapotřebí, nemusí se tedy vyhodnotit vůbec), ale hlavně
+se programátor zbaví nutnosti zabývat se pořadím vyhodnocování výrazů. Je tedy možné
+oddělit kód produkující a kód konzumující data, čímž se zvýší modularita. 
+
+\marginnote{citovat Why FP Matters}
+
+Ve funkcionálních programech je běžné používat nekonečné struktury, např.
+nekonečné seznamy či nekonečně se větvící stromy, a nechat vyhodnotit pouze tu
+část dat, která je potřeba k získání požadovaného výsledku.
+
+\subsection{Staticky typovaný}
+
+\emph{Statické typování} znamená, že typ každého výrazu je znám již v při
+kompilaci programu, takže případné chyby kompilátor odhalí velmi brzy. Není tedy
+možné, aby program za běhu zhavaroval na typovou chybu, čímž se eliminuje celá
+škála potencionálních bugů -- žádné @t{Segmentation fault}, žádné
+@t{NullPointerException}, žádné @t{NoMethodError}. Většinou platí, že když se
+kód úspěšně zkompiluje, máme velkou šanci, že bude skutečně fungovat tak, jak si
+představujeme.
+
+Narozdíl od jazyků jako Java či C++, jež jsou také staticky typované, je silný
+typový systém Haskellu schopen naprostou většinu typů odvodit sám, takže typové
+anotace se obvykle používají jako druh dokumentace určené hlavně pro člověka.
+
+\subsection{Typové třídy}
+
+S typovým systémem úzce souvisí \emph{typové třídy}.\footnote{Neplést s třídami
+z objektově orientovaných jazyků} Typové třídy byly do Haskellu zavedeny, aby se
+vyřešil problém s \uv{přetěžováním} funkcí jako je porovnávání (@t{==}), které
+bychom potřebovali použít s větším množstvím typů (operace ekvivalence má smysl
+např. pro čísla, řetězce, seznamy, množiny...).
+
+Ukažme si příklad typové třídy @t{Eq}, která slouží k implementaci porovnání
+dvou hodnot:
+
+\begin{haskell}
+class Eq a where
+  (==) :: a -> a -> Bool
+\end{haskell}
+
+Tímto deklarujeme, že typ @t{a} patří do třídy @t{Eq} právě tehdy, když
+implementuje metodu @t{==}.
+
+Mějme dva datové typy:
+
+\begin{haskell}
+data Color = Red | Green | Blue
+data Bit = On | Off
+\end{haskell}
+
+Pro oba tyto typy určitě dává operace porovnání smysl, proto můžeme nadefinovat
+\emph{instanci} třídy @t{Eq}:
+
+\begin{haskell}
+instance Eq Color where
+  Red   == Red   = True
+  Green == Green = True
+  Blue  == Blue  = True
+  _ == _ = False
+
+instance Eq Bit where
+  On  == On  = True
+  Off == Off = True
+  _   == _   = False
+\end{haskell}
+
+Touto deklarací specifikujeme, že typy @t{Color} a @t{Bit} jsou instancemi třídy @t{Eq}, a
+poskytneme implementaci metody @t{==}. Nyní můžeme používat funkci @t{==} s
+barvami i bity, např. @t{Red == Red} vrátí @t{True} a @t{On == Off} vrátí
+@t{False}.
+
+Všimněte si, že nemůžeme porovnávat barvy a bity -- napíšeme-li @t{Red == On},
+kompilátor vyhodí typovou chybu, jelikož funkce @t{==} akceptuje pouze hodnoty
+stejného typu.
+
+Kdybychom chtěli funkci, která otestuje, jestli se daný prvek nachází v
+seznamu, mohli bychom si ji nadefinovat takto:
+
+\begin{haskell}
+elem :: Eq a => a -> [a] -> Bool
+elem _ [] = False
+elem x (y:ys) = if x == y then True else elem x ys
+\end{haskell}
+
+Typ této funkce, @t{Eq a => a -> [a] -> Bool}, odráží skutečnost, že tato funkce
+je definovaná pouze pro takové typy @t{a}, které náleží do třídy @t{Eq}. Můžeme
+ji tedy použít jak na seznam barev (@t{[Color]}), tak na seznam bitů
+(@t{[Bit]}).
+
+Instancemi tříd samozřejmě nemusí být jen takového jednoduché typy.  Můžeme si
+nadefinovat typ reprezentující binární strom:
+
+\begin{haskell}
+data Tree a = Node (Tree a) (Tree a) | Leaf a
+\end{haskell}
+
+Tento typ bychom obratem mohli učinit instancí třídy @t{Eq}:
+
+\begin{haskell}
+instance Eq a => Eq (Tree a) where
+  Leaf x == Leaf y         = x == y
+  Node l1 r1 == Node l2 r2 = l1 == l2 && r1 == r2
+  _ == _ = False
+\end{haskell}
+
+Tato instance deklaruje, že pro všechny typy @t{a} je typ @t{Tree a} instancí
+třídy @t{Eq}, platí-li, že typ @t{a} je rovněž instancí @t{Eq}.
