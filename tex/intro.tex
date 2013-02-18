@@ -16,7 +16,7 @@ Haskell 2010.\comment{cite Haskell 2010 Report}
 
 \marginnote{úvodní odstavec k vlastnostem}
 
-\subsection{Čistě funkcionální}
+\subsection{Čistě funkcionální jazyk}
 
 V \emph{imperativních} programovacích jazycích (C, C++, Java, Ruby, JavaScript,
 Befunge, PHP...) jsou algoritmy vyjádřeny jako sekvence kroků -- příkazů, které
@@ -27,10 +27,10 @@ strojového kódu počítačů a v dnešní době jde o dominantní programovac�
 jejich fundamentálním typem je \emph{funkce}. Narozdíl od imperativních jazyků,
 kde vyhodnocování výrazů a volání procedur (metod) může mít \emph{vedlejší
 účinky}, např. změnu hodnoty proměnných nebo vypsání řetězce na obrazovku,
-jediný účinek, který má \uv{zavolání} (aplikace) funkce ve funkcionálním jazyku,
-je získání jejího výsledku. Jelikož neexistuje žádný stav, na němž by výsledek
-funkce mohl záviset, je garantováno, že aplikujeme-li funkci vícekrát na stejné
-argumenty, dostaneme vždy stejný výsledek. Tato vlastnost se nazývá
+jediný účinek, který má \uv{zavolání} (aplikace) funkce v čistě funkcionálním
+jazyku, je získání jejího výsledku. Jelikož neexistuje žádný stav, na němž by
+výsledek funkce mohl záviset, je garantováno, že aplikujeme-li funkci vícekrát
+na stejné argumenty, dostaneme vždy stejný výsledek. Tato vlastnost se nazývá
 \emph{referenční transparentnost}.
 
 Na funkce je tedy možno nahlížet jako na funkce v matematice, takže pro
@@ -39,7 +39,7 @@ funkce.
 
 \marginnote{velmi snadná paralelizace!}
 
-\subsection{Líně vyhodnocovaný}
+\subsection{Líné vyhodnocování}
 
 \emph{Líné vyhodnocování} znamená, že hodnoty výrazů se počítají až ve chvíli,
 kdy je to nezbytně nutné. Tím se nejen zvýší efektivita programu (výpočty se
@@ -53,7 +53,7 @@ Ve funkcionálních programech je běžné používat nekonečné struktury, nap
 nekonečné seznamy či nekonečně se větvící stromy, a nechat vyhodnotit pouze tu
 část dat, která je potřeba k získání požadovaného výsledku.
 
-\subsection{Staticky typovaný}
+\subsection{Statické typování}
 
 \emph{Statické typování} znamená, že typ každého výrazu je znám již v při
 kompilaci programu, takže případné chyby kompilátor odhalí velmi brzy. Není tedy
@@ -65,7 +65,8 @@ představujeme.
 
 Narozdíl od jazyků jako Java či C++, jež jsou také staticky typované, je silný
 typový systém Haskellu schopen naprostou většinu typů odvodit sám, takže typové
-anotace se obvykle používají jako druh dokumentace určené hlavně pro člověka.
+anotace se obvykle používají jen jako druh dokumentace a způsob kontroly určené
+hlavně pro člověka (programátora).
 
 \subsection{Typové třídy}
 
@@ -84,7 +85,7 @@ class Eq a where
 \end{haskell}
 
 Tímto deklarujeme, že typ @t{a} patří do třídy @t{Eq} právě tehdy, když
-implementuje metodu @t{==}.
+implementuje \emph{metodu} @t{==}.
 
 Mějme dva datové typy:
 
@@ -101,7 +102,7 @@ instance Eq Color where
   Red   == Red   = True
   Green == Green = True
   Blue  == Blue  = True
-  _ == _ = False
+  _     == _     = False
 
 instance Eq Bit where
   On  == On  = True
@@ -115,11 +116,11 @@ barvami i bity, např. @t{Red == Red} vrátí @t{True} a @t{On == Off} vrátí
 @t{False}.
 
 Všimněte si, že nemůžeme porovnávat barvy a bity -- napíšeme-li @t{Red == On},
-kompilátor vyhodí typovou chybu, jelikož funkce @t{==} akceptuje pouze hodnoty
+kompilátor ohlásí typovou chybu, jelikož funkce @t{==} akceptuje pouze hodnoty
 stejného typu.
 
 Kdybychom chtěli funkci, která otestuje, jestli se daný prvek nachází v
-seznamu, mohli bychom si ji nadefinovat takto:
+seznamu, mohli bychom ji nadefinovat takto:
 
 \begin{haskell}
 elem :: Eq a => a -> [a] -> Bool
@@ -132,7 +133,7 @@ je definovaná pouze pro takové typy @t{a}, které náleží do třídy @t{Eq}.
 ji tedy použít jak na seznam barev (@t{[Color]}), tak na seznam bitů
 (@t{[Bit]}).
 
-Instancemi tříd samozřejmě nemusí být jen takového jednoduché typy.  Můžeme si
+Instancemi tříd samozřejmě nemusí být jen takovéto jednoduché typy.  Můžeme si
 nadefinovat typ reprezentující binární strom:
 
 \begin{haskell}
@@ -150,3 +151,132 @@ instance Eq a => Eq (Tree a) where
 
 Tato instance deklaruje, že pro všechny typy @t{a} je typ @t{Tree a} instancí
 třídy @t{Eq}, platí-li, že typ @t{a} je rovněž instancí @t{Eq}.
+
+\subsection{Monadický vstup/výstup}
+
+Jak už bylo zmíněno výše, vyhodnocování výrazů v čistě funkcionálním jazyce
+nemůže mít žádné vedlejší efekt a musí být referenčně transparentní. Co když ale
+potřebujeme vykonat nějakou vstupně/výstupní operaci, např. přečíst znak, který
+uživatel napsal na klávesnici, nebo zapsat soubor na disk? Takové \uv{funkce} by
+ale určitě vedlejší efekt měly a referenčně transparentní jistě také nejsou.
+
+Většina jiných funkcionálních jazyků tento problém řeší tak, že obětuje
+\emph{čistotu} a takové \uv{nefunkcionální funkce} povoluje, přičemž starosti s
+porušením referenční transparentnosti nechává na programátorovi. Tento přístup
+ovšem není možný v líně vyhodnocovaném jazyku, jelikož nemáme žádnou kontrolu
+nad tím, v jakém pořadí a jestli vůbec se funkce \uv{zavolají}.
+
+\subsubsection{\texorpdfstring{Typ @t{IO}}{Typ IO}}
+
+Haskell proto používá jinou techniku, která umožňuje zachovat funkcionální
+čistotu i líné vyhodnocování. Zavádí typ @t{IO a}, který reprezentuje
+\emph{vstupně/výstupní operaci}, jejíž výsledek je typu @t{a}. Dostaneme tedy
+takovéto typy:
+
+\begin{haskell}
+getChar :: IO Char
+getLine :: IO String
+putLine :: String -> IO ()
+
+readFile :: FilePath -> IO String
+writeFile :: FilePath -> String -> IO ()
+\end{haskell}
+
+@t{getChar} je vstupně/výstupní operace, která přečte jeden znak zadaný
+uživatelem a jejím výsledkem je tento znak, tedy typ @t{Char}. Obdobně
+@t{getLine} přečte celý řádek a její výsledek je typu @t{String}. Chceme-li
+naopak řádek vypsat, můžeme použít @t{putLine}.\footnote{Ve standardní knihovně
+se tato funkce jmenuje @t{putStrLn}} @t{putLine} je funkce, které
+předáme řetězec, jež si přejeme vypsat, a dostaneme vstupně/výstupní operaci,
+která tento řetězec vypíše. Jelikož tato operace nemá žádný smyslupný výsledek,
+vrací tzv. \emph{nulový typ} @t{()}, který má jedinou hodnotu (rovněž se zapisuje
+@t{()}) a používá se jako jistá \uv{výplň}.
+
+Abychom přečetli soubor, musíme znát jeho umístění, proto je @t{readFile}
+funkce, které předáme cestu k souboru\footnote{@t{FilePath} je synonym k typu
+  @t{String}, který se ve standardní knihovně používá pro označení cest k
+souboru.} a dostaneme vstupně/výstupní operaci, jejíž výsledek bude obsah
+souboru jako řetězec (@t{String}). Chceme-li zapsat data do souboru, použijeme
+funkci @t{writeFile}, které předáme dva argumenty -- cestu k souboru a řetězec
+znaků, které si přejeme zapsat -- a dostaneme IO operaci. Výsledek této operace
+je opět @t{()}.
+
+Existuje pouze jedna možnost, jak vykonat operaci reprezentovanou typem @t{IO}
+-- definovat ji jako proměnnou\footnote{\uv{Proměnná} samozřejmě neznamená, že
+  se její hodnota nějakým způsobem mění; tento pojem se používá podobně jako v
+matematice. V imperativním jazyku bychom řekli \uv{konstanta}.} @t{main} v
+modulu @t{Main}. Tato hodnota má typ @t{IO $\alpha$}. Spustit program v Haskellu
+tedy vlastně znamená vyhodnotit operaci, která je přiřazena do @t{main}, a
+výsledek typu @t{$\alpha$} zahodit.
+
+Pokud bychom tedy po programu chtěli, ať spočte jednoduchý příklad a výsledek
+vypíše, mohli bychom nadefinovat @t{main} takto (funkce @t{++} slouží ke spojení
+dvou řetězců a funkce @t{show} převede číslo na řetězec):
+
+\begin{haskell}
+main = putStrLn ("Jedna plus jedna je " ++ show (1+1))
+\end{haskell}
+
+\subsubsection{\texorpdfstring
+  {Spojování operací pomocí @t{>>=} a @t{>>}}
+  {Spojování operací pomocí >>= a >>}}
+
+Co kdybychom ale chtěli provést více operací, například se zeptat uživatele na
+jméno a pak ho pozdravit? Potřebujeme nějakým způsobem \uv{slepit} dvě IO
+operace, a to takovým způsobem, aby druhá mohla využít výsledek první. K tomu
+slouží funkce @t{>>=}, někdy též nazývaná \uv{bind}. Její typ je takovýto:
+
+\begin{haskell}
+(>>=) :: IO a -> (a -> IO b) -> IO b
+\end{haskell}
+
+Jako první argument ji předáme první vstupně/výstupní operaci, kterou si přejeme
+vykonat a její výsledek dát jako vstupní hodnotu funkci předané jako druhý
+argument.
+
+S její pomocí můžeme uživatele pozdravit takto: \footnote{Syntaxe
+@t{\textbackslash x -> E} v Haskellu znamená anonymní (lambda) funkci s
+parametrem @t{x} a tělem @t{E}.}
+
+\begin{haskell}
+main = getStrLn >>= (\name -> putStrLn ("Ahoj " ++ name))
+\end{haskell}
+  
+Jak se ale uživatel doví, že po něm chceme, aby napsal svoje jméno? Nejprve mu
+musíme sdělit, že po něm požadujeme zadat jméno, a až poté jej přečíst a
+pozdravit. Opět můžeme využít @t{putStrLn} a @t{>>=}:
+
+\begin{haskell}
+main = 
+  putStrLn "Kdo tam?" >>= (\_ ->
+    getStrLn >>= (\name ->
+      putStrLn ("Ahoj " ++ name)))
+\end{haskell}
+
+Výsledek z prvního @t{putStrLn} nás nazajímá (koneckonců to je pouze nulový typ
+@t{()}), takže jsme jej přiřadili do speciální \uv{proměnné} @t{_}, která
+funguje jako \uv{černá díra} -- můžeme do ní přiřazovat nepotřebné údaje. Tento
+způsob zacházení s výsledky vstupně/výstupních operací je poměrně častý, proto
+je v Haskellu definována funkce @t{>>} s typem @t{IO a -> IO b -> IO b}, která
+je podobná @t{>>=}, s tím rozdílem, že první operaci sice provede, ale její
+výsledek zahodí a následně provede druhou operaci (nepředáváme jí tedy funkci),
+jejíž výsledek vrátí.
+
+\begin{haskell}
+main = 
+  putStrLn "Kdo tam?" >>
+    getStrLn >>= (\name ->
+      putStrLn ("Ahoj " ++ name))
+\end{haskell}
+
+Tento kód ale není příliš přehledný a pokud bychom jej chtěli ještě dále rozšířit, mohli
+bychom se v něm brzy ztratit. Protože používání @t{>>=} a @t{>>} je v Haskellu
+velmi časté, obsahuje jazyk tzv. @t{do}-syntaxi, která nám umožňuje zapisovat
+série operací o něco úhledněji:
+
+\begin{haskell}
+main = do
+  putStrLn "Kdo tam?"
+  name <- getStrLn
+  putStrLn ("Ahoj " ++ name)
+\end{haskell}
