@@ -156,10 +156,11 @@ třídy @t{Eq}, platí-li, že typ @t{a} je rovněž instancí @t{Eq}.
 \subsection{Monadický vstup/výstup}
 
 Jak už bylo zmíněno výše, vyhodnocování výrazů v čistě funkcionálním jazyce
-nemůže mít žádné vedlejší efekt a musí být referenčně transparentní. Co když ale
-potřebujeme vykonat nějakou vstupně/výstupní operaci, např. přečíst znak, který
-uživatel napsal na klávesnici, nebo zapsat soubor na disk? Takové \uv{funkce} by
-ale určitě vedlejší efekt měly a referenčně transparentní jistě také nejsou.
+nemůže mít žádné vedlejší efekty a musí být referenčně transparentní. Co když
+ale potřebujeme vykonat nějakou vstupně/výstupní operaci, např. přečíst znak,
+který uživatel napsal na klávesnici, nebo zapsat soubor na disk? Takové
+\uv{funkce} by určitě vedlejší efekt měly a referenčně transparentní jistě také
+nejsou.
 
 Většina jiných funkcionálních jazyků tento problém řeší tak, že obětuje
 \emph{čistotu} a takové \uv{nefunkcionální funkce} povoluje, přičemž starosti s
@@ -170,14 +171,14 @@ nad tím, v jakém pořadí a jestli vůbec se funkce \uv{zavolají}.
 \subsubsection{\texorpdfstring{Typ @t{IO}}{Typ IO}}
 
 Haskell proto používá jinou techniku, která umožňuje zachovat funkcionální
-čistotu i líné vyhodnocování. Zavádí typ @t{IO a}, který reprezentuje
-\emph{vstupně/výstupní operaci}, jejíž výsledek je typu @t{a}. Dostaneme tedy
-takovéto typy:
+čistotu i líné vyhodnocování. Standardní knihovna poskytuje typ @t{IO a}, který
+reprezentuje \emph{vstupně/výstupní operaci}, jejíž výsledek je typu @t{a}.
+Například:
 
 \begin{haskell}
 getChar :: IO Char
 getLine :: IO String
-putLine :: String -> IO ()
+putStrLn :: String -> IO ()
 
 readFile :: FilePath -> IO String
 writeFile :: FilePath -> String -> IO ()
@@ -186,8 +187,7 @@ writeFile :: FilePath -> String -> IO ()
 @t{getChar} je vstupně/výstupní operace, která přečte jeden znak zadaný
 uživatelem a jejím výsledkem je tento znak, tedy typ @t{Char}. Obdobně
 @t{getLine} přečte celý řádek a její výsledek je typu @t{String}. Chceme-li
-naopak řádek vypsat, můžeme použít @t{putLine}.\footnote{Ve standardní knihovně
-se tato funkce jmenuje @t{putStrLn}} @t{putLine} je funkce, které
+naopak řádek vypsat, můžeme použít @t{putStrLn}, což je funkce, které
 předáme řetězec, jež si přejeme vypsat, a dostaneme vstupně/výstupní operaci,
 která tento řetězec vypíše. Jelikož tato operace nemá žádný smyslupný výsledek,
 vrací tzv. \emph{nulový typ} @t{()}, který má jedinou hodnotu (rovněž se zapisuje
@@ -203,12 +203,12 @@ znaků, které si přejeme zapsat -- a dostaneme IO operaci. Výsledek této ope
 je opět @t{()}.
 
 Existuje pouze jedna možnost, jak vykonat operaci reprezentovanou typem @t{IO}
--- definovat ji jako proměnnou\footnote{\uv{Proměnná} samozřejmě neznamená, že
-  se její hodnota nějakým způsobem mění; tento pojem se používá podobně jako v
-matematice. V imperativním jazyku bychom řekli \uv{konstanta}.} @t{main} v
-modulu @t{Main}. Tato hodnota má typ @t{IO $\alpha$}. Spustit program v Haskellu
-tedy vlastně znamená vyhodnotit operaci, která je přiřazena do @t{main}, a
-výsledek typu @t{$\alpha$} zahodit.
+-- definovat ji jako proměnnou @t{main} v modulu
+@t{Main}.\footnote{\uv{Proměnná} samozřejmě neznamená, že se její hodnota
+  nějakým způsobem mění; tento pojem se používá podobně jako v matematice. V
+imperativním jazyku bychom řekli \uv{konstanta}.} Tato hodnota má typ @t{IO
+$\alpha$}. Spustit program v Haskellu tedy vlastně znamená vyhodnotit operaci,
+která je přiřazena do @t{main}, a výsledek typu @t{$\alpha$} zahodit.
 
 Pokud bychom tedy po programu chtěli, ať spočte jednoduchý příklad a výsledek
 vypíše, mohli bychom nadefinovat @t{main} takto (funkce @t{++} slouží ke spojení
@@ -233,11 +233,12 @@ slouží funkce @t{>>=}, někdy též nazývaná \uv{bind}. Její typ je takový
 
 Jako první argument ji předáme první vstupně/výstupní operaci, kterou si přejeme
 vykonat a její výsledek dát jako vstupní hodnotu funkci předané jako druhý
-argument.
+argument. Výsledek této funkce \uv{zabalený} v typu @t{IO} je výsledkem celé
+@t{>>=}.
 
 S její pomocí můžeme uživatele pozdravit takto: \footnote{Syntaxe
-@t{\textbackslash x -> E} v Haskellu znamená anonymní (lambda) funkci s
-parametrem @t{x} a tělem @t{E}.}
+@t{\textbackslash x -> E} znamená anonymní (lambda) funkci s parametrem @t{x} a
+tělem @t{E}.}
 
 \begin{haskell}
 main = getStrLn >>= (\name -> putStrLn ("Ahoj " ++ name))
@@ -258,10 +259,10 @@ Výsledek z prvního @t{putStrLn} nás nazajímá (koneckonců to je pouze nulov
 @t{()}), takže jsme jej přiřadili do speciální \uv{proměnné} @t{_}, která
 funguje jako \uv{černá díra} -- můžeme do ní přiřazovat nepotřebné údaje. Tento
 způsob zacházení s výsledky vstupně/výstupních operací je poměrně častý, proto
-je v Haskellu definována funkce @t{>>} s typem @t{IO a -> IO b -> IO b}, která
-je podobná @t{>>=}, s tím rozdílem, že první operaci sice provede, ale její
-výsledek zahodí a následně provede druhou operaci (nepředáváme jí tedy funkci),
-jejíž výsledek vrátí.
+je definována funkce @t{>>} s typem @t{IO a -> IO b -> IO b}, která je podobná
+@t{>>=}, s tím rozdílem, že první operaci sice provede, ale její výsledek zahodí
+a následně provede druhou operaci (nepředáváme jí tedy funkci), jejíž výsledek
+vrátí.
 
 \begin{haskell}
 main = 
@@ -270,10 +271,10 @@ main =
       putStrLn ("Ahoj " ++ name))
 \end{haskell}
 
-Tento kód ale není příliš přehledný a pokud bychom jej chtěli ještě dále rozšířit, mohli
-bychom se v něm brzy ztratit. Protože používání @t{>>=} a @t{>>} je v Haskellu
-velmi časté, obsahuje jazyk tzv. @t{do}-syntaxi, která nám umožňuje zapisovat
-série operací o něco úhledněji:
+Tento kód ale není příliš přehledný a pokud bychom jej chtěli ještě dále
+rozšířit, mohli bychom se v něm brzy ztratit. Protože zřetězené používání
+@t{>>=} a @t{>>} je v Haskellu velmi časté, obsahuje jazyk tzv. @t{do}-syntaxi,
+která nám umožňuje zapisovat série operací o něco úhledněji:
 
 \begin{haskell}
 main = do
