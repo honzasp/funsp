@@ -386,21 +386,23 @@ Bezkontextovou gramatiku našich výrazů můžeme zapsat v BNF formě jako
     \label{fix:krunimir-parse-tree}
   \end{subfigure}
 
-  \begin{subfigure}{0.8\textwidth}
+  \begin{subfigure}{0.95\textwidth}
     \centering
     \begin{tikzpicture}[
       text height=1.5ex,
       text depth=0.0ex,
-      level distance=10mm,
-      level 1/.style={sibling distance=28mm},
-      level 2/.style={sibling distance=17mm},
-      level 3/.style={sibling distance=12mm},
-      level 4/.style={sibling distance=5mm},
+      level distance=14mm,
+      level 1/.style={sibling distance=32mm},
+      level 2/.style={sibling distance=21mm},
+      level 3/.style={sibling distance=13mm},
+      level 4/.style={sibling distance=8mm},
       edge from parent/.style={draw,-stealth,shorten <=1mm},
       node/.style={minimum size=5mm},
-      term/.style={node,rectangle,font=\bfseries\ttfamily,fill=black!10,text=black!80},
-      expr/.style={node,rectangle,font=\ttfamily,fill=black!5},
+      term/.style={node,font=\bfseries\ttfamily,fill=black!10,text=black!80},
+      expr/.style={node,font=\ttfamily,fill=black!5},
       shadow/.style={semithick,-to,draw=black!20,shorten >=0.4mm,shorten <=0.3mm},
+      rule/.style={font=\footnotesize\itshape,fill=white,fill opacity=0.6,text
+        opacity=1.0},
       ]
       \node[expr] (r) {2*x/3+(8-y)-z*7} 
         child { node[expr] {2*x/3+(8-y)}
@@ -432,18 +434,37 @@ Bezkontextovou gramatiku našich výrazů můžeme zapsat v BNF formě jako
         }
       ;
 
-      \draw[shadow] (r-1-2) to (r-2) ;
-      \draw[shadow] (r-3-2) to (r-2) ;
-      \draw[shadow] (r-3-1-1) to (r-3-2) ;
-      \draw[shadow] (r-3-3-1) to (r-3-2) ;
-      \draw[shadow] (r-1-3-2-2) to [bend right=20] (r-1-2) ;
-      \draw[shadow] (r-1-3-2-1-1) to (r-1-3-2-2) ;
-      \draw[shadow] (r-1-3-2-3-1) to (r-1-3-2-2) ;
-      \draw[shadow] (r-1-1-2) to (r-1-2) ;
-      \draw[shadow] (r-1-1-1-2) to (r-1-1-2) ;
-      \draw[shadow] (r-1-1-3-1) to (r-1-1-2) ;
-      \draw[shadow] (r-1-1-1-1-1) to (r-1-1-1-2) ;
-      \draw[shadow] (r-1-1-1-3-1) to (r-1-1-1-2) ;
+      \begin{scope}[every path/.style={shadow}]
+        \draw (r-1-2) to (r-2) ;
+        \draw (r-3-2) to (r-2) ;
+        \draw (r-3-1-1) to (r-3-2) ;
+        \draw (r-3-3-1) to (r-3-2) ;
+        \draw (r-1-3-2-2) to [bend right=20] (r-1-2) ;
+        \draw (r-1-3-2-1-1) to (r-1-3-2-2) ;
+        \draw (r-1-3-2-3-1) to (r-1-3-2-2) ;
+        \draw (r-1-1-2) to (r-1-2) ;
+        \draw (r-1-1-1-2) to (r-1-1-2) ;
+        \draw (r-1-1-3-1) to (r-1-1-2) ;
+        \draw (r-1-1-1-1-1) to (r-1-1-1-2) ;
+        \draw (r-1-1-1-3-1) to (r-1-1-1-2) ;
+      \end{scope}
+
+      \begin{scope}[every node/.style={rule},node distance=0mm]
+        \node[below=of r] {add-expr} ;
+        \node[below=of r-3] {mul-expr} ;
+        \node[below=of r-3-1] {a-expr} ;
+        \node[below=of r-3-3] {a-expr} ;
+        \node[below=of r-1] {add-expr} ;
+        \node[below=of r-1-1] {mul-expr} ;
+        \node[below=of r-1-1-1] {mul-expr} ;
+        \node[below=of r-1-1-1-1] {a-expr} ;
+        \node[below=of r-1-1-1-3] {a-expr} ;
+        \node[below=of r-1-1-3] {a-expr} ;
+        \node[below=of r-1-3] {a-expr} ;
+        \node[below=of r-1-3-2] {add-expr} ;
+        \node[below=of r-1-3-2-1] {a-expr} ;
+        \node[below=of r-1-3-2-3] {a-expr} ;
+      \end{scope}
     \end{tikzpicture}
 
     ~ \caption{Ilustrace způsobu, jakým tento výraz zpracuje bezkontextová
@@ -458,21 +479,23 @@ Bezkontextovou gramatiku našich výrazů můžeme zapsat v BNF formě jako
     \begin{tikzpicture}[
       text height=1.5ex,
       text depth=0.0ex,
-      node distance=-0.2mm,
-      node/.style={font=\ttfamily},
-      op/.style={node,draw=black!40,fill=black!12},
-      expr/.style={node,draw=black!40},
-      term/.style={node,draw=black!40,fill=black!5},
+      node distance=0.8mm,
+      node/.style={minimum size=5mm,font=\ttfamily},
+      op/.style={node,fill=black!12},
+      term/.style={node,font=\bfseries\ttfamily,fill=black!10,text=black!80},
+      expr/.style={node,fill=black!5},
       edge from parent/.style={draw,-stealth},
-      level 1/.style={sibling distance=30mm},
-      level 2/.style={sibling distance=14mm},
-      level distance=10mm,
+      level 1/.style={sibling distance=37mm},
+      level 2/.style={sibling distance=17mm},
+      level distance=12mm,
       shadow/.style={thick,-to,draw=black!30,shorten >=0.4mm,shorten <=0.3mm},
       edge from parent path={
         (\tikzparentnode) ..
         controls ($(\tikzchildnode)+(0,5mm)$) ..
         (\tikzchildnode)
-      }
+      },
+      rule/.style={font=\footnotesize\itshape,fill=white,fill opacity=0.6,text
+        opacity=1.0},
     ]
 
     \node[expr] (r) {2*x/3+(8-y)-z*7}
@@ -500,22 +523,40 @@ Bezkontextovou gramatiku našich výrazů můžeme zapsat v BNF formě jako
     \node (o-2-1-2) [op,left=of r-2-1-2] {-} ;
     \node (o-3-2)   [op,left=of r-3-2] {*} ;
 
-    \draw[shadow] (r-1-1-1) to (o-1-2) ;
-    \draw[shadow] (r-1-2-1) to (o-1-2) ;
-    \draw[shadow] (r-1-3-1) to (o-1-3) ;
-    \draw[shadow] (o-1-2) to [bend left=50] (o-1-3) ;
-    \draw[shadow] (o-1-3) to [bend left=20] (o-2) ;
-    \draw[shadow] (r-2-1-1-1) to (o-2-1-2) ;
-    \draw[shadow] (r-2-1-2-1) to (o-2-1-2) ;
-    \draw[shadow] (o-2-1-2) to [bend left=30] (o-2) ;
-    \draw[shadow] (r-3-1-1) to (o-3-2) ;
-    \draw[shadow] (r-3-2-1) to (o-3-2) ;
-    \draw[shadow] (o-3-2) to [bend left=10] (o-3) ;
-    \draw[shadow] (o-2) .. controls +(0,7mm) and ($(o-3)+(0,7mm)$) .. (o-3) ;
+    \begin{scope}[every path/.style={shadow}]
+      \draw (r-1-1-1) to (o-1-2) ;
+      \draw (r-1-2-1) to (o-1-2) ;
+      \draw (r-1-3-1) to (o-1-3) ;
+      \draw (o-1-2) to [bend left=50] (o-1-3) ;
+      \draw (o-1-3) to [bend left=20] (o-2) ;
+      \draw (r-2-1-1-1) to (o-2-1-2) ;
+      \draw (r-2-1-2-1) to (o-2-1-2) ;
+      \draw (o-2-1-2) to [bend left=30] (o-2) ;
+      \draw (r-3-1-1) to (o-3-2) ;
+      \draw (r-3-2-1) to (o-3-2) ;
+      \draw (o-3-2) to [bend left=10] (o-3) ;
+      \draw (o-2) .. controls +(0,7mm) and ($(o-3)+(0,7mm)$) .. (o-3) ;
+    \end{scope}
+
+    \begin{scope}[every node/.style={rule},node distance=0mm]
+      \node[right=of r] {add-expr} ;
+      \node[right=of r-1] {mul-expr} ;
+      \node[below=of r-1-1] {a-expr} ;
+      \node[below=of r-1-2] {a-expr} ;
+      \node[below=of r-1-3] {a-expr} ;
+      \node[right=of r-2] {a-expr} ;
+      \node[right=of r-2-1] {add-expr} ;
+      \node[below=of r-2-1-1] {a-expr} ;
+      \node[below=of r-2-1-2] {a-expr} ;
+      \node[right=of r-3] {mul-expr} ;
+      \node[below=of r-3-1] {a-expr} ;
+      \node[below=of r-3-2] {a-expr} ;
+    \end{scope}
+
     \end{tikzpicture}
 
     ~ \caption{Tentýž výraz zparsovaný gramatikou PEG se znázorněným výsledným
-    syntaktickým stromem. Postup parsování již jeho struktuře nedpovídá.}
+    syntaktickým stromem. Postup parsování již jeho struktuře přímo nedpovídá.}
 
     \label{fig:krunimir-parse-peg}
     
