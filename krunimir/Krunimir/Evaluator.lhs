@@ -165,9 +165,9 @@ programu nenachází žádné proměnné, proto je mapa proměnných prázdná.
 vypnutým černým perem a je otočená směrem nahoru.
 
 V samotném těle funkce @t{eval} nejprve vyhodnotíme pomocí funkce @t{evalStmts}
-seznam příkazů, čímž získáme @t{diff}, funkci která reprezentuje změnu, jenž
-program vykoná na celkové stopě želvy. Tuto změnu aplikujeme na prázdnou stopu,
-čímž získáme kýženou hodnotu @t{Trace}.
+seznam příkazů, čímž získáme @t{diff}, hodnotu @t{DiffTrace}, která reprezentuje
+změnu, jenž program vykoná na celkové stopě želvy. Tuto změnu aplikujeme na
+prázdnou stopu, čímž získáme kýženou hodnotu @t{Trace}.
 
 \subsection{Vyhodnocování příkazů}
 

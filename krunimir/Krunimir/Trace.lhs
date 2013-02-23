@@ -63,6 +63,7 @@ type Color = (Int,Int,Int)
   seg/.style={font=\ttfamily\footnotesize,node distance=-3mm and -13mm,
     text width=35mm},
   edge from parent/.style={draw,-to},
+  level distance=15mm,
 ]
 
 \node[segtr] (n1) at (-6.5,0) {SegmentTrace}
