@@ -50,9 +50,9 @@
 }
 
 % code chunks in literate haskell
-\lstnewenvironment{code}{\lstset{style=haskell}}{}
+\lstnewenvironment{code}[1][]{\lstset{style=haskell,#1}}{}
 % code chunks which should NOT be processed by literate haskell
-\lstnewenvironment{haskell}{\lstset{style=haskell}}{}
+\lstnewenvironment{haskell}[1][]{\lstset{style=haskell,#1}}{}
 
 \lstdefinestyle{krunimir}{
   basicstyle=\small\ttfamily,
