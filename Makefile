@@ -10,13 +10,16 @@ RERUNBIB = "No file.*\.bbl|Citation.*undefined"
 PDFLATEX = pdflatex
 PDFVIEWER = evince
 
-paper.pdf: $(TEXS) $(IMGS) $(BIBS)
-	$(MAKE) -C krunimir/examples pdfs
+paper.pdf: $(TEXS) $(IMGS) $(BIBS) examples
 	$(PDFLATEX) paper
 	makeindex paper
 	egrep -q $(RERUNBIB) paper.log && bibtex paper ; true
 	egrep -q $(RERUN) paper.log && $(PDFLATEX) paper ; true
 	egrep -q $(RERUN) paper.log && $(PDFLATEX) paper ; true
+
+.PHONY: examples
+examples:
+	$(MAKE) -C krunimir/examples pdfs
 
 .PHONY: view clean force watch
 view:
@@ -27,7 +30,7 @@ clean:
 
 force: clean paper.pdf
 
-WATCHED = paper.tex $(BIBS) tex krunimir/Krunimir
+WATCHED = paper.tex $(BIBS) tex krunimir/Krunimir krunimir/examples
 watch:
 	$(MAKE) -C . paper.pdf
 	while inotifywait --recursive --event modify --exclude 'swp' $(WATCHED) || true; do\

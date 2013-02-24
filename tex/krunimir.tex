@@ -87,7 +87,9 @@ priorita a asociativita operátorů je jako v matematice.
 
 \subsection{Příklady}
 
-Výstupy těchto příkladů jsou na obrázku \ref{fig:krunimir-examples}.
+Uvedeme si několik příkladů, které ilustrují využití veškerých příkazů
+Krunimírova jazyka. Výstupy těchto příkladů jsou na obrázku
+\ref{fig:krunimir-examples}.
 
 \subsubsection{Čtverec (\ref{fig:krunimir-square1})}
 
@@ -196,3 +198,63 @@ syntaktického stromu vypočte výslednou stopu.
 \input{krunimir/Krunimir/Evaluator.lhs}
 \input{krunimir/Krunimir/PngRenderer.lhs}
 \input{krunimir/Krunimir/SvgRenderer.lhs}
+
+\section{Příklady}
+
+Závěrem uvedeme několik rozsáhlejších příkladů, kdy využijeme želví grafiku k
+vykreslení několika známých fraktálů. 
+
+\subsection{Hilbertova křivka}
+
+\lstinputlisting[style=krunimir]{krunimir/examples/hilbert.txt}
+
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=0.9\textwidth]{krunimir/examples/hilbert}
+  \caption{Hilbertova křivka}\label{fig:krunimir-hilbert}
+\end{figure}
+
+\subsection{Kochova vločka}
+
+\lstinputlisting[style=krunimir]{krunimir/examples/koch.txt}
+
+\begin{figure}[p]
+  \centering
+
+  \includegraphics[width=0.9\textwidth]{krunimir/examples/koch}
+  \caption{Kochova vločka}\label{fig:krunimir-koch}
+\end{figure}
+
+\subsection{Sierpińského křivka}
+
+\lstinputlisting[style=krunimir]{krunimir/examples/sierpinski.txt}
+
+\begin{figure}[p]
+  \centering
+
+  \includegraphics[width=0.9\textwidth]{krunimir/examples/sierpinski}
+  \caption{Sierpińského křivka}\label{fig:krunimir-sierpinski}
+\end{figure}
+
+\subsection{Gosperova křivka}
+
+\lstinputlisting[style=krunimir]{krunimir/examples/gosper.txt}
+
+\begin{figure}[p]
+  \centering
+
+  \includegraphics[width=0.9\textwidth]{krunimir/examples/gosper}
+  \caption{Gosperova křivka}\label{fig:krunimir-gosper}
+\end{figure}
+
+\subsection{Křivka arrowhead}
+
+\lstinputlisting[style=krunimir]{krunimir/examples/arrowhead.txt}
+
+\begin{figure}[p]
+  \centering
+
+  \includegraphics[width=0.9\textwidth]{krunimir/examples/arrowhead}
+  \caption{Křivka arrowhead}\label{fig:krunimir-arrowhead}
+\end{figure}
+
