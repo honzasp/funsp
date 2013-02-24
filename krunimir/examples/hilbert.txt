@@ -2,13 +2,12 @@ define hilbert(n,side,step) {
   left(90*side)
   if(n) {
     hilbert(n-1,-side,step)
-    left(90*side) 
-    forward(step) hilbert(n-1,side,step)
-    right(90*side) 
-    forward(step) 
-    right(90*side) hilbert(n-1,side,step)
-    forward(step)
-    left(90*side) hilbert(n-1,-side,step)
+    left(90*side) forward(step)
+    hilbert(n-1,side,step)
+    right(90*side) forward(step) right(90*side)
+    hilbert(n-1,side,step)
+    forward(step) left(90*side)
+    hilbert(n-1,-side,step)
   }
   left(90*side)
 }
