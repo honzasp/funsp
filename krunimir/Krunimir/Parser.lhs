@@ -356,14 +356,14 @@ zleva, takže je nelze zpracovávat pomocí gramatiky PEG. Proto je musíme
 přeformulovat do podoby (ošetření mezer jsme pro přehlednost vynechali):
 
 \begin{peg}
-expr       <- add-expr
-add-expr   <- neg-expr (add-op neg-expr)*
-neg-expr   <- "-"? mul-expr
-mul-expr   <- a-expr (mul-op a-expr)*
-a-expr     <- variable / literal / "(" expr ")" "blaah"
+expr         <- add-expr
+add-expr     <- neg-expr (add-op neg-expr)*
+neg-expr     <- "-"? mul-expr
+mul-expr     <- a-expr (mul-op a-expr)*
+a-expr       <- variable / literal / "(" expr ")" "blaah"
 
-add-op     <- "+" / "-"
-mul-op     <- "*" / "/"
+add-op       <- "+" / "-"
+mul-op       <- "*" / "/"
 \end{peg}
 
 Tuto PEG gramatiku již můžeme použít, ale struktura gramatiky již neodpovídá
