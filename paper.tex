@@ -33,10 +33,24 @@
 
 \lstloadlanguages{Haskell}
 
-\lstdefinestyle{haskell}{
+\lstdefinelanguage{Krunimir}{
+  keywords={forward,left,right,color,pen,split,if,repeat,define},
+}
+
+\lstdefinelanguage{PEG}{
+  string=[b]{"},
+  otherkeywords={?,*,+,\&,!,/,.,(,),\[,\],<-},
+}
+
+\lstdefinestyle{ttcode}{
   basicstyle=\small\ttfamily,
   flexiblecolumns=false,
   basewidth=0.5em,
+  texcl=true,
+}
+
+\lstdefinestyle{haskell}{
+  style=ttcode,
   language=Haskell,
   showstringspaces=false,
   keywords={ % use only real Haskell keywords
@@ -46,7 +60,17 @@
     ,then,type,where
   },
   otherkeywords={_},
-  texcl=true,
+}
+
+\lstdefinestyle{krunimir}{style=ttcode,language=Krunimir,}
+\lstdefinestyle{peg}{
+  language=PEG,
+  columns=fixed,
+  basewidth=0.46em,
+  basicstyle=\itshape\ttfamily,
+  keywordstyle=\upshape,
+  stringstyle=\upshape,
+  xleftmargin=1em,
 }
 
 % code chunks in literate haskell
@@ -54,14 +78,8 @@
 % code chunks which should NOT be processed by literate haskell
 \lstnewenvironment{haskell}[1][]{\lstset{style=haskell,#1}}{}
 
-\lstdefinestyle{krunimir}{
-  basicstyle=\small\ttfamily,
-  flexiblecolumns=false,
-  basewidth=0.5em,
-  keywords={
-    forward,left,right,color,pen,split,if,repeat,define
-  },
-}
+\lstnewenvironment{krunimir}[1][]{\lstset{style=krunimir,#1}}{}
+\lstnewenvironment{peg}[1][]{\lstset{style=peg,#1}}{}
 
 \DisableLigatures[>,<]{encoding = T1,family=tt*} %
 

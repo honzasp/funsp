@@ -5,21 +5,27 @@ Pro syntaktickou analýzu (\uv{parsování}) použijeme knihovnu @t{parsec}
 \cite{parsec}. Jedná se o \textit{de-facto} standardní nástroj na tvorbu
 parserů v Haskellu.
 
-Narozdíl od generátorů jako GNU Bison, které vyžadují speciální soubor s
-definicí gramatiky a strojově jej překládají do cílového jazyka, se
-@t{parsec} používá v normálním kódu Haskellu a parsery se konstruují pomocí
-\emph{vysokoúrovňových kombinátorů}, které umožňují kombinovat malé parsovací
-funkce do větších celků.
-
-% TODO: odkazy na web, literaturu o parsecu.
-% TODO: nemáme lexer, co to je PEG
-
 \begin{code}
 module Krunimir.Parser (Krunimir.Parser.parse) where
 import Text.Parsec 
 import Control.Applicative ((<$>), (<$), (<*), (*>), (<*>))
 import Krunimir.Ast
 \end{code}
+
+Narozdíl od generátorů jako GNU Bison \cite{bison}, které vyžadují speciální
+soubor s definicí gramatiky a strojově jej překládají do cílového jazyka, se
+@t{parsec} používá v normálním kódu Haskellu a parsery se konstruují pomocí
+\emph{vysokoúrovňových kombinátorů}, které umožňují kombinovat malé parsery do
+větších celků.
+
+Jako formální základ pro náš parser použijeme gramatiku PEG
+\cite{ford2004parsing}. Výhodou PEG gramatik je jejich snadná implementace,
+jelikož popisují \emph{rozpoznávání} jazyka, narozdíl od tradičních
+bezkontextových gramatik, které byly vytvořeny pro popis lidských jazyků a
+definují jejich \emph{generování}. 
+
+PEG gramatika pro Krunimírův jazyk se nachází na straně
+\pageref{lst:krunimir-peg}.
 
 \subsection{Základní definice}
 
@@ -32,8 +38,7 @@ Parsery v knihovně @t{parsec} mají typ @t{Parsec s u a}, kde:
   využívat nebudeme, proto použijeme \uv{prázdný} typ @t{()}.
 \item @t{a} je výsledek parseru, tedy typ který parser vrátí. Naše parsery
   budou vracet více typů, např. příkaz (@t{Stmt}) nebo číslo
-  (@t{Integer}), takže tento typ budeme předávat jako parametr typovému
-  konstruktoru.
+  (@t{Integer}).
 \end{itemize}
 
 Abychom nemuseli neustále opakovat @t{Parsec String () ...}, nadefinujeme
@@ -109,7 +114,7 @@ operace:
 \end{description}
 
 Každá monáda je \emph{aplikativní funktor}, tudíž můžeme použít i následující
-operace:
+funkce:
 
 \begin{description}
 \item[@t{(<\$>) :: (a -> b) -> Parser a -> Parser b}] \hfill \\
@@ -140,10 +145,10 @@ operace:
 \subsection{Funkce \texorpdfstring{@t{parse}}{parse}}
 @Idx{Krunimir.Parser.parse}
 
-Funkce @t{parse} představuje \uv{uživatelské rozhraní} modulu
-@t{Krunimir.Parser}. Vstupem je jméno parsovaného souboru (použije se v
-případných chybových hláškách) a samotný text programu. Výstupem je buď chyba
-(@t{ParseError}) nebo želví program (@t{Program}).
+Funkce @t{parse} představuje \uv{rozhraní} modulu @t{Krunimir.Parser}. Vstupem
+je jméno parsovaného souboru (použije se v případných chybových hláškách) a
+samotný text programu. Výstupem je buď chyba (@t{ParseError}) nebo želví program
+(@t{Program}).
 
 Využijeme stejně pojmenovanou funkci, kterou nám @t{parsec} nabízí, a
 předáme jí nejprve parser celého programu (@t{program}) a pak oba zbývající
@@ -319,265 +324,47 @@ splitStmt = do
 Parsování \emph{výrazů} je o něco složitější, jelikož se musíme vypořádat s
 prioritami a asociativitami jednotlivých operátorů.
 
-Bezkontextovou gramatiku našich výrazů můžeme zapsat v BNF formě jako
+Gramatiku matematických výrazů můžeme vyjádřit v bezkontextové gramatice takto:
 
 \begin{grammar}
 <expr> ::= <add-expr>
 
-<add-expr> ::= <add-expr> add-op <neg-expr>
+<add-expr> ::= <add-expr> <add-op> <neg-expr>
 \alt <neg-expr>
 
 <neg-expr> ::= "-" <mul-expr>
 \alt <mul-expr>
 
-<mul-expr> ::= <mul-expr> mul-op <a-expr>
+<mul-expr> ::= <mul-expr> <mul-op> <a-expr>
 \alt <a-expr>
 
 <a-expr> ::= variable
-\alt integer
+\alt literal
 \alt "(" <expr> ")"
+
+<add-op> ::= "+"
+\alt "-"
+
+<mul-op> ::= "*"
+\alt "/"
 \end{grammar}
 
-\begin{figure}
-  \centering
-  \caption{Příklady parsování výrazu @t{2*x/3+(8-y)-z*7}}
-  \label{fig:krunimir-parse}
-
-  \begin{subfigure}{0.8\textwidth}
-    \centering
-    \begin{tikzpicture}[
-      text height=1.5ex,
-      text depth=0.0ex,
-      node/.style={font=\ttfamily,fill=black!5,draw=black!40,minimum size=6mm},
-      op/.style={node,circle},
-      num/.style={node,rectangle},
-      var/.style={node,rectangle},
-      edge from parent/.style={thick,to-,draw=black!40},
-      level 1/.style={sibling distance=35mm},
-      level 2/.style={sibling distance=23mm},
-      level 3/.style={sibling distance=12mm},
-      level distance=10mm,
-      ]
-      \node[op] (r) {-}
-        child { node[op] {+}
-          child { node[op] {/}
-            child { node[op] {*}
-              child { node[num] {2} }
-              child { node[var] {x} }
-            }
-            child { node[num] {3} }
-          }
-          child { node[op] {-}
-            child { node[num] {8} }
-            child { node[var] {y} }
-          }
-        }
-        child { node[op] {*}
-          child { node[var] {z} }
-          child { node[num] {7} }
-        }
-      ;
-    \end{tikzpicture}
-
-    ~ \caption{Syntaktický strom, reprezentující tento výraz. Binární operace
-    (zaznačené kolečky) mají vždy dva operandy, které jsou mohou být číslo,
-    proměnná nebo další binární operace.}
-
-    \label{fix:krunimir-parse-tree}
-  \end{subfigure}
-
-  \begin{subfigure}{0.95\textwidth}
-    \centering
-    \begin{tikzpicture}[
-      text height=1.5ex,
-      text depth=0.0ex,
-      level distance=14mm,
-      level 1/.style={sibling distance=32mm},
-      level 2/.style={sibling distance=21mm},
-      level 3/.style={sibling distance=13mm},
-      level 4/.style={sibling distance=8mm},
-      edge from parent/.style={draw,-stealth,shorten <=1mm},
-      node/.style={minimum size=5mm},
-      term/.style={node,font=\bfseries\ttfamily,fill=black!10,text=black!80},
-      expr/.style={node,font=\ttfamily,fill=black!5},
-      shadow/.style={semithick,-to,draw=black!20,shorten >=0.4mm,shorten <=0.3mm},
-      rule/.style={font=\footnotesize\itshape,fill=white,fill opacity=0.6,text
-        opacity=1.0},
-      ]
-      \node[expr] (r) {2*x/3+(8-y)-z*7} 
-        child { node[expr] {2*x/3+(8-y)}
-          child { node[expr] {2*x/3}
-            child { node[expr] {2*x} 
-              child { node[expr] {2} child { node[term] {2} } } % r-1-1-1-1-1
-              child { node[term] {*}} % r-1-1-1-2
-              child { node[expr] {x} child { node[term] {x} } } % r-1-1-1-3-1
-            }
-            child { node[term] {/} } % r-1-1-2
-            child { node[expr] {3} child { node[term] {3} } } % r-1-1-3-1
-          }
-          child { node[term] {+} } % r-1-2
-          child { node[expr] {(8-y)}
-            child { node[term] {(} }
-            child { node[expr] {8-y}
-              child { node[expr] {8} child { node[term] {8} } } % r-1-3-2-1-1
-              child { node[term] {-} } % r-1-3-2-2
-              child { node[expr] {y} child { node[term] {y} } } % r-1-3-2-3-1
-            }
-            child { node[term] {)} }
-          }
-        }
-        child { node[term] {-}} % r-2
-        child { node[expr] {z*7}
-          child { node[expr] {z} child { node[term] {z} } } % r-3-1-1
-          child { node[term] {*} } % r-3-2
-          child { node[expr] {7} child { node[term] {7} } } % r-3-3-1
-        }
-      ;
-
-      \begin{scope}[every path/.style={shadow}]
-        \draw (r-1-2) to (r-2) ;
-        \draw (r-3-2) to (r-2) ;
-        \draw (r-3-1-1) to (r-3-2) ;
-        \draw (r-3-3-1) to (r-3-2) ;
-        \draw (r-1-3-2-2) to [bend right=20] (r-1-2) ;
-        \draw (r-1-3-2-1-1) to (r-1-3-2-2) ;
-        \draw (r-1-3-2-3-1) to (r-1-3-2-2) ;
-        \draw (r-1-1-2) to (r-1-2) ;
-        \draw (r-1-1-1-2) to (r-1-1-2) ;
-        \draw (r-1-1-3-1) to (r-1-1-2) ;
-        \draw (r-1-1-1-1-1) to (r-1-1-1-2) ;
-        \draw (r-1-1-1-3-1) to (r-1-1-1-2) ;
-      \end{scope}
-
-      \begin{scope}[every node/.style={rule},node distance=0mm]
-        \node[below=of r] {add-expr} ;
-        \node[below=of r-3] {mul-expr} ;
-        \node[below=of r-3-1] {a-expr} ;
-        \node[below=of r-3-3] {a-expr} ;
-        \node[below=of r-1] {add-expr} ;
-        \node[below=of r-1-1] {mul-expr} ;
-        \node[below=of r-1-1-1] {mul-expr} ;
-        \node[below=of r-1-1-1-1] {a-expr} ;
-        \node[below=of r-1-1-1-3] {a-expr} ;
-        \node[below=of r-1-1-3] {a-expr} ;
-        \node[below=of r-1-3] {a-expr} ;
-        \node[below=of r-1-3-2] {add-expr} ;
-        \node[below=of r-1-3-2-1] {a-expr} ;
-        \node[below=of r-1-3-2-3] {a-expr} ;
-      \end{scope}
-    \end{tikzpicture}
-
-    ~ \caption{Ilustrace způsobu, jakým tento výraz zpracuje bezkontextová
-    gramatika. Šedými čarami je zaznačena struktura výsledného syntaktického
-    stromu, která přímo vyplývá z postupného dělení výrazu na menší části.}
-
-    \label{fig:krunimir-parse-cfgrammar} 
-  \end{subfigure}
-
-  \begin{subfigure}{0.8\textwidth}
-    \centering
-    \begin{tikzpicture}[
-      text height=1.5ex,
-      text depth=0.0ex,
-      node distance=0.8mm,
-      node/.style={minimum size=5mm,font=\ttfamily},
-      op/.style={node,fill=black!12},
-      term/.style={node,font=\bfseries\ttfamily,fill=black!10,text=black!80},
-      expr/.style={node,fill=black!5},
-      edge from parent/.style={draw,-stealth},
-      level 1/.style={sibling distance=37mm},
-      level 2/.style={sibling distance=17mm},
-      level distance=12mm,
-      shadow/.style={thick,-to,draw=black!30,shorten >=0.4mm,shorten <=0.3mm},
-      edge from parent path={
-        (\tikzparentnode) ..
-        controls ($(\tikzchildnode)+(0,5mm)$) ..
-        (\tikzchildnode)
-      },
-      rule/.style={font=\footnotesize\itshape,fill=white,fill opacity=0.6,text
-        opacity=1.0},
-    ]
-
-    \node[expr] (r) {2*x/3+(8-y)-z*7}
-      child { node[expr] {2*x/3}
-        child { node[expr] {2} child { node[term] {2} } }
-        child { node[expr] {x} child { node[term] {x} } }
-        child { node[expr] {3} child { node[term] {3} } }
-      }
-      child { node[expr] {(8-y)}
-        child { node[expr] {8-y}
-          child { node[expr] {8} child { node[term] {8} } }
-          child { node[expr] {y} child { node[term] {y} } }
-        }
-      }
-      child { node[expr] {z*7}
-        child { node[expr] {z} child { node[term] {z} } }
-        child { node[expr] {7} child { node[term] {7} } }
-      }
-    ;
-
-    \node (o-2)     [op,left=of r-2] {+} ;
-    \node (o-3)     [op,left=of r-3] {-} ;
-    \node (o-1-2)   [op,left=of r-1-2] {*} ;
-    \node (o-1-3)   [op,left=of r-1-3] {/} ;
-    \node (o-2-1-2) [op,left=of r-2-1-2] {-} ;
-    \node (o-3-2)   [op,left=of r-3-2] {*} ;
-
-    \begin{scope}[every path/.style={shadow}]
-      \draw (r-1-1-1) to (o-1-2) ;
-      \draw (r-1-2-1) to (o-1-2) ;
-      \draw (r-1-3-1) to (o-1-3) ;
-      \draw (o-1-2) to [bend left=50] (o-1-3) ;
-      \draw (o-1-3) to [bend left=20] (o-2) ;
-      \draw (r-2-1-1-1) to (o-2-1-2) ;
-      \draw (r-2-1-2-1) to (o-2-1-2) ;
-      \draw (o-2-1-2) to [bend left=30] (o-2) ;
-      \draw (r-3-1-1) to (o-3-2) ;
-      \draw (r-3-2-1) to (o-3-2) ;
-      \draw (o-3-2) to [bend left=10] (o-3) ;
-      \draw (o-2) .. controls +(0,7mm) and ($(o-3)+(0,7mm)$) .. (o-3) ;
-    \end{scope}
-
-    \begin{scope}[every node/.style={rule},node distance=0mm]
-      \node[right=of r] {add-expr} ;
-      \node[right=of r-1] {mul-expr} ;
-      \node[below=of r-1-1] {a-expr} ;
-      \node[below=of r-1-2] {a-expr} ;
-      \node[below=of r-1-3] {a-expr} ;
-      \node[right=of r-2] {a-expr} ;
-      \node[right=of r-2-1] {add-expr} ;
-      \node[below=of r-2-1-1] {a-expr} ;
-      \node[below=of r-2-1-2] {a-expr} ;
-      \node[right=of r-3] {mul-expr} ;
-      \node[below=of r-3-1] {a-expr} ;
-      \node[below=of r-3-2] {a-expr} ;
-    \end{scope}
-
-    \end{tikzpicture}
-
-    ~ \caption{Tentýž výraz zparsovaný gramatikou PEG se znázorněným výsledným
-    syntaktickým stromem. Postup parsování již jeho struktuře přímo nedpovídá.}
-
-    \label{fig:krunimir-parse-peg}
-    
-  \end{subfigure}
-\end{figure}
+\input{tex/parsetrees.tex}
 
 Problém je, že pravidla pro sčítání/odčítání a násobení/dělení jsou rekurzivní
 zleva, takže je nelze zpracovávat pomocí gramatiky PEG. Proto je musíme
-přeformulovat do podoby
+přeformulovat do podoby (ošetření mezer jsme pro přehlednost vynechali):
 
-\begin{grammar}
-<expr>      = <add-expr>
+\begin{peg}
+expr       <- add-expr
+add-expr   <- neg-expr (add-op neg-expr)*
+neg-expr   <- "-"? mul-expr
+mul-expr   <- a-expr (mul-op a-expr)*
+a-expr     <- variable / literal / "(" expr ")" "blaah"
 
-<add-expr>  = <neg-expr> (add-op <neg-expr>)*
-
-<neg-expr>  = "-"? <mul-expr>
-
-<mul-expr>  = <a-expr> (mul-op <a-expr>)*
-
-<a-expr>    = variable | integer | "(" <expr> ")"
-\end{grammar}
+add-op     <- "+" / "-"
+mul-op     <- "*" / "/"
+\end{peg}
 
 Tuto PEG gramatiku již můžeme použít, ale struktura gramatiky již neodpovídá
 struktuře syntaktického stromu. @t{parsec} naštěstí obsahuje pomocné
@@ -655,3 +442,53 @@ parens = between lparen rparen
 braces = between lbrace rbrace
 \end{code}
 \marginnote{Vysvětlit between?}
+
+\subsection{PEG gramatika}
+
+Na závěr uvedeme kompletní \uv{referenční} PEG gramatiku Krunimírova jazyka.
+
+\begin{peg}[label=lst:krunimir-peg]
+program      <- space* top-stmt* eof
+top-stmt     <- define / stmt
+
+define       <- "define" space+ identifier 
+                lparen (identifier (comma identifier)*)? rparen
+                lbrace stmt* rbrace
+
+stmt         <- repeat-stmt / if-stmt / split-stmt / proc-stmt
+repeat-stmt  <- "repeat" lparen expr rparen lbrace stmt* rbrace
+if-stmt      <- "if" lparen expr rparen lbrace stmt* rbrace
+split-stmt   <- "split" lbrace stmt* rbrace
+proc-stmt    <- "forward" lparen expr rparen
+              / "left" lparen expr rparen
+              / "right" lparen expr rparen
+              / "pen" lparen expr rparen
+              / "color" lparen expr comma expr comma expr rparen
+              / identifier lparen (identifier (comma identifier)*)? rparen
+
+expr         <- add-expr
+add-expr     <- mul-expr (add-op space* mul-expr)*
+mul-expr     <- neg-expr (mul-op space* neg-expr)*
+neg-expr     <- (neg-op space*)? a-expr
+
+add-op       <- "+" / "-"
+mul-op       <- "*" / "/"
+neg-op       <- "-"
+
+a-expr       <- lit-expr / var-expr / lparen expr rparen
+lit-expr     <- integer
+var-expr     <- identifier
+
+integer      <- digit+ space*
+digit        <- [0-9]
+
+identifier   <- letter alpha-num space*
+letter       <- [a-zA-Z]
+alpha-num    <- [a-zA-Z0-9]
+
+lparen       <- "(" space*
+rparen       <- ")" space*
+lbrace       <- "{" space*
+rbrace       <- "}" space*
+comma        <- "," space*
+\end{peg}
