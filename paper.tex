@@ -1,6 +1,5 @@
 \documentclass[a4paper,twoside,11pt]{report}
 \usepackage{geometry}
-\usepackage{fullpage}
 \usepackage[czech]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -19,6 +18,7 @@
 \usepackage[fixlanguage]{babelbib}
 \usepackage{tabularx}
 \usepackage{changepage}
+\usepackage{pdfpages}
 \usepackage{tikz}
 \usetikzlibrary{positioning}
 \usetikzlibrary{calc}
@@ -115,9 +115,9 @@
 \tableofcontents
 \input{tex/intro.tex}
 \input{tex/krunimir.tex}
+\input{tex/appendix.tex}
 \printindex
 
 \bibliographystyle{babplain}
 \bibliography{bibliography}
-
 \end{document}
