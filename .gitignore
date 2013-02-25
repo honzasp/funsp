@@ -3,6 +3,7 @@
 *.test.png
 *.test.svg
 krunimir/basic.*
+bilapani/test/**.png
 paper.aux
 paper.log
 paper.pdf
