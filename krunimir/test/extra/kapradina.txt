@@ -1,0 +1,44 @@
+define level0(n) {
+  if(n) {
+    color(128,255-10*n,0)
+    forward(20+n)
+    split { right(80) level1L(n-1) }
+    split { left(80)  level1R(n-1) }
+    level0(n-1)
+  }
+}
+
+define level1L(n) {
+  if(n) {
+    forward(3)
+    split { right(60) level2(2+n/2) }
+    split { left(60)  level2(2+n/2) }
+    forward(4)
+    left(1)
+    level1L(n-1)
+  }
+}
+
+define level1R(n) {
+  if(n) {
+    forward(3)
+    split { right(60) level2(2+n/2) }
+    split { left(60)  level2(2+n/2) }
+    forward(4)
+    right(1)
+    level1R(n-1)
+  }
+}
+
+define level2(n) {
+  if(n) {
+    forward(2)
+    split { right(60) forward(2) }
+    split { left(60)  forward(2) }
+    level2(n-1)
+  }
+}
+
+forward(-300)
+pen(1)
+level0(19)

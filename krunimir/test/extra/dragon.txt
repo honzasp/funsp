@@ -1,0 +1,17 @@
+define dragon(n,sign) {
+  if(n) {
+    right(45*sign)
+    dragon(n-1,1)
+    left(90*sign)
+    dragon(n-1,-1)
+    right(45*sign)
+  }
+  if(1-n) {
+    forward(5)
+  }
+}
+
+left(90) forward(150)
+left(90) forward(150)
+right(180) right(20) pen(1)
+dragon(13,1)

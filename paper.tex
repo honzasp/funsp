@@ -1,28 +1,123 @@
-\documentclass[a4paper,oneside,12pt]{report}
+\documentclass[a4paper,twoside,11pt]{report}
+\usepackage{geometry}
 \usepackage[czech]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
+\usepackage{hyperref}
 \usepackage{microtype}
 \usepackage{listings}
 \usepackage{lmodern}
+\usepackage{marginnote}
+\usepackage{syntax}
+\usepackage{at}
+\usepackage{makeidx}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage[fixlanguage]{babelbib}
+\usepackage{tabularx}
+\usepackage{changepage}
+\usepackage{pdfpages}
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+\usetikzlibrary{calc}
+
+\geometry{
+  marginparsep=0.3cm,marginparwidth=1.5cm,
+  inner=2.5cm,outer=3.0cm,
+  top=2cm,bottom=2cm,
+}
+
+\selectbiblanguage{czech}
 
 \lstloadlanguages{Haskell}
-\lstnewenvironment{code}
-    {\lstset{}%
-      \csname lst@SetFirstLabel\endcsname}
-    {\csname lst@SaveFirstLabel\endcsname}
-    \lstset{
-      basicstyle=\small\ttfamily,
-      flexiblecolumns=false,
-      basewidth={0.5em,0.45em},
-      language=Haskell,
-      showstringspaces=false,
-      }
 
-%\lstMakeShortInline[basicstyle=\small\ttfamily]|
+\lstdefinelanguage{Krunimir}{
+  keywords={forward,left,right,color,pen,split,if,repeat,define},
+}
+
+\lstdefinelanguage{PEG}{
+  string=[b]{"},
+  otherkeywords={?,*,+,\&,!,/,.,(,),\[,\],<-},
+}
+
+\lstdefinestyle{ttcode}{
+  basicstyle=\small\ttfamily,
+  flexiblecolumns=false,
+  basewidth=0.5em,
+  texcl=true,
+}
+
+\lstdefinestyle{haskell}{
+  style=ttcode,
+  language=Haskell,
+  showstringspaces=false,
+  keywords={ % use only real Haskell keywords
+    case,class,data,default,deriving,do,else
+    ,foreign,if,import,in,infix,infixl
+    ,infixr,instance,let,module,newtype,of
+    ,then,type,where
+  },
+  otherkeywords={_},
+}
+
+\lstdefinestyle{krunimir}{style=ttcode,language=Krunimir,}
+\lstdefinestyle{peg}{
+  language=PEG,
+  columns=fixed,
+  basewidth=0.46em,
+  basicstyle=\itshape\ttfamily,
+  keywordstyle=\upshape,
+  stringstyle=\upshape,
+  xleftmargin=1em,
+}
+
+% code chunks in literate haskell
+\lstnewenvironment{code}[1][]{\lstset{style=haskell,#1}}{}
+% code chunks which should NOT be processed by literate haskell
+\lstnewenvironment{haskell}[1][]{\lstset{style=haskell,#1}}{}
+
+\lstnewenvironment{krunimir}[1][]{\lstset{style=krunimir,#1}}{}
+\lstnewenvironment{peg}[1][]{\lstset{style=peg,#1}}{}
+
 \DisableLigatures[>,<]{encoding = T1,family=tt*} %
 
+\setlength{\grammarparsep}{5pt plus 1pt minus 1pt} 
+\setlength{\grammarindent}{12em}
+
+\renewcommand*{\marginfont}{\scriptsize}
+
+\newcommand{\comment}[1]{}
+\newatcommand t[1]{\texttt{#1}}
+
+\makeindex
+\newatcommand idx[1]{\index{#1@\texttt{#1}}}
+\newatcommand Idx[1]{\index{#1@\texttt{#1}|textbf}}
+
+\def\Cplusplus{{C\nolinebreak[4]\hspace{-.05em}\raisebox{.4ex}{\tiny\bf ++}}}
+\def\Csh{C\nolinebreak\hspace{-.05em}\raisebox{.4ex}{\scriptsize\bf \#}}
+
+\hypersetup{
+  unicode=true,          % non-Latin characters in Acrobat’s bookmarks
+  pdftitle={Líně, čistě, funkcionálně},    % title
+  pdfauthor={Jan Špaček},     % author
+  hidelinks,
+  % hyperindex should be true by default, hyperref shows warning 
+  % "Option `hyperindex' has already been used,"
+  % hyperindex=true,
+  linktoc=all,
+}
+
 \begin{document}
-Žluťoučký kůň úpěl ďábelské ódy.
-\input{krunimir/krunimir.tex}
+\input{tex/title.tex}
+\input{tex/abstract.tex}
+\tableofcontents
+\input{tex/intro.tex}
+\input{tex/krunimir.tex}
+\input{tex/appendix.tex}
+\printindex
+
+\bibliographystyle{babplain}
+\bibliography{bibliography}
 \end{document}

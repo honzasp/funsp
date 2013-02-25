@@ -1,4 +1,5 @@
-\section{\texttt{Krunimir.Main}}
+\section{\texorpdfstring{@t{Krunimir.Main}}{Krunimir.Main}}
+@Idx{Krunimir.Main}
 
 \begin{code}
 module Krunimir.Main (main) where
@@ -19,12 +20,14 @@ a také námi definované funkce z ostatních modulů
 \begin{code}
 import Krunimir.Parser(parse)
 import Krunimir.Evaluator(eval)
-import Krunimir.Renderer(render)
-import Krunimir.Image(prune)
+import Krunimir.PngRenderer(renderPng)
+import Krunimir.SvgRenderer(renderSvg)
+import Krunimir.Trace(prune)
 
 main :: IO ()
 main = do
 \end{code}
+@Idx{Krunimir.Main.main}
 
 Uložíme si čas na začátku, bude se nám hodit až budeme chtít zjistit, jak dlouho
 výpočet trval.
@@ -34,12 +37,12 @@ výpočet trval.
 \end{code}
 
 Nejprve se podíváme, jaké argumenty jsme dostali na příkazové řádce, a podle
-toho nastavíme proměnnou \texttt{inputFile} obsahující jméno vstupního souboru,
-a \texttt{steps}, což je \texttt{Just \textit{početKroků}} pokud máme zadaný
-počet kroků, nebo \texttt{Nothing} pokud jej zadaný nemáme (takže předpokládáme
+toho nastavíme proměnnou @t{inputFile} obsahující jméno vstupního souboru,
+a @t{steps}, což je @t{Just \textit{početKroků}} pokud máme zadaný
+počet kroků, nebo @t{Nothing} pokud jej zadaný nemáme (takže předpokládáme
 že uživatel chce vykreslit celý obrázek).\footnote{V zadání je specifikováno, že
 nula zadaná jako počet kroků znamená vykreslit celý obrázek, a chování našeho
-programu je odlišné - nevykreslí nic.}
+programu je odlišné -- nevykreslí nic.}
 
 \begin{code}
   args <- getArgs
@@ -52,13 +55,14 @@ programu je odlišné - nevykreslí nic.}
       exitFailure
 \end{code}
 
-\texttt{exitFailure} je speciální IO operace, která způsobí že program skončí s
+@t{exitFailure} je speciální IO operace, která způsobí že program skončí s
 návratovým kódem, který signalizuje selhání.
 
-Nyní můžeme přečíst požadovaný soubor a jeho obsah předat funkci \texttt{parse}
-z modulu \texttt{Krunimir.Parser}. Pokud dostaneme chybu, zobrazíme ji na
+Nyní můžeme přečíst požadovaný soubor a jeho obsah předat funkci @t{parse}
+z modulu @t{Krunimir.Parser}. Pokud dostaneme chybu, zobrazíme ji na
 chybový výstup a program přerušíme.
 
+@idx{Krunimir.Parser.parse}
 \begin{code}
   txt <- readFile inputFile
   ast <- case parse inputFile txt of
@@ -68,25 +72,40 @@ chybový výstup a program přerušíme.
       exitFailure
 \end{code}
 
-Úspěšně přečtený syntaktický strom můžeme předat funkci \texttt{eval} a
-dostaneme vykreslený obrázek (\texttt{fullImage}). Pokud uživatel zadal omezení
-počtu kroků, pomocí funkce \texttt{prune} obrázek ořežeme, pokud ne, necháme jej
-celý (\texttt{prunedImage}).
+Úspěšně přečtený syntaktický strom můžeme předat funkci @t{eval} a
+dostaneme výslednou stopu v písku (@t{fullTrace}). Pokud uživatel zadal omezení
+počtu kroků, pomocí funkce @t{prune} stopu omezíme, pokud ne, necháme ji
+celou (@t{prunedTrace}).
 
-Jméno výstupního souboru necháme stejné jako vstupního, jen změníme příponu.
-
+@idx{Krunimir.Evaluator.eval}
+@idx{Krunimir.Trace.prune}
 \begin{code}
-  let fullImage = eval ast
-      prunedImage = case steps of
-        Nothing -> fullImage
-        Just count -> prune count fullImage
-      outputFile = replaceExtension inputFile ".test.png"
+  let fullTrace = eval ast
+      prunedTrace = case steps of
+        Nothing -> fullTrace 
+        Just count -> prune count fullTrace
 \end{code}
 
-Zbývá jen vykreslit
+Všimněte si, že díky línému vyhodnocování se v případě, kdy je počet kroků
+omezen, vypočítá jen část stopy, která nás zajímá. Máme tedy zajištěno, že i
+když bude mít stopa desetitisíce kroků a uživatel bude chtít zobrazit jen
+prvních několik, nebudeme počítat celou stopu, ale jen zobrazenou část. Naše
+implementace dokonce umožňuje spouštět nekonečné programy, samozřejmě pouze
+pokud uživatel specifikuje počet kroků, jež si přeje vykonat.
 
 \begin{code}
-  render prunedImage outputFile
+  let outputPng = replaceExtension inputFile ".test.png"
+      outputSvg = replaceExtension inputFile ".test.svg"
+\end{code}
+
+Jména výstupních souborů (jak PNG, tak SVG) odvodíme ze jména souboru vstupního,
+jen změníme příponu. Zbývá jen vykreslit
+
+@idx{Krunimir.PngRenderer.renderPng}
+@idx{Krunimir.SvgRenderer.renderSvg}
+\begin{code}
+  renderPng prunedTrace outputPng
+  renderSvg prunedTrace outputSvg
 \end{code}
 
 a vypsat řádek, který nás informuje o délce výpočtu.

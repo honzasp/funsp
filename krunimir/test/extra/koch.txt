@@ -1,0 +1,31 @@
+define koch(n,len) {
+  if(n) {
+    koch(n-1,len/3)
+    left(60)
+    koch(n-1,len/3)
+    right(120)
+    koch(n-1,len/3)
+    left(60)
+    koch(n-1,len/3)
+  }
+  if(1-n) {
+    forward(len)
+  }
+}
+
+define flake(n,len,p) {
+  pen(0)
+  forward(-len*350/1000)
+  left(90)
+  forward(len/2)
+  right(120)
+
+  pen(1)
+  koch(n,len)
+  right(120)
+  koch(n,len)
+  right(120)
+  koch(n,len)
+}
+
+flake(5,500,1)

@@ -1,0 +1,18 @@
+define segment(n) {
+  forward(10+n)
+  if(n) {
+    segment(n-1)
+    split { left(45) segment(n-1) }
+    split { right(45) segment(n-1) }
+    segment(n-1)
+  }
+}
+
+define flake(n) {
+  repeat(6) {
+    split { segment(n) } right(60)
+  }
+}
+
+pen(1)
+flake(3)

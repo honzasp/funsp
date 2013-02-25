@@ -1,7 +1,15 @@
 **/dist/**
 .*.sw*
 *.test.png
+*.test.svg
 krunimir/basic.*
 paper.aux
 paper.log
 paper.pdf
+paper.out
+paper.toc
+paper.idx
+paper.ilg
+paper.ind
+paper.bbl
+paper.blg

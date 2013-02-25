@@ -1,0 +1,10 @@
+define htree(n,len) {
+  if(n) {
+    forward(len/1000)
+    split { right(90) htree(n-1,len*707/1000) }
+    split { left(90)  htree(n-1,len*707/1000) }
+  }
+}
+
+pen(1)
+htree(11, 100*1000)

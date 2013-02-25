@@ -7,4 +7,4 @@ define tree(n) {
 }
 
 pen(1)
-tree(20)
+tree(18)
