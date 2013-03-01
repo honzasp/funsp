@@ -18,8 +18,8 @@ newtype Slice = Slice (Array Loc SliceField)
 
 data SliceField = FreeSF | WallSF | ScoutSF Loc deriving (Eq,Show) 
 
-slices :: Castle -> [Slice]
-slices castle = map slice [0..period-1] where
+sliceCastle :: Castle -> [Slice]
+sliceCastle castle = map slice [0..period-1] where
   fields = castleFields castle
   period = foldl lcm 1 . map length . castleScouts $ castle
   loopedScouts = map cycle $ castleScouts castle
