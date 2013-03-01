@@ -60,7 +60,9 @@ field y sc x = free <|> wall <|> start <|> tv <|> scout
       Nothing -> return $ scAdd (x,y) Free sc { scTV = Just (x,y) }
     scout = char '@' >> do
       moves <- many move
-      let scout = Scout $ applyMoves (x,y) moves
+      let scout = if null moves 
+          then [(x,y)]
+          else applyMoves (x,y) $ init moves
       return $ scAdd (x,y) Free sc { scScouts = scout:scScouts sc }
     
 data Move = North | West | South | East deriving (Eq,Show)
