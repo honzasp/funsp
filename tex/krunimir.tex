@@ -332,3 +332,42 @@ procedury @t{arrowhead(n,side)}. Postup generování ukazuje obrázek
     \label{fig:krunimir-arrowhead}
   \end{subfigure}
 \end{figure}
+
+\section{Závěr}
+
+Vytvořili jsme interpret zadaného programovacího jazyka Krunimír, podporující
+veškerá rozšíření, vykreslování do dvou grafických formátů, a s velmi
+přijatelným výkonem.
+
+Představený program by byl podle zadání ze soutěže nejspíše ohodnocen přibližně
+300 body z 333.  Chybějících 33 bodů je za \uv{televizní přenos}, neboli
+grafické uživatelské rozhraní (GUI). Tvorba GUI není nijak zvlášť
+programátorsky zajímavá, proto ji náš program neimplementuje.
+
+Všechny zdrojové soubory mají dohromady asi 350 řádků kódu. Vezmeme-li v úvahu,
+že se jedná o kompletní implementaci netriviálního programovacího jazyka, je
+toto číslo poměrně nízké.\footnote{Je nutno podotknout, že program nebyl psán
+  tak, aby řádků bylo co nejméně, ale aby byl co nejpřehlednější.} Kód je
+rozdělen do modulů s minimálními vzájemnými závislostmi, což nám umožňuje snadné
+udržování, upravování a rozšiřování. 
+
+Pokud bychom namísto Haskellu použili nějaký imperativní programovací jazyk,
+například \Cplusplus{}, Ruby nebo dokonce Javu, náš program by byl nejspíš delší
+a jeho modularita by byla nižší.\footnote{
+  Pokud bychom využili dynamický jazyk jako Ruby, mohli bychom si ušetřit práci
+  a několika jednoduchými textovými úpravami převést program pro Krunimíra na
+  program v použitém programovacím jazyku, který bychom vyhodnotili pomocí
+  funkce @t{eval}. Tento postup svého času autor na soutěži úspěšně využil.
+  Jedinou nevýhodou je nesnadnost korektní implementace příkazu @t{split}, jinak
+  jde o řešení téměř dokonalé :-)
+} Program
+by pravděpodobně sestával z parseru vytvořeného pomocí nějakého externího
+nástroje, který by vytvořil syntaktický strom sestávající z objektů. Vyhodnocení
+by bylo sloučeno s vykreslováním a probíhalo by voláním metod objektů ze
+syntaktického stromu, jejichž definice by byly roztroušeny u definic
+jednotlivých tříd.\footnote{
+  V Javě bychom nejspíše vytvořili třídu @t{Statement}, která by měla potomky
+  @t{ForwardStatement}, @t{LeftStatement}, @t{RepeatStatement} apod. přičemž
+  každý by byl ve vlastním souboru...
+}
+Implementovat příkaz @t{split} by bylo přinejmenším obtížné.
