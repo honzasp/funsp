@@ -1,3 +1,7 @@
+\section{\texorpdfstring{@t{Banshee.Navigate}}{Banshee.Navigate}}
+@Idx{Banshee.Navigate}
+
+\begin{code}
 module Banshee.Navigate where
 import Data.Array
 import Data.Array.ST
@@ -7,11 +11,18 @@ import Control.Applicative
 import Control.Monad.ST
 
 import Banshee.Castle
+\end{code}
 
+@Idx{Banshee.Navigate.Path}
+@Idx{Banshee.Navigate.pathLength}
+\begin{code}
 data Path = Path Int [Loc] deriving Show
 
 pathLength (Path len _) = len
+\end{code}
 
+@Idx{Banshee.Navigate.moves}
+\begin{code}
 moves :: Bool -> Slice -> Slice -> (Loc,Path) -> [(Loc,Path)]
 moves thruWalls (Slice foreslice) (Slice afterslice) ((x,y),Path len ps) = 
   [((tox,toy),Path (len+1) $ (x,y):ps)
@@ -28,7 +39,10 @@ moves thruWalls (Slice foreslice) (Slice afterslice) ((x,y),Path len ps) =
     ]
   where
     ((1,1),(width,height)) = bounds foreslice
+\end{code}
 
+@Idx{Banshee.Navigate.turn}
+\begin{code}
 turn :: Castle -> [Slice] -> STArray s (Int,Loc) (Maybe Path) ->
   [(Loc,Path)] -> ST s (Either Path [(Loc,Path)])
 turn castle slices bests = step 0 (cycle slices)
@@ -53,7 +67,10 @@ turn castle slices bests = step 0 (cycle slices)
       Just path -> return $ Left path
 
   period = length slices
+\end{code}
 
+@Idx{Banshee.Navigate.navigate}
+\begin{code}
 navigate :: Castle -> [Slice] -> Bool -> Maybe [Loc]
 navigate castle slices thruWalls = runST $ do
   let ((1,1),(width,height)) = bounds $ castleFields castle
@@ -81,3 +98,4 @@ navigate castle slices thruWalls = runST $ do
       _ -> return result
 
   period = length slices
+\end{code}

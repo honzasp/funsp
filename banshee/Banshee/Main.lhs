@@ -1,3 +1,7 @@
+\section{\texorpdfstring{@t{Banshee.Main}}{Banshee.Main}}
+@Idx{Banshee.Main}
+
+\begin{code}
 module Banshee.Main where
 import System.IO
 import System.Environment
@@ -10,13 +14,19 @@ import Data.Array
 import Banshee.Castle
 import Banshee.CastleParser
 import Banshee.Navigate
+\end{code}
 
+@Idx{Banshee.Main.Flag}
+\begin{code}
 data Flag
   = HelpFlag
   | NotThroughFlag
   | QuietFlag
   deriving (Eq,Show)
+\end{code}
 
+@Idx{Banshee.Main.options}
+\begin{code}
 options =
   [ Option ['h','?'] ["help","use"] (NoArg HelpFlag) 
     "show the help"
@@ -25,14 +35,21 @@ options =
   , Option ['q'] ["quiet"] (NoArg QuietFlag)
     "show just the length of the found path"
   ]
+\end{code}
 
+\begin{code}
 header progname = "Usage: " ++ progname ++ " [-hniq] castle-file"
+\end{code}
 
+@Idx{Banshee.Main.main}
+\begin{code}
 main = do
   progname <- getProgName
   let usage = usageInfo (header progname) options
   (flags,files,errs) <- getOpt Permute options <$> getArgs
+\end{code}
 
+\begin{code}
   if not (null errs) then do
       hPutStrLn stderr usage
       hPutStrLn stderr $ concat errs
@@ -42,18 +59,24 @@ main = do
   let thruWalls = NotThroughFlag `notElem` flags
       quiet = QuietFlag `elem` flags
       help = HelpFlag `elem` flags
+\end{code}
 
+\begin{code}
   if help then do
       putStrLn usage
       exitSuccess
     else return ()
+\end{code}
 
+\begin{code}
   if length files /= 1 then do
       hPutStrLn stderr usage
       hPutStrLn stderr "Expected one input file with castle"
       exitFailure
     else return ()
+\end{code}
 
+\begin{code}
   txt <- readFile (head files)
   castle <- case parseCastle (head files) txt of
       Right c -> return c
@@ -72,7 +95,10 @@ main = do
         putStrLn $ "No path found"
         
   return ()
+\end{code}
 
+@Idx{Banshee.Main.showQuiet}
+\begin{code}
 showQuiet :: Castle -> [Loc] -> IO ()
 showQuiet castle locs = 
   putStrLn . concat $ ["Found a path with ",show steps," steps",
@@ -81,7 +107,10 @@ showQuiet castle locs =
   steps = length locs
   fields = castleFields castle
   thruWalls = length $ filter ((==Wall) . (fields !)) locs
+\end{code}
 
+@Idx{Banshee.Main.showPath}
+\begin{code}
 showPath :: Castle -> [Loc] -> IO ()
 showPath castle locs = do
   forM_ [1..height] $ \y -> do
@@ -102,4 +131,4 @@ showPath castle locs = do
   pathChar (x,y) = case castleFields castle ! (x,y) of
       Free -> '+'
       Wall -> '~'
-
+\end{code}

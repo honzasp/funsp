@@ -30,7 +30,7 @@ clean:
 
 force: clean paper.pdf
 
-WATCHED = paper.tex $(BIBS) tex krunimir/Krunimir krunimir/examples
+WATCHED = paper.tex $(BIBS) tex krunimir/Krunimir banshee/Banshee krunimir/examples
 watch:
 	$(MAKE) -C . paper.pdf
 	while inotifywait --recursive --event modify --exclude 'swp' $(WATCHED) || true; do\
