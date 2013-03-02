@@ -14,17 +14,14 @@ import Banshee.Navigate
 data Flag
   = HelpFlag
   | NotThroughFlag
-  | InteractiveFlag
   | QuietFlag
   deriving (Eq,Show)
 
-flags =
+options =
   [ Option ['h','?'] ["help","use"] (NoArg HelpFlag) 
     "show the help"
   , Option ['n'] ["not-through"] (NoArg NotThroughFlag)
     "disable going through the walls"
-  , Option ['i'] ["interactive"] (NoArg InteractiveFlag)
-    "interactively show the path"
   , Option ['q'] ["quiet"] (NoArg QuietFlag)
     "show just the length of the found path"
   ]
@@ -33,28 +30,22 @@ header progname = "Usage: " ++ progname ++ " [-hniq] castle-file"
 
 main = do
   progname <- getProgName
-  let usage = usageInfo (header progname) flags
-  (flags,files,errs) <- getOpt Permute flags <$> getArgs
+  let usage = usageInfo (header progname) options
+  (flags,files,errs) <- getOpt Permute options <$> getArgs
 
   if not (null errs) then do
       hPutStrLn stderr usage
+      hPutStrLn stderr $ concat errs
       exitFailure
     else return ()
 
   let thruWalls = NotThroughFlag `notElem` flags
-      interactive = InteractiveFlag `elem` flags
       quiet = QuietFlag `elem` flags
       help = HelpFlag `elem` flags
 
   if help then do
       putStrLn usage
       exitSuccess
-    else return ()
-
-  if interactive && quiet then do
-      hPutStrLn stderr usage
-      hPutStrLn stderr "Cannot combine interactive and quiet mode"
-      exitFailure
     else return ()
 
   if length files /= 1 then do
@@ -76,7 +67,6 @@ main = do
   case mpath of
     Just locs
       | quiet       -> showQuiet castle locs
-      | interactive -> showInteractive castle slices locs
       | otherwise   -> showPath castle locs
     Nothing ->
         putStrLn $ "No path found"
@@ -91,10 +81,6 @@ showQuiet castle locs =
   steps = length locs
   fields = castleFields castle
   thruWalls = length $ filter ((==Wall) . (fields !)) locs
-
-showInteractive :: Castle -> [Slice] -> [Loc] -> IO ()
-showInteractive castle slices locs =
-  print (castle,slices,locs)
 
 showPath :: Castle -> [Loc] -> IO ()
 showPath castle locs = do
@@ -116,3 +102,4 @@ showPath castle locs = do
   pathChar (x,y) = case castleFields castle ! (x,y) of
       Free -> '+'
       Wall -> '~'
+
