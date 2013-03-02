@@ -37,16 +37,19 @@ turn castle slices bests = step 0 (cycle slices)
   step t (slice1:slice2:slices) locpaths = do
     let (starts,rest) = span ((<= t) . pathLength . snd) locpaths
         offset = t `mod` period
-    nextss <- forM starts $ \((x,y),path) -> do
+
+    nextsss <- fmap catMaybes $ forM starts $ \((x,y),path) -> do
       uncov <- isNothing <$> readArray bests (offset,(x,y))
       if uncov then do
           writeArray bests (offset,(x,y)) $ Just path
-          return $ moves False slice1 slice2 ((x,y),path)
-        else return []
+          return . Just . (,) ((x,y),path) $ moves False slice1 slice2 ((x,y),path)
+        else return Nothing
+    let (starts',nextss) = unzip nextsss
     let nexts = concat nextss
+    
     tv <- readArray bests (offset,castleTV castle)
     case tv of
-      Nothing -> (fmap (starts++)) <$> step (t+1) (slice2:slices) (nexts ++ rest)
+      Nothing -> (fmap (starts'++)) <$> step (t+1) (slice2:slices) (nexts ++ rest)
       Just path -> return $ Left path
 
   period = length slices
