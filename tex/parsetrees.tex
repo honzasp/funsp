@@ -8,11 +8,11 @@
     \begin{tikzpicture}[
       text height=1.5ex,
       text depth=0.0ex,
-      node/.style={font=\ttfamily,fill=black!5,draw=black!40,minimum size=6mm},
+      node/.style={font=\ttfamily,draw=black,minimum size=6mm,thick},
       op/.style={node,circle},
       num/.style={node,rectangle},
       var/.style={node,rectangle},
-      edge from parent/.style={thick,to-,draw=black!40},
+      edge from parent/.style={thick,to-,draw=black!80},
       level 1/.style={sibling distance=35mm},
       level 2/.style={sibling distance=23mm},
       level 3/.style={sibling distance=12mm},
@@ -58,10 +58,10 @@
       level 4/.style={sibling distance=8mm},
       edge from parent/.style={draw,-stealth,shorten <=1mm},
       node/.style={minimum size=5mm},
-      term/.style={node,font=\bfseries\ttfamily,fill=black!10,text=black!80},
+      term/.style={node,font=\bfseries\ttfamily,fill=black!15,text=black},
       expr/.style={node,font=\ttfamily,fill=black!5},
-      shadow/.style={semithick,-to,draw=black!20,shorten >=0.4mm,shorten <=0.3mm},
-      rule/.style={font=\footnotesize\itshape,fill=white,fill opacity=0.6,text
+      shadow/.style={semithick,-to,draw=black,dotted,shorten >=0.4mm,shorten <=0.3mm},
+      rule/.style={font=\footnotesize\itshape,fill=white,fill opacity=0.7,text
         opacity=1.0},
       ]
       \node[expr] (r) {2*x/3+(8-y)-z*7} 
@@ -128,8 +128,9 @@
     \end{tikzpicture}
 
     ~ \caption{Ilustrace způsobu, jakým tento výraz zpracuje bezkontextová
-    gramatika. Šedými čarami je zaznačena struktura výsledného syntaktického
-    stromu, která přímo vyplývá z postupného dělení výrazu na menší části.}
+    gramatika. Tečkovanými čarami je zaznačena struktura výsledného
+    syntaktického stromu, která přímo vyplývá z postupného dělení výrazu na menší
+    části.}
 
     \label{fig:krunimir-parse-cfgrammar} 
   \end{subfigure}
@@ -141,14 +142,14 @@
       text depth=0.0ex,
       node distance=0.8mm,
       node/.style={minimum size=5mm,font=\ttfamily},
-      op/.style={node,fill=black!12},
-      term/.style={node,font=\bfseries\ttfamily,fill=black!10,text=black!80},
+      op/.style={node,fill=black!15},
+      term/.style={node,font=\bfseries\ttfamily,fill=black!15},
       expr/.style={node,fill=black!5},
       edge from parent/.style={draw,-stealth},
       level 1/.style={sibling distance=37mm},
       level 2/.style={sibling distance=17mm},
       level distance=12mm,
-      shadow/.style={thick,-to,draw=black!30,shorten >=0.4mm,shorten <=0.3mm},
+      shadow/.style={semithick,-to,draw=black,dotted,shorten >=0.4mm,shorten <=0.3mm},
       edge from parent path={
         (\tikzparentnode) ..
         controls ($(\tikzchildnode)+(0,5mm)$) ..
