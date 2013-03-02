@@ -36,19 +36,23 @@ na stejné argumenty, dostaneme vždy stejný výsledek. Tato vlastnost se nazý
 
 Na funkce je tedy možno nahlížet jako na funkce v matematice, takže pro
 programátora i pro kompilátor je snadné zjišťovat a \emph{dokazovat} chování
-funkce.
+funkcí. Kompilátor může kód Haskellu snadno optimalizovat, takže programátor
+může v programech používat vysokoúrovňové konstrukce bez obav z negativního
+dopadu na rychlost programu.
 
-\marginnote{velmi snadná paralelizace!}
+Další vlastností funkcionálních jazyků je snadná paralelizace. Potřebujeme-li
+zjistit hodnotu dvou výrazů, můžeme bez obav každý výpočet provést na
+samostatném procesoru, jelikož máme zaručeno, že se výpočty nebudou navzájem
+ovlivňovat.
 
 \subsection{Líné vyhodnocování}
 
-\emph{Líné vyhodnocování} znamená, že hodnoty výrazů se počítají až ve chvíli,
-kdy je to nezbytně nutné. Tím se nejen zvýší efektivita programu (výpočty se
-provedou jen když jsou zapotřebí, nemusí se tedy vyhodnotit vůbec), ale hlavně
-se programátor zbaví nutnosti zabývat se pořadím vyhodnocování výrazů. Je tedy možné
-oddělit kód produkující a kód konzumující data, čímž se zvýší modularita. 
-
-\marginnote{citovat Why FP Matters}
+Haskell je \emph{líně vyhodnocovaný} jazyk, což znamená, že hodnoty výrazů se
+zjišťují až ve chvíli, kdy je to nezbytně nutné, a někdy se nemusí zjišťovat
+vůbec. Tím se nejen zvýší efektivita programu (výpočty se provedou jen když jsou
+zapotřebí, nemusí se tedy vyhodnotit vůbec), ale hlavně se programátor zbaví
+nutnosti zabývat se pořadím vyhodnocování výrazů. Je tedy možné oddělit kód
+produkující a kód konzumující data, čímž se zvýší modularita. \cite{hughes1989functional}
 
 Ve funkcionálních programech je běžné používat nekonečné struktury, např.
 nekonečné seznamy či nekonečně se větvící stromy, a nechat vyhodnotit pouze tu
@@ -59,23 +63,21 @@ nekonečné seznamy či nekonečně se větvící stromy, a nechat vyhodnotit po
 \emph{Statické typování} znamená, že typ každého výrazu je znám již v při
 kompilaci programu, takže případné chyby kompilátor odhalí velmi brzy. Není tedy
 možné, aby program za běhu zhavaroval na typovou chybu, čímž se eliminuje celá
-škála potencionálních bugů -- žádné @t{Segmentation fault}, žádné
-@t{NullPointerException}, žádné @t{NoMethodError}. Většinou platí, že když se
-kód úspěšně zkompiluje, máme velkou šanci, že bude skutečně fungovat tak, jak si
+škála potencionálních bugů. Většinou platí, že když se kód úspěšně zkompiluje,
+máme velkou šanci, že bude už napoprvé skutečně fungovat tak, jak si
 představujeme.
 
 Narozdíl od jazyků jako Java či \Cplusplus, jež jsou také staticky typované, je
-silný typový systém Haskellu schopen naprostou většinu typů odvodit sám, takže
-typové anotace se obvykle používají jen jako druh dokumentace a způsob kontroly
-určené hlavně pro člověka (programátora).
+mnohem silnější typový systém Haskellu schopen naprostou většinu typů odvodit
+sám, takže typové anotace se obvykle používají jen jako druh dokumentace a
+způsob kontroly určené pro člověka (programátora).
 
 \subsection{Typové třídy}
 
-S typovým systémem úzce souvisí \emph{typové třídy}.\footnote{Neplést s třídami
-z objektově orientovaných jazyků} Typové třídy byly do Haskellu zavedeny, aby se
-vyřešil problém s \uv{přetěžováním} funkcí jako je porovnávání (@t{==}), které
-bychom potřebovali použít s větším množstvím typů (operace ekvivalence má smysl
-např. pro čísla, řetězce, seznamy, množiny...).
+S typovým systémem úzce souvisí \emph{typové třídy}. Typové třídy byly do
+Haskellu zavedeny, aby se vyřešil problém s \uv{přetěžováním} funkcí jako je
+porovnávání (@t{==}), které bychom potřebovali použít s větším množstvím typů
+(operace ekvivalence má smysl např. pro čísla, řetězce, seznamy, množiny...).
 
 Ukažme si příklad typové třídy @t{Eq}, která slouží k implementaci porovnání
 dvou hodnot:
@@ -173,7 +175,8 @@ nad tím, v jakém pořadí a jestli vůbec se funkce \uv{zavolají}.
 Haskell proto používá jinou techniku, která umožňuje zachovat funkcionální
 čistotu i líné vyhodnocování. Standardní knihovna poskytuje typ @t{IO a}, který
 reprezentuje \emph{vstupně/výstupní operaci}, jejíž výsledek je typu @t{a}.
-Například:
+
+Ukažme si příklad několika operací ze standardní knihovny:
 
 \begin{haskell}
 getChar :: IO Char
@@ -187,15 +190,17 @@ writeFile :: FilePath -> String -> IO ()
 @t{getChar} je vstupně/výstupní operace, která přečte jeden znak zadaný
 uživatelem a jejím výsledkem je tento znak, tedy typ @t{Char}. Obdobně
 @t{getLine} přečte celý řádek a její výsledek je typu @t{String}. Chceme-li
-naopak řádek vypsat, můžeme použít @t{putStrLn}, což je funkce, které
-předáme řetězec, jež si přejeme vypsat, a dostaneme vstupně/výstupní operaci,
-která tento řetězec vypíše. Jelikož tato operace nemá žádný smyslupný výsledek,
-vrací tzv. \emph{nulový typ} @t{()}, který má jedinou hodnotu (rovněž se zapisuje
-@t{()}) a používá se jako jistá \uv{výplň}.
+naopak řádek vypsat, můžeme použít @t{putStrLn}, což je funkce, které předáme
+řetězec, jež si přejeme vypsat, a dostaneme vstupně/výstupní operaci, která
+tento řetězec vypíše. Jelikož tato operace nemá žádný smyslupný výsledek, vrací
+tzv. \emph{nulový typ} @t{()}, který má jedinou hodnotu (rovněž se zapisuje
+@t{()}) a používá se jako \uv{výplň}. \footnote{Jde o jistou obdobu typu @t{void} z
+jazyka C nebo @t{nil} či @t{null} z dynamických jazyků jako Ruby či JavaScript,
+která je ovšem typově bezpečná.}
 
 Abychom přečetli soubor, musíme znát jeho umístění, proto je @t{readFile}
-funkce, které předáme cestu k souboru\footnote{@t{FilePath} je synonym k typu
-  @t{String}, který se ve standardní knihovně používá pro označení cest k
+funkce, které předáme cestu k souboru\footnote{Typ @t{FilePath} je synonym k
+  typu @t{String}, který se ve standardní knihovně používá pro označení cest k
 souboru.} a dostaneme vstupně/výstupní operaci, jejíž výsledek bude obsah
 souboru jako řetězec (@t{String}). Chceme-li zapsat data do souboru, použijeme
 funkci @t{writeFile}, které předáme dva argumenty -- cestu k souboru a řetězec
