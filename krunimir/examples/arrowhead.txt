@@ -1,11 +1,11 @@
 define arrowhead(n,side) {
   if(n) {
     left(60*side)
-    arrowhead(n-1,-side,step)
+    arrowhead(n-1,-side)
     right(60*side)
-    arrowhead(n-1,side,step)
+    arrowhead(n-1,side)
     right(60*side)
-    arrowhead(n-1,-side,step)
+    arrowhead(n-1,-side)
     left(60*side)
   }
   if(1-n) { forward(2) }

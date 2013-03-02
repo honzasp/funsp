@@ -206,54 +206,129 @@ vykreslení několika známých fraktálů.
 
 \subsection{Hilbertova křivka}
 
+Hilbertova křivka je plochu-vyplňující fraktál popsaný roku 1891 německým
+matematikem Davidem Hilbertem. \cite{wiki:hilbert-curve}
+
+Na obrázku \ref{fig:krunimir-hilbert-gen} jsou zakresleny první čtyři iterace
+Hilbertovy křivky a na obrázku \ref{fig:krunimir-hilbert} je výsledek tohoto
+programu.
+
+Hlavní část programu je procedura @t{hilbert(n,side)}, která nakreslí Hilbertovu
+křivku @t{n}-té iterace. Parametr @t{side} nabývá hodnot @t{-1} a @t{1} a
+určuje, na kterou stranu se křivka nakreslí.
+
 \lstinputlisting[style=krunimir]{krunimir/examples/hilbert.txt}
 
-\begin{figure}[p]
+\begin{figure}
   \centering
-  \includegraphics[width=0.9\textwidth]{krunimir/examples/hilbert}
-  \caption{Hilbertova křivka}\label{fig:krunimir-hilbert}
+  \caption{Hilbertova křivka}
+  \label{fig:krunimir-hilbert-all}
+
+  \begin{subfigure}{0.8\textwidth}
+    \includegraphics[width=\textwidth,trim=0 400 150 0]{krunimir/examples/hilbert-gen}
+    \caption{Postupné generování Hilbertovy křivky (zleva doprava iterace 1 až 4).}
+    \label{fig:krunimir-hilbert-gen}
+  \end{subfigure}
+
+  \begin{subfigure}{0.8\textwidth}
+    \includegraphics[width=\textwidth]{krunimir/examples/hilbert}
+    \caption{Hilbertova křivka vykreslená Krunimírem}
+    \label{fig:krunimir-hilbert}
+  \end{subfigure}
 \end{figure}
 
 \subsection{Kochova vločka}
 
+Kochova vločka je známý fraktál založený na Kochově křivce, kterou v roce 1904
+vytvořil švédský matematik Helge von Koch. \cite{wiki:koch-snowflake}
+
+Obrázek \ref{fig:krunimir-koch-gen} zachycuje první čtyři iterace Kochovy
+křivky, výsledek příkladového programu je na obrázku \ref{fig:krunimir-koch}. O
+kreslení se stará procedura @t{koch(n)}, jež nakreslí @t{n}-tou iteraci Kochovy
+křivky. Tuto proceduru posléze zavoláme třikrát po sobě, čímž vytvoříme Kochovu
+vločku.
+
 \lstinputlisting[style=krunimir]{krunimir/examples/koch.txt}
 
-\begin{figure}[p]
+\begin{figure}
   \centering
+  \caption{Kochova vločka}
+  \label{fig:krunimir-koch-all}
 
-  \includegraphics[width=0.9\textwidth]{krunimir/examples/koch}
-  \caption{Kochova vločka}\label{fig:krunimir-koch}
-\end{figure}
+  \begin{subfigure}{0.8\textwidth}
+    \includegraphics[width=\textwidth,trim=0 250 150 200]{krunimir/examples/koch-gen}
+    \caption{Iterace Kochovy křivky. Kochovu vločku dostaneme spojením
+    tří Kochových křivek.}
+    \label{fig:krunimir-koch-gen}
+  \end{subfigure}
 
-\subsection{Sierpińského křivka}
-
-\lstinputlisting[style=krunimir]{krunimir/examples/sierpinski.txt}
-
-\begin{figure}[p]
-  \centering
-
-  \includegraphics[width=0.9\textwidth]{krunimir/examples/sierpinski}
-  \caption{Sierpińského křivka}\label{fig:krunimir-sierpinski}
+  \begin{subfigure}{0.9\textwidth}
+    \includegraphics[width=\textwidth]{krunimir/examples/koch}
+    \caption{Kochova vločka vykreslená Krunimírem}
+    \label{fig:krunimir-koch}
+  \end{subfigure}
 \end{figure}
 
 \subsection{Gosperova křivka}
 
+Gosperova křivka, pojmenovaná po svém objeviteli, americkém programátorovi a
+matematikovi Billu Gosperovi, je plochu-vyplňující fraktál.
+\cite{wiki:gosper-curve}
+
+Na vykreslení této křivky musíme použít dvojici procedur, @t{gosperA} a
+@t{gosperB}, přičemž každá kreslí křivku z jiné strany (odpředu a odzadu).
+Způsob generování je zobrazen na obrázku \ref{fig:krunimir-gosper-gen}, výstup
+programu na obrázku \ref{fig:krunimir-gosper}.
+
 \lstinputlisting[style=krunimir]{krunimir/examples/gosper.txt}
 
-\begin{figure}[p]
+\begin{figure}
   \centering
+  \caption{Gosperova křivka}
+  \label{fig:krunimir-gosper-all}
 
-  \includegraphics[width=0.9\textwidth]{krunimir/examples/gosper}
-  \caption{Gosperova křivka}\label{fig:krunimir-gosper}
+  \begin{subfigure}{0.8\textwidth}
+    \includegraphics[width=\textwidth,trim=0 250 250 200]{krunimir/examples/gosper-gen}
+    \caption{První tři iterace Gosperovy křivky.}
+    \label{fig:krunimir-gosper-gen}
+  \end{subfigure}
+
+  \begin{subfigure}{0.9\textwidth}
+    \includegraphics[width=\textwidth]{krunimir/examples/gosper}
+    \caption{Gosperova křivka vykreslená Krunimírem}
+    \label{fig:krunimir-gosper}
+  \end{subfigure}
 \end{figure}
 
 \subsection{Křivka arrowhead}
 
+Křivka arrowhead je podobná Sierpi\`nského trojúhelníku, fraktálu polského
+matematika Wac\l{}ava Sierpi\`nského, který jej popsal v roce 1915.
+\cite{wiki:arrowhead-curve}
+
+Podobně jako u Hilbertovy křivky i zde musíme počítat s tím, že křivku musíme
+vykreslovat ve dvou zrcadlových variantách, k čemuž využijeme parametr @t{side}
+procedury @t{arrowhead(n,side)}. Postup generování ukazuje obrázek
+\ref{fig:krunimir-arrowhead-gen}, výsledek programu obrázek
+\ref{fig:krunimir-arrowhead}.
+
 \lstinputlisting[style=krunimir]{krunimir/examples/arrowhead.txt}
 
-\begin{figure}[p]
+\begin{figure}
   \centering
+  \caption{Křivka arrowhead}
+  \label{fig:krunimir-arrowhead-all}
 
-  \includegraphics[width=0.9\textwidth]{krunimir/examples/arrowhead}
-  \caption{Křivka arrowhead}\label{fig:krunimir-arrowhead}
+  \begin{subfigure}{0.8\textwidth}
+    \includegraphics[width=\textwidth,trim=0 250 50 200]
+      {krunimir/examples/arrowhead-gen}
+    \caption{Prvních pět iterací křivky arrowhead.}
+    \label{fig:krunimir-arrowhead-gen}
+  \end{subfigure}
+
+  \begin{subfigure}{0.9\textwidth}
+    \includegraphics[width=\textwidth]{krunimir/examples/arrowhead}
+    \caption{Křivka arrowhead vykreslená Krunmírem}
+    \label{fig:krunimir-arrowhead}
+  \end{subfigure}
 \end{figure}
