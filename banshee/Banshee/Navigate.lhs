@@ -52,18 +52,16 @@ turn castle slices bests = step 0 (cycle slices)
     let (starts,rest) = span ((<= t) . pathLength . snd) locpaths
         offset = t `mod` period
 
-    nextsss <- fmap catMaybes $ forM starts $ \((x,y),path) -> do
+    (starts',nextss) <- fmap (unzip . catMaybes) $ forM starts $ \((x,y),path) -> do
       uncov <- isNothing <$> readArray bests (offset,(x,y))
       if uncov then do
           writeArray bests (offset,(x,y)) $ Just path
           return . Just . (,) ((x,y),path) $ moves False slice1 slice2 ((x,y),path)
         else return Nothing
-    let (starts',nextss) = unzip nextsss
-    let nexts = concat nextss
     
     tv <- readArray bests (offset,castleTV castle)
     case tv of
-      Nothing -> (fmap (starts'++)) <$> step (t+1) (slice2:slices) (nexts ++ rest)
+      Nothing -> (fmap (starts'++)) <$> step (t+1) (slice2:slices) (concat nextss ++ rest)
       Just path -> return $ Left path
 
   period = length slices
@@ -75,12 +73,12 @@ navigate :: Castle -> [Slice] -> Bool -> Maybe [Loc]
 navigate castle slices thruWalls = runST $ do
   let ((1,1),(width,height)) = bounds $ castleFields castle
       start = [(castleStart castle,Path 0 [])]
-  bests <- newArray ((0,(1,1)),(length slices-1,(width,height))) Nothing
+  bests <- newArray ((0,(1,1)),(period-1,(width,height))) Nothing
   result <- if thruWalls
     then wallStep bests start
     else turn castle slices bests start
   case result of
-    Left (Path len locs) -> return . Just . reverse $ castleTV castle:locs
+    Left (Path len locs) -> return . Just . reverse $ castleTV castle : locs
     Right _ -> return Nothing
 
   where
@@ -95,7 +93,7 @@ navigate castle slices thruWalls = runST $ do
                   offset' = (len+1) `mod` period
               in  moves True (slices !! offset) (slices !! offset') ((x,y),path)
         wallStep bests (concat nextss)
-      _ -> return result
+      Left _ -> return result
 
   period = length slices
 \end{code}

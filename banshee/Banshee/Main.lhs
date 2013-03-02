@@ -38,7 +38,7 @@ options =
 \end{code}
 
 \begin{code}
-header progname = "Usage: " ++ progname ++ " [-hniq] castle-file"
+header progname = "Usage: " ++ progname ++ " [-hnq?] castle-file"
 \end{code}
 
 @Idx{Banshee.Main.main}
@@ -84,10 +84,7 @@ main = do
         hPutStrLn stderr (show err)
         exitFailure
 
-  let slices = sliceCastle castle
-      mpath = navigate castle slices thruWalls
-
-  case mpath of
+  case navigate castle (sliceCastle castle) thruWalls of
     Just locs
       | quiet       -> showQuiet castle locs
       | otherwise   -> showPath castle locs
