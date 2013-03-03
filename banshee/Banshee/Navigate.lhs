@@ -2,7 +2,7 @@
 @Idx{Banshee.Navigate}
 
 \begin{code}
-module Banshee.Navigate where
+module Banshee.Navigate(navigate) where
 import Data.Array
 import Data.Array.ST
 import Data.Maybe
@@ -34,7 +34,7 @@ moves thruWalls (Slice foreslice) (Slice afterslice) ((x,y),Path len ps) =
         WallSF -> thruWalls
         ScoutSF _ -> False
     , case foreslice ! (tox,toy) of
-        ScoutSF scout | scout == (x,y) -> False
+        ScoutSF scouts | (x,y) `elem` scouts -> False
         _ -> True
     ]
   where

@@ -2,7 +2,7 @@
 @Idx{Banshee.CastleParser}
 
 \begin{code}
-module Banshee.CastleParser where
+module Banshee.CastleParser(parseCastle) where
 import Banshee.Castle
 
 import Text.Parsec

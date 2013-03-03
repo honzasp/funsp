@@ -9,7 +9,77 @@ musím ten televizor zase najít a v mém věku už není procházení zdí tak
 jednoduché jako zamlada.}
 \end{quotation}
 
+Soutěžní úloha z roku 2010 \cite{banshee-task} (přetisknuta na straně
+\pageref{pdf:banshee}) je variací na klasické téma hledání cesty v bludišti.
+Bílá paní se nachází na hradě se zdmi a chodbami a snaží se dojít k televizoru,
+aby stihla začátek své oblíbené telenovely. Není ovšem sama -- v hradě se
+pohybují zvědaví zvědové, kteří se snaží bílou paní odhalit, proto se jim musí
+vyhnout. Bílá paní sice může procházet zdmi, ale snaží se procházení omezit na
+minimum, dá přednost delší cestě s menším počtem zdí než kratší cestě s větším
+počtem zdí.
+
+\section{Popis úlohy}
+
+Bludiště představuje hrad sestávající z volných políček a zdí, ve kterém se po
+předem daných cyklických drahách pohybují zvědové. Je dána počáteční pozice bílé
+paní a televizor, který představuje kýžený cíl. Bílá paní může procházet zdmi,
+ale nesmí být objevena zvědem.
+
+Cesta s počtem kroků $k_1$, která vede skrz $z_1$ zdí, je \emph{lepší} než cesta
+s $k_2$ kroky a $z_2$ zdmi právě tehdy, je-li $z_1 < z_2$ nebo $z_1 = z_2 \land
+k_1 < k_2$. Platí-li $z_1 = z_2 \land k_1 = k_2$, považujeme obě cesty za
+rovnocenné. Úkolem je najít \emph{nejlepší} cestu z počáteční pozice k
+televizoru, aniž by byla objevena zvědem.
+
+Zvěd bílou paní objeví tehdy, když
+\begin{inparaenum}[(a)]
+\item se oba ve stejném čase nachází na stejném políčku, nebo
+\item si v jednom kroku vymění pozice, tj. v čase $t$ stojí zvěd na políčku $A$
+  a bílá paní na políčku $B$ a v čase $t+1$ bílá paní na políčku $A$ a
+  \emph{stejný} zvěd na políčku $B$.
+\end{inparaenum}
+
+Vstupem programu je soubor s bludištěm uloženým v klasickém formátu
+programovacích soutěží, tj. na prvním řádku dvě čísla určující rozměry bludiště
+a na dalších řádcích po znacích jednotlivá políčka -- `@t{.}' volné, `@t{X}'
+zeď, `@t{\&}' počáteční pozice bílé paní, `@t{\#}' televizor. Zvěd je uložen
+jako znak `@t{@@}', za kterým následuje jeho trasa jako sada pohybů `@t{v}',
+`@t{>}', `@t{\^}' a `@t{<}' (dolů, doprava, nahoru a doleva). 
+
+Příklad mapy i s pohyby zvědů je na obrázku \ref{fig:banshee-castle-example}.
+
+\input{tex/banshee-example.tex}
+
+\section{Banshee}
+
+I když bychom mohli do angličtiny přeložit \uv{bílou paní} jako ``white lady'',
+budeme o ní v programu hovořit jako o ``banshee'', což je v irské mytologii duch
+ženy přicházející z podsvětí a předznamenávající blížící se smrt. Samozřejmě
+nejde o ekvivalent klasické české hradní bílé paní, ale pro naše účely je název
+@t{Banshee} vhodnější než @t{WhiteLady}.
+
+\section{Analýza}
+
+Stejně jako u Krunimíra i nyní bude vhodné program rozčlenit do modulů:
+
+\begin{description}
+
+  \item @t{Banshee.Castle} definuje datové typy reprezentující hrad, které
+    budeme používat v celém programu.
+
+  \item @t{Banshee.CastleParser} poskytuje funkci @t{parseCastle}, která přečte
+    popis hradu ze souboru ve výše uvedeném formátu.
+
+  \item @t{Banshee.Navigate} obsahuje jádro programu -- funkci @t{navigate},
+    která najde cestu v předaném hradu.
+
+  \item @t{Banshee.Main} exportuje @t{main}, která slouží jako uživatelské
+    rozhraní programu.
+
+\end{description}
+
 \input{banshee/Banshee/Castle.lhs}
 \input{banshee/Banshee/CastleParser.lhs}
 \input{banshee/Banshee/Navigate.lhs}
 \input{banshee/Banshee/Main.lhs}
+

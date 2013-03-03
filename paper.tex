@@ -19,6 +19,8 @@
 \usepackage{tabularx}
 \usepackage{changepage}
 \usepackage{pdfpages}
+\usepackage{paralist}
+\usepackage{amsfonts}
 \usepackage{tikz}
 \usetikzlibrary{positioning}
 \usetikzlibrary{calc}
@@ -80,6 +82,7 @@
 
 \lstnewenvironment{krunimir}[1][]{\lstset{style=krunimir,#1}}{}
 \lstnewenvironment{peg}[1][]{\lstset{style=peg,#1}}{}
+\lstnewenvironment{bansheecastle}[1][]{\lstset{style=ttcode,#1}}{}
 
 \DisableLigatures[>,<]{encoding = T1,family=tt*} %
 
@@ -90,6 +93,7 @@
 
 \newcommand{\comment}[1]{}
 \newatcommand t[1]{\texttt{#1}}
+\newatcommand ti[1]{\texttt{\textit{#1}}}
 
 \makeindex
 \newatcommand idx[1]{\index{#1@\texttt{#1}}}
@@ -108,6 +112,8 @@
   % hyperindex=true,
   linktoc=all,
 }
+
+\newcounter{dummy}
 
 \begin{document}
 \input{tex/title.tex}

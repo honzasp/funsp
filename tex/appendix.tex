@@ -7,5 +7,13 @@ Zde přetiskujeme původní zadání Ústředního kola Soutěže v programován
 
 \marginnote{Tahle obrovská bílá proluka je opravdu ošklivá; co s ní?}
 
-\includepdf[pages={1,2},pagecommand={}]{krunimir/mcr2010z.pdf}
+% forces the pdf:krunimir label to link to the first page of the Krunimir PDF
+\newpage 
+
+\refstepcounter{dummy}
+\label{pdf:krunimir}
+\includepdf[pages={1,2},pagecommand={}] {krunimir/mcr2010z.pdf}
+
+\refstepcounter{dummy}
+\label{pdf:banshee}
 \includepdf[pages={1,2},pagecommand={}]{banshee/mcr12zp.pdf}

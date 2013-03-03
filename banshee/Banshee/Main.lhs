@@ -2,7 +2,7 @@
 @Idx{Banshee.Main}
 
 \begin{code}
-module Banshee.Main where
+module Banshee.Main(main) where
 import System.IO
 import System.Environment
 import System.Exit
