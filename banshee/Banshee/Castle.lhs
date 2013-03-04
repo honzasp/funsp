@@ -134,12 +134,12 @@ sliceCastle :: Castle -> [Slice]
 sliceCastle castle = map slice [0..period-1] where
   fields = castleFields castle
   period = foldl lcm 1 . map length . castleScouts $ castle
-  loopedScouts = map cycle $ castleScouts castle
+  cycledScouts = map cycle $ castleScouts castle
   sfFields = fmap fieldToSF fields
 
   slice s = Slice $ accum acc sfFields
     [((x,y),next) 
-    | scout <- loopedScouts
+    | scout <- cycledScouts
     , let (x,y):next:_ = drop s scout]
 
   acc :: SliceField -> Loc -> SliceField
@@ -163,7 +163,7 @@ hradu.
 se o nejmenší společný násobek délek tras všech zvědů z hradu. (Funkce @t{lcm a
 b} spočte nejvyšší společný násobek dvou čísel @t{a} a @t{b}.)
 
-\item[@t{loopedScouts}] je seznam tras všech zvědů (@t{[Loc]}) \uv{zacyklený} do
+\item[@t{cycledScouts}] je seznam tras všech zvědů (@t{[Loc]}) \uv{zacyklený} do
 nekonečně se opakující sekvence pomocí funkce @t{cycle}.
 
 \item[@t{sfFields}] je pole @t{field} převedené z hodnot typu @t{Field} na
