@@ -1,4 +1,5 @@
 \section{\texorpdfstring{@t{Krunimir.Parser}}{Krunimir.Parser}}
+\label{sec:krunimir-parser}
 @Idx{Krunimir.Parser}
 
 Pro syntaktickou analýzu (\uv{parsování}) použijeme knihovnu @t{parsec}
