@@ -279,7 +279,7 @@ main =
 Tento kód ale není příliš přehledný a pokud bychom jej chtěli ještě dále
 rozšířit, mohli bychom se v něm brzy ztratit. Protože zřetězené používání
 @t{>>=} a @t{>>} je v Haskellu velmi časté, obsahuje jazyk tzv. @t{do}-syntaxi,
-která nám umožňuje zapisovat série operací o něco úhledněji:
+která nám umožňuje zapisovat série monadických operací o něco úhledněji:
 
 \begin{haskell}
 main = do
@@ -287,3 +287,34 @@ main = do
   name <- getStrLn
   putStrLn ("Ahoj " ++ name)
 \end{haskell}
+
+\section{Řešené úlohy}
+
+Řešené úlohy pochází z Ústředních kol Soutěže v programování, vyhlašované
+Ministerstvem školství, mládeže a tělovýchovy a pořádané Národním institutem
+dětí a mládeže, z let 2010 (soutěžní úloha s Krunimírem) a 2012 (úloha s Bílou
+paní),
+
+Tyto úlohy byly vybrány, protože nejsou ani příliš rozsáhlé, ani příliš
+jednoduché, a není je možno podezírat, že by byly vytvořeny funkcionálnímu jazyku
+\uv{na míru}.
+
+Zadání obou původních úloh je možno nalézt jak na Internetu
+(\cite{krunimir-task}, \cite{banshee-task}), tak přetištěné v této práci na
+stranách \pageref{pdf:krunimir} a \pageref{pdf:banshee}.
+
+\section{Technická stránka}
+
+V této práci jsou popsány dva programy, jež řeší obě úlohy. Kód je zapsán ve
+stylu \emph{literárního programování}, kdy se volně střídá kód srozumitelný pro
+počítač a komentář pro člověka, což znamená, že zdrojový kód Haskellu obou
+programů je zároveň zdrojovým kódem systému \LaTeX, kterým je tato práce
+vysázena.
+
+Texty kapitol \ref{chap:krunimir} a \ref{chap:banshee} jsou tedy kompletní
+programy, které je možno přeložit a spustit. Tímto je zajištěno, že zde
+prezentovaný kód je plně funkční.
+
+Zdrojový kód práce je spravován pomocí distribuovaného systému správy verzí Git
+a hostován na serveru \href{http://github.com}{github.com}, adresa repozitáře s
+prací je \url{https://github.com/honzasp/funsp}.
