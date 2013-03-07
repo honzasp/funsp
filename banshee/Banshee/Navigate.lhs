@@ -1,6 +1,20 @@
 \section{\texorpdfstring{@t{Banshee.Navigate}}{Banshee.Navigate}}
 @Idx{Banshee.Navigate}
 
+\subsection{Popis algoritmu}
+
+Náš algoritmus hledání cesty je založen na prohledávání do šířky s počátkem na
+startovní pozici bílé paní. O cestě hradem můžeme uvažovat jako o sérii změny
+\uv{časopozic}, kde časopozicí budeme nazývat dvojici \emph{pozice} v hradu a
+\emph{času}, potřebného k cestě na tuto pozici modulo perioda hradu.  V hradu je
+tedy celkem $w \times h \times p$ časopozic, kde $w$ je šířka hradu, $h$ je
+výška a $p$ je perioda. 
+
+V průběhu výpočtu si budeme udržovat pole, jež pro každou časopozici obsahuje
+nejkratší cestu, jak této časopozice dosáhnout.  Pokud v každém kroku algoritmu
+přiřadíme jedné časopozici nejkratší cestu, dostaneme časovou složitost
+$O(whp)$, tedy přímo úměrnou počtu políček v hradu a periodě.
+
 \begin{code}
 module Banshee.Navigate(navigate) where
 import Data.Array
@@ -21,7 +35,7 @@ data Path = Path Int [Loc] deriving Show
 pathLength (Path len _) = len
 \end{code}
 
-\subsection{Určení možných pohybů}
+\subsection{Určení možných pohybů z políčka}
 
 Funkce @t{moves} slouží k určení všech možných pozic, na které se bílá paní může
 dostat z dané pozice. Tato funkce má typ @t{moves :: Bool -> Slice -> Slice ->
@@ -75,10 +89,10 @@ zvědem prohodí místo, což znamená, že ji zvěd objeví.
 \subsection{\texorpdfstring{Monáda @t{ST}}{Monáda ST}}
 
 V našem algoritmu budeme muset dále pracovat s polem, ve kterém si budeme
-ukládat nejlepší cesty, které jsme nalezli do každého políčka v hradě. Mohli
-bychom použít klasické pole @t{Array}, ale protože do tohoto pole vždy zapíšeme
-pouze jeden prvek, byl by program velmi neefektivní, jelikož při každém
-\uv{zápisu} musíme celé pole zkopírovat.
+ukládat nejlepší cesty, které jsme nalezli do každé časopozice v hradě. Mohli
+bychom použít klasické pole @t{Array}, ale protože do tohoto pole budeme
+zapisovat po jednom prvku, byl by program velmi neefektivní, jelikož při každém
+zápisu se celé pole musí zkopírovat.
 
 Proto využijeme monádu @t{ST s}.\cite{launchbury1994lazy} Tento typ je podobný
 typu @t{IO} v tom, že umožňuje akcím v této monádě využívat měnitelné datové
@@ -93,7 +107,7 @@ výpočet}, jenž využívá interní stav @t{s} a jehož výstup má typ @t{a}.
 Funkce, která nám umožní provést výpočet v monádě @t{ST} a získat jeho výstup se
 jmenuje @t{runST} a má typ @t{(forall s. ST s a) -> a}.\footnote{Kvantifikátor
 @t{forall} je součástí typové magie zajišťující bezpečnost použití @t{ST} a je
-součástí rozšíření jazyka @t{ExistentialQuantification}.}
+součástí rozšíření @t{ExistentialQuantification} jazyka Haskell.}
 
 \subsubsection{\texorpdfstring
 {Měnitelné pole @t{STArray}}
@@ -124,6 +138,31 @@ jehož prvky jsou inicializované na hodnotu @t{x}.
 
 \subsection{Hledání cest v souvislých oblastech bez průchodu zdí}
 
+Nyní si implementujeme funkci, která pro daný seznam výchozích pozic s
+příslušnými cestami nalezne nejlepší cestu do každé časopozice hradu, kam se
+můžeme dostat bez průchodu zdí. Tyto nejlepší cesty zapíše do předaného
+měnitelného pole @t{STArray} a vrátí buď cestu k televizoru, pokud byla takováto
+nalezena, nebo seznam dosažených pozic s příslušnými cestami.
+
+Pro předaný seznam výchozích pozic a cest musí platit, že všechny cesty prochází
+stejným počtem zdí a jsou seřazeny podle délky, což znamená, že lepší cesta vždy
+v tomto seznamu předchází cestu horší.
+
+Jednotlivé argumenty této funkce jsou následující:
+
+\begin{itemize}
+\item První argument (typ @t{Castle}) je hrad, ve kterém hledáme cestu.
+\item Druhý argument (@t{[Slice]}) je seznam řezů, na které je tento hrad
+nakrájen.
+\item Třetí argument (@t{STArray s (Int,Loc) (Maybe Path)}) je měnitelné pole
+@t{bests}, které každé časopozici přiřazuje nejlepší cestu (pokud existuje).
+\item Poslední argument (@t{[(Loc,Path)]}) je seznam startovních pozic
+seřazených podle délky (tyto ještě nejsou zapsány v poli @t{bests}).
+\item Výsledek (@t{ST s (Either Path [(Loc,Path)])}) je výpočet v monádě @t{ST
+s}, jehož výsledek je buď cesta k televizoru (hodnota @t{Left}) nebo seznam
+pozic a cest, jež byly přidány do pole @t{bests}, seřazených podle délky.
+\end{itemize}
+
 @Idx{Banshee.Navigate.flood}
 \begin{code}
 flood :: Castle -> [Slice] -> STArray s (Int,Loc) (Maybe Path) ->
@@ -149,6 +188,37 @@ flood castle slices bests = step 0 (cycle slices)
 
   period = length slices
 \end{code}
+
+Téměř všechnu práci v této funkci vykoná pomocná funkce @t{step}. Jejím prvním
+argumentem je čas @t{t}, ve kterém má začít, druhým nekonečný seznam řezů hradu
+(prvním prvkem je řez v čase @t{t} -- @t{slice1}, druhým řez v čase @t{t+1} --
+@t{slice2}) a posledním seznam dvojic pozic a cest do těchto pozic, ze kterých
+hledáme cesty (@t{locpaths}).
+
+Pokud jsme dostali tento seznam prázdný, funkce @t{step} jednoduše vrátí prázdný
+seznam značící, že televizor nebyl nalezen a do pole @t{bests} nebylo přidáno
+nic.
+
+V opačném případě si nejprve seznam @t{locpaths} rozdělíme na dvě části --
+seznam @t{starts} obsahuje všechny páry pozice-cesta ze kterých vyjdeme v tomto
+kroku, v seznamu @t{rest} je zbytek.
+
+Následně pro každou dvojici ze seznamu @t{starts} zkontrolujeme, jestli v poli
+@t{bests} není náhodou již nalezena nějaká jiná nejlepší cesta. Pokud ne, do
+pole zapíšeme tuto cestu a vrátíme jak tuto dvojici, tak seznam následujících
+políček, \uv{zabalené} v konstruktoru @t{Just}. Pokud již byla nalezena lepší
+cesta, vrátíme @t{Nothing}.
+
+Tímto získáme seznam @t{[Maybe ((Loc,Path),[(Loc,Path)])]}, který následně
+pomocí složené funkce @t{unzip . catMaybes} převedeme na
+@t{([(Loc,Path)],[[(Loc,Path)]])}, tedy dvojici, jejíž první prvek je seznam
+pozic a cest, které byly uznány za nejlepší, a seznam seznamů políček a cest k
+nim, na které se z těchto nejlepších cest můžeme dostat.
+
+Pak zkontrolujeme, jestli jsme neobjevili nejkratší cestu k televizoru. Pokud
+ano, tak tuto cestu vrátíme jako @t{Left}, jinak rekurzivně zavoláme @t{step}
+znovu a pomocí funkce @t{fmap} k jejímu výsledku přidáme ještě seznam
+@t{starts'}.
 
 \subsection{Hledání cest včetně procházení zdí}
 
