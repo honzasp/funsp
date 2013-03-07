@@ -23,6 +23,21 @@ pathLength (Path len _) = len
 
 \subsection{Určení možných pohybů}
 
+Funkce @t{moves} slouží k určení všech možných pozic, na které se bílá paní může
+dostat z dané pozice. Tato funkce má typ @t{moves :: Bool -> Slice -> Slice ->
+(Loc,Path) -> [(Loc,Path)]}:
+
+\begin{itemize}
+\item První argument (typu @t{Bool}) určuje, jestli můžeme procházet zdmi.
+\item Druhý argument (@t{Slice}) je řez hradu v čase, ze kterého vycházíme.
+\item Třetí argument (@t{Slice}) je řez hradu v dalším kroku (v čase, ve kterém
+dorazíme na další políčko).
+\item Poslední argument (@t{(Loc,Path)}) je dvojice -- pozice, ze které
+vycházíme, a cesta, kterou jsme se na tuto pozici dostali.
+\item Výsledkem (@t{[(Loc,Path)]}) je seznam pozic, kam se můžeme dostat, spolu
+s cestami.
+\end{itemize}
+
 @Idx{Banshee.Navigate.moves}
 \begin{code}
 moves :: Bool -> Slice -> Slice -> (Loc,Path) -> [(Loc,Path)]
@@ -43,7 +58,69 @@ moves thruWalls (Slice foreslice) (Slice afterslice) ((x,y),Path len ps) =
     ((1,1),(width,height)) = bounds foreslice
 \end{code}
 
+Funkci jsme implementovali pomocí generátoru seznamu. Nejprve si vygenerujeme
+dvojice @t{(tox,toy)} všech čtyř pozic sousedních výchozí pozici @t{(x,y)}.
+Následně zkontrolujeme, že se tyto pozice nachází v hradu a podíváme se, co nás
+na této pozici v hradu čeká.
+
+Je-li to volné políčko, je vše v pořádku. Pokud narazíme na zeď, tak pokračujeme
+pouze pokud má argument @t{thruWalls} hodnotu @t{True}, pokud by se ale bílá
+paní dostala na stejné políčko se zvědem, musíme tuto pozici přeskočit.
+
+Nakonec zkontrolujeme, jestli se v čase, ve kterém jsme vyšli, na políčku, na
+které jdeme, nevyskytují zvědi. Pokud ano, a některý z těchto zvědů se v dalším
+tahu přesune na pole, ze kterého jsme vyšli, znamená to, že si bílá paní se
+zvědem prohodí místo, což znamená, že ji zvěd objeví.
+
 \subsection{\texorpdfstring{Monáda @t{ST}}{Monáda ST}}
+
+V našem algoritmu budeme muset dále pracovat s polem, ve kterém si budeme
+ukládat nejlepší cesty, které jsme nalezli do každého políčka v hradě. Mohli
+bychom použít klasické pole @t{Array}, ale protože do tohoto pole vždy zapíšeme
+pouze jeden prvek, byl by program velmi neefektivní, jelikož při každém
+\uv{zápisu} musíme celé pole zkopírovat.
+
+Proto využijeme monádu @t{ST s}.\cite{launchbury1994lazy} Tento typ je podobný
+typu @t{IO} v tom, že umožňuje akcím v této monádě využívat měnitelné datové
+struktury, narozdíl od @t{IO} jsou však akce v monádě @t{ST s} omezeny pouze na
+\uv{vnitřní} stav, nemohou tedy např. přistupovat k disku nebo vypisovat znaky
+na obrazovku.  Nejdůležitější ale je, že výsledek akce v monádě @t{ST s} můžeme
+získat z \emph{čistého} kódu.
+
+Na akci typu @t{ST s a} je tedy možno pohlížet jako na \emph{deterministický
+výpočet}, jenž využívá interní stav @t{s} a jehož výstup má typ @t{a}. Proměnná
+@t{s} slouží k zajištění, že tento interní stav \uv{neunikne} z monády @t{ST}.
+Funkce, která nám umožní provést výpočet v monádě @t{ST} a získat jeho výstup se
+jmenuje @t{runST} a má typ @t{(forall s. ST s a) -> a}.\footnote{Kvantifikátor
+@t{forall} je součástí typové magie zajišťující bezpečnost použití @t{ST} a je
+součástí rozšíření jazyka @t{ExistentialQuantification}.}
+
+\subsubsection{\texorpdfstring
+{Měnitelné pole @t{STArray}}
+{Měnitelné pole STArray}}
+
+Měnitelné pole, které můžeme použít v monádě @t{ST s}, má typ @t{STArray s i e},
+kde @t{s} je stejná typová proměnná, kterou předáme i do @t{ST s}, @t{i} je typ
+indexu a @t{e} typ prvků.
+
+S takovýmto polem můžeme provádět následující operace:
+
+\begin{description}
+
+\item[@t{getBounds :: STArray s i e -> ST s (i,i)}] \hfill \\
+@t{getBounds ary} získá rozsah indexů pole @t{ary}.
+
+\item[@t{newArray :: (i,i) -> e -> ST s (STArray s i e)}] \hfill \\
+@t{newArray (a,a) x} vytvoří nové pole s rozsahem indexů od @t{a} do @t{b},
+jehož prvky jsou inicializované na hodnotu @t{x}.
+
+\item[@t{readArray :: STArray s i e -> i -> ST s e}] \hfill \\
+@t{readArray ary i} přečte hodnotu prvku na indexu @t{i} v poli @t{ary}.
+
+\item[@t{writeArray :: STArray s i e -> i -> e -> ST s ()}] \hfill \\
+@t{writeArray ary i x} zapíše hodnotu @t{x} do indexu @t{i} v poli @t{ary}.
+
+\end{description}
 
 \subsection{Hledání cest v souvislých oblastech bez průchodu zdí}
 
