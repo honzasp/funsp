@@ -55,3 +55,22 @@ balíčků Cabal. Poté stačí v příslušné složce spustit:
     cabal build
 
 Výsledné spustitelné soubory se nachází ve složce `dist/build`.
+
+Nepůvodní soubory
+----------------
+
+Obsah následujících složek je převzat z doprovodných souborů k Soutěži v
+programování, které jsou volně dostupné na [webu soutěže](http://stv.cz/sp/).
+
+* `banshee/test/data_testovaci`
+* `banshee/test/data_ukazkova`
+* `krunimir/test/zaklad`
+* `krunimir/test/rozsireni2`
+* `krunimir/test/rozsireni3`
+* `krunimir/test/rozsireni4`
+* `krunimir/test/vsechno`
+
+Ze stejného zdroje pochází soubory se soutěžním zadáním:
+
+* `banshee/mcr12zp.pdf`
+* `krunimir/mcr2010z.pdf`
