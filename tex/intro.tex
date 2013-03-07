@@ -14,7 +14,15 @@ Od roku 2006 probíhá proces nazývaný Haskell' (Haskell Prime), jehož cílem
 vytvářet nové revize standardu každý rok. První a zatím poslední revizí je
 Haskell 2010.\comment{cite Haskell 2010 Report}
 
-\marginnote{úvodní odstavec k vlastnostem}
+V následujících podsekcích budou představeny základní vlastnosti jazyka Haskell,
+v práci ovšem budeme předpokládat jistou základní znalost funkcionálního
+programování v tomto jazyku. Pokud se čtenář s tímto stylem programování ještě
+nesetkal, autor mu může doporučit knihu slovinského studena Mirana Lipovači
+\emph{Learn You a Haskell for Great Good} \cite{lipovaca2011learn}, která je
+volně dostupná na Internetu jak v původní anglické verzi,\footnote{\url{http://learnyouahaskell.com/}} tak v částečném českém
+překladu.\footnote{\url{http://naucte-se.haskell.cz/}} Práce by nicméně měla být
+srozumitelná i se základními znalostmi \uv{klasického}
+programování.
 
 \subsection{Čistě funkcionální jazyk}
 
@@ -288,6 +296,42 @@ main = do
   putStrLn ("Ahoj " ++ name)
 \end{haskell}
 
+\subsubsection{Monády}
+
+Typ @t{IO} je jen jedním z příkladů \emph{monád}. Monády, původně koncept z
+teorie kategorií, je v Haskellu možno považovat za \emph{výpočty} nebo
+\emph{akce}, které je možno \emph{skládat}, tedy přesměrovat \emph{výstup} z
+jedné monády do druhé.
+
+V Haskellu jsou monády implementovány pomocí typové třídy @t{Monad} ze
+standardní knihovny jazyka. Tato třída je definována takto:
+
+\begin{haskell}
+class Monad m where
+  (>>=)  :: m a -> (a -> m b) -> m b
+  (>>)   :: m a -> m b -> m b
+  m >> k  = m >>= \_ -> k
+
+  return :: a -> m a
+\end{haskell}
+
+Funkce @t{>>=} (nazývaná \uv{bind}) a @t{>>}, které jsme si výše ukázali při
+použití s typem @t{IO}, jsou tedy ve skutečnosti definované pro všechny monády.
+Funkce @t{return} pak pro libovolnou hodnotu vytvoří monádu, jejímž výstupem je
+tato hodnota.
+
+Kromě typu @t{IO} jsou ze standardní knihovny monádami například i typy @t{[]},
+@t{Maybe}, @t{Either e} či @t{(->) a} (funkce, jejímž argumentem je typ @t{a}).
+
+\subsection{Dokumentace Haskellu}
+
+Veškeré knihovny použité v této práci se, včetně dokumentace, nachází na serveru
+Hackage.\footnote{\url{http://hackage.haskell.org/packages/hackage.html}} Pro
+vyhledávání v dokumentaci je možno použít vyhledávač
+Hoogle.\footnote{\url{http://www.haskell.org/hoogle/}} Tento vyhledávač umožňuje
+vyhledávat nejen podle jména požadované funkce či třídy, ale i podle přibližného
+\emph{typu}, což z něj činí velmi užitečný nástroj.
+
 \section{Řešené úlohy}
 
 Řešené úlohy pochází z Ústředních kol Soutěže v programování, vyhlašované
@@ -303,7 +347,7 @@ Zadání obou původních úloh je možno nalézt jak na Internetu
 (\cite{krunimir-task}, \cite{banshee-task}), tak přetištěné v této práci na
 stranách \pageref{pdf:krunimir} a \pageref{pdf:banshee}.
 
-\section{Technická stránka}
+\section{Technická stránka práce}
 
 V této práci jsou popsány dva programy, jež řeší obě úlohy. Kód je zapsán ve
 stylu \emph{literárního programování}, kdy se volně střídá kód srozumitelný pro
@@ -317,7 +361,8 @@ prezentovaný kód je plně funkční.
 
 Zdrojový kód práce je spravován pomocí distribuovaného systému správy verzí Git.
 Repozitář je volně přístupný na serveru \href{http://github.com}{github.com},
-adresa repozitáře s prací je \url{https://github.com/honzasp/funsp}.
+adresa repozitáře s prací je \url{https://github.com/honzasp/funsp}. Detailnější
+popis jednotlivých souborů a složek se nachází v souboru @t{README}.
 
 Jako kompilátor byl využit GHC (Glasgow Haskell Compiler), který je dnes mezi
 překladači Haskellu dominantní.
