@@ -222,6 +222,8 @@ znovu a pomocí funkce @t{fmap} k jejímu výsledku přidáme ještě seznam
 
 \subsection{Hledání cest včetně procházení zdí}
 
+\marginnote{Zbytek popisu se musí doplnit :-)}
+
 @Idx{Banshee.Navigate.navigate}
 \begin{code}
 navigate :: Castle -> [Slice] -> Bool -> Maybe [Loc]
