@@ -21,6 +21,8 @@ data Path = Path Int [Loc] deriving Show
 pathLength (Path len _) = len
 \end{code}
 
+\subsection{Určení možných pohybů}
+
 @Idx{Banshee.Navigate.moves}
 \begin{code}
 moves :: Bool -> Slice -> Slice -> (Loc,Path) -> [(Loc,Path)]
@@ -41,11 +43,15 @@ moves thruWalls (Slice foreslice) (Slice afterslice) ((x,y),Path len ps) =
     ((1,1),(width,height)) = bounds foreslice
 \end{code}
 
-@Idx{Banshee.Navigate.turn}
+\subsection{\texorpdfstring{Monáda @t{ST}}{Monáda ST}}
+
+\subsection{Hledání cest v souvislých oblastech bez průchodu zdí}
+
+@Idx{Banshee.Navigate.flood}
 \begin{code}
-turn :: Castle -> [Slice] -> STArray s (Int,Loc) (Maybe Path) ->
+flood :: Castle -> [Slice] -> STArray s (Int,Loc) (Maybe Path) ->
   [(Loc,Path)] -> ST s (Either Path [(Loc,Path)])
-turn castle slices bests = step 0 (cycle slices)
+flood castle slices bests = step 0 (cycle slices)
   where
   step _ _ [] = return $ Right []
   step t (slice1:slice2:slices) locpaths = do
@@ -67,6 +73,8 @@ turn castle slices bests = step 0 (cycle slices)
   period = length slices
 \end{code}
 
+\subsection{Hledání cest včetně procházení zdí}
+
 @Idx{Banshee.Navigate.navigate}
 \begin{code}
 navigate :: Castle -> [Slice] -> Bool -> Maybe [Loc]
@@ -76,7 +84,7 @@ navigate castle slices thruWalls = runST $ do
   bests <- newArray ((0,(1,1)),(period-1,(width,height))) Nothing
   result <- if thruWalls
     then wallStep bests start
-    else turn castle slices bests start
+    else flood castle slices bests start
   case result of
     Left (Path len locs) -> return . Just . reverse $ castleTV castle : locs
     Right _ -> return Nothing
@@ -85,7 +93,7 @@ navigate castle slices thruWalls = runST $ do
   wallStep :: STArray s (Int,Loc) (Maybe Path) -> [(Loc,Path)] ->
     ST s (Either Path [(Loc,Path)])
   wallStep bests locpaths = do
-    result <- turn castle slices bests locpaths
+    result <- flood castle slices bests locpaths
     case result of
       Right locpaths'@(_:_) -> do
         let nextss = (`map` locpaths') $ \((x,y),path@(Path len _)) ->
