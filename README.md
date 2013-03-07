@@ -8,7 +8,7 @@ Abstrakt
 --------
 
 Funkcionální programování, vycházející z λ-kalkulu, tvoří alternativu k dnes
-široce využívanému imperativnímu přístupu k programování, reprezento- vanému
+široce využívanému imperativnímu přístupu k programování, reprezentovanému
 jazyky jako C, C++, Java, C#, Objective-C, JavaScript, Python, Ruby či PHP.
 
 Tyto jazyky jsou založeny na postupném vykonávání příkazů, jež mění stav
