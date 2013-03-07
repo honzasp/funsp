@@ -176,10 +176,10 @@ podle přečteného znaku:
 @Idx{Banshee.CastleParser.move}
 \begin{code}
 move :: Parser Move
-move = char '^' >> return North
-   <|> char '<' >> return West
-   <|> char 'v' >> return South
-   <|> char '>' >> return East
+move = char '^' *> return North
+   <|> char '<' *> return West
+   <|> char 'v' *> return South
+   <|> char '>' *> return East
 \end{code}
 
 Funkcí @t{applyMoves} pak \uv{aplikujeme} seznam pohybů na počáteční pozici,
