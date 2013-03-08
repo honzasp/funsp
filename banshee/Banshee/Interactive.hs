@@ -79,8 +79,10 @@ showInteractive castle slices locs = runCurses $ do
               setColor normalColorID
               moveCursor (rows-1) 0
               drawString $ replicate (fromInteger cols-1) ' '
+
               moveCursor (rows-1) 0
-              drawString . concat $ ["Step ",show t,"/",show (pathLen-1)]
+              drawString . take (fromInteger cols-1) . concat $
+                ["Step ",show t,"/",show (pathLen-1)," (Press ? for help)"]
 
         updateWindow win updateMap
         updateWindow win updateStatus
@@ -120,6 +122,11 @@ showInteractive castle slices locs = runCurses $ do
 
           helpWin <- newWindow hrows hcols 2 4
           updateWindow helpWin $ do
+            setColor normalColorID
+
+            forM_ [0..hrows-1] $ \row ->
+              drawString $ replicate (fromIntegral hcols-1) ' '
+
             drawBox Nothing Nothing
             forM_ (zip [0..] $ take (fromInteger hrows) helpLines) $ \(row,helpLine) -> do
               moveCursor row 1
