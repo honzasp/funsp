@@ -10,6 +10,8 @@ import Banshee.Castle
 showInteractive :: Castle -> [Slice] -> [Loc] -> IO ()
 showInteractive castle slices locs = runCurses $ do
   win <- defaultWindow
+  setCursorMode CursorInvisible
+  setEcho False
 
   normalColorID  <- newColorID ColorBlack ColorWhite 1
   scoutColorID   <- newColorID ColorRed ColorWhite 2
@@ -84,12 +86,23 @@ showInteractive castle slices locs = runCurses $ do
         updateWindow win updateStatus
         render
 
+  let helpLines = 
+        [ ""
+        , "    (Press ESC to close)"
+        , ""
+        , "  q      - quit the program"
+        , "  left   - one step backward"
+        , "  right  - one step forward"
+        ]
+
+
   let loop :: Curses ()
       loop = do
         redraw
         Just ev <- getEvent win Nothing
         case ev of
           EventCharacter 'q' -> return ()
+          EventCharacter '?' -> showHelp >> loop
           EventSpecialKey KeyRightArrow -> forward 1 >> loop
           EventSpecialKey KeyLeftArrow -> backward 1 >> loop
           EventResized -> loop
@@ -99,5 +112,29 @@ showInteractive castle slices locs = runCurses $ do
 
         forward s  = liftIO $ modifyIORef timeRef (min (pathLen-1) . (+s))
         backward s = liftIO $ modifyIORef timeRef (max 0 . (+(-s)))
+
+        showHelp = do
+          (rows,cols) <- screenSize
+          let hrows = rows-4
+              hcols = cols-8
+
+          helpWin <- newWindow hrows hcols 2 4
+          updateWindow helpWin $ do
+            drawBox Nothing Nothing
+            forM_ (zip [0..] $ take (fromInteger hrows) helpLines) $ \(row,helpLine) -> do
+              moveCursor row 1
+              drawString $ take (fromInteger hcols-2) helpLine
+
+          render
+          closeWindow helpWin
+          helpLoop
+
+        helpLoop = do
+          Just ev <- getEvent win Nothing
+          case ev of
+            EventResized -> redraw >> showHelp
+            EventCharacter '\ESC' -> return ()
+            EventCharacter 'q' -> return ()
+            _ -> helpLoop
 
   loop
