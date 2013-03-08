@@ -95,6 +95,8 @@ showInteractive castle slices locs = runCurses $ do
         , "  q      - quit the program"
         , "  left   - one step backward"
         , "  right  - one step forward"
+        , "  page down - five steps forward"
+        , "  page up   - five steps backward"
         ]
 
 
@@ -105,8 +107,10 @@ showInteractive castle slices locs = runCurses $ do
         case ev of
           EventCharacter 'q' -> return ()
           EventCharacter '?' -> showHelp >> loop
-          EventSpecialKey KeyRightArrow -> forward 1 >> loop
-          EventSpecialKey KeyLeftArrow -> backward 1 >> loop
+          EventSpecialKey KeyRightArrow   -> forward 1  >> loop
+          EventSpecialKey KeyLeftArrow    -> backward 1 >> loop
+          EventSpecialKey KeyNextPage     -> forward 5  >> loop
+          EventSpecialKey KeyPreviousPage -> backward 5 >> loop
           EventResized -> loop
           _ -> loop
 
