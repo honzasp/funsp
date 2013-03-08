@@ -11,6 +11,11 @@ import Control.Applicative
 import Control.Monad
 import Data.Array
 
+import UI.NCurses
+import UI.NCurses.Panel
+import Data.IORef
+import Control.Monad.IO.Class
+
 import Banshee.Castle
 import Banshee.CastleParser
 import Banshee.Navigate
@@ -22,6 +27,7 @@ data Flag
   = HelpFlag
   | NotThroughFlag
   | QuietFlag
+  | InteractiveFlag
   deriving (Eq,Show)
 \end{code}
 
@@ -33,7 +39,9 @@ options =
   , Option ['n'] ["not-through"] (NoArg NotThroughFlag)
     "disable going through the walls"
   , Option ['q'] ["quiet"] (NoArg QuietFlag)
-    "show just the length of the found path"
+    "show just the minimal information about the found path"
+  , Option ['i'] ["interactive"] (NoArg InteractiveFlag)
+    "display a minimal interactive UI to show the found path"
   ]
 \end{code}
 
@@ -59,6 +67,7 @@ main = do
   let thruWalls = NotThroughFlag `notElem` flags
       quiet = QuietFlag `elem` flags
       help = HelpFlag `elem` flags
+      interactive = InteractiveFlag `elem` flags
 \end{code}
 
 \begin{code}
@@ -84,9 +93,12 @@ main = do
         hPutStrLn stderr (show err)
         exitFailure
 
-  case navigate castle (sliceCastle castle) thruWalls of
+  let slices = sliceCastle castle
+
+  case navigate castle slices thruWalls of
     Just locs
       | quiet       -> showQuiet castle locs
+      | interactive -> showInteractive castle slices locs
       | otherwise   -> showPath castle locs
     Nothing ->
         putStrLn $ "No path found"
@@ -128,4 +140,72 @@ showPath castle locs = do
   pathChar (x,y) = case castleFields castle ! (x,y) of
       Free -> '+'
       Wall -> '~'
+\end{code}
+
+\begin{code}
+showInteractive :: Castle -> [Slice] -> [Loc] -> IO ()
+showInteractive castle slices locs = runCurses $ do
+  (rows,cols) <- screenSize
+  topWin <- defaultWindow
+
+  mapWin <- newWindow (rows-1) cols 0 0
+  mapPan <- newPanel mapWin
+  statusWin <- newWindow 1 cols (rows-1) 0
+  statusPan <- newPanel statusWin
+
+  wallColorID    <- newColorID ColorYellow ColorWhite 1
+  freeColorID    <- newColorID ColorYellow ColorWhite 2
+  scoutColorID   <- newColorID ColorRed ColorWhite 3
+  bansheeColorID <- newColorID ColorCyan ColorWhite 4
+  tvColorID      <- newColorID ColorGreen ColorWhite 4
+
+  timeRef <- liftIO $ newIORef 0
+  let pathLen = length locs
+      (tvx,tvy) = castleTV castle
+      ((1,1),(width,height)) = bounds $ castleFields castle
+      forward s  = liftIO $ modifyIORef timeRef (min (pathLen-1) . (+s))
+      backward s = liftIO $ modifyIORef timeRef (max 0 . (+(-s)))
+      period = length slices
+
+      loop = do
+        redraw
+        Just ev <- getEvent topWin Nothing
+        case ev of
+          EventCharacter 'q' -> return ()
+          EventSpecialKey KeyRightArrow -> forward 1 >> loop
+          EventSpecialKey KeyLeftArrow -> backward 1 >> loop
+          _ -> loop
+
+      redraw = do
+        t <- liftIO $ readIORef timeRef
+        let Slice slice = slices !! (t `mod` period)
+            (px,py) = locs !! t
+
+        updateWindow mapWin $ do
+          forM [1..width] $ \x -> do
+            forM [1..height] $ \y -> do
+              moveCursor (fromIntegral y) (fromIntegral x)
+              let (char,colorID) = case slice ! (x,y) of
+                    FreeSF -> ('.',freeColorID)
+                    WallSF -> ('X',wallColorID)
+                    ScoutSF _ -> ('@',scoutColorID)
+              setColor colorID
+              drawString [char]
+
+          moveCursor (fromIntegral tvy) (fromIntegral tvx)
+          setColor tvColorID
+          drawString "#"
+
+          moveCursor (fromIntegral py) (fromIntegral px)
+          setColor bansheeColorID
+          drawString "&"
+
+        updateWindow statusWin $ do
+          moveCursor 0 0
+          drawString . concat $ ["Step ",show t,"/",show (pathLen-1)]
+
+        refreshPanels
+        render
+
+  loop
 \end{code}
