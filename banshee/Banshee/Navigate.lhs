@@ -244,7 +244,8 @@ navigate castle slices thruWalls = runST $ do
   wallStep bests locpaths = do
     result <- flood castle slices bests locpaths
     case result of
-      Right locpaths'@(_:_) -> do
+      Right [] -> return $ Right []
+      Right locpaths' -> do
         let nextss = (`map` locpaths') $ \((x,y),path@(Path len _)) ->
               let offset = len `mod` period
                   offset' = (len+1) `mod` period
