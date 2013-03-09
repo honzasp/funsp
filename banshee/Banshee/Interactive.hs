@@ -7,8 +7,10 @@ import UI.NCurses
 
 import Banshee.Castle
 
-showInteractive :: Castle -> [Slice] -> [Loc] -> IO ()
-showInteractive castle slices locs = runCurses $ do
+showInteractive :: Castle -> [Slice] -> Maybe [Loc] -> IO ()
+showInteractive _ _ Nothing = 
+  putStrLn "No path found"
+showInteractive castle slices (Just locs) = runCurses $ do
   win <- defaultWindow
   setCursorMode CursorInvisible
   setEcho False

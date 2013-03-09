@@ -24,6 +24,7 @@ data Flag
   | NotThroughFlag
   | QuietFlag
   | InteractiveFlag
+  | JsonFlag
   deriving (Eq,Show)
 \end{code}
 
@@ -38,6 +39,8 @@ options =
     "show just the minimal information about the found path"
   , Option ['i'] ["interactive"] (NoArg InteractiveFlag)
     "display a minimal interactive UI to show the found path"
+  , Option ['j'] ["json"] (NoArg JsonFlag)
+    "show the result as JSON"
   ]
 \end{code}
 
@@ -64,6 +67,7 @@ main = do
       quiet = QuietFlag `elem` flags
       help = HelpFlag `elem` flags
       interactive = InteractiveFlag `elem` flags
+      json = JsonFlag `elem` flags
 \end{code}
 
 \begin{code}
@@ -90,40 +94,39 @@ main = do
         exitFailure
 
   let slices = sliceCastle castle
+      ui | quiet       = showQuiet castle
+         | interactive = showInteractive castle slices
+         | json        = showJson castle
+         | otherwise   = showPath castle
 
-  case navigate castle slices thruWalls of
-    Just locs
-      | quiet       -> showQuiet castle locs
-      | interactive -> showInteractive castle slices locs
-      | otherwise   -> showPath castle locs
-    Nothing ->
-        putStrLn $ "No path found"
+  ui $ navigate castle slices thruWalls
         
   return ()
 \end{code}
 
 @Idx{Banshee.Main.showQuiet}
 \begin{code}
-showQuiet :: Castle -> [Loc] -> IO ()
-showQuiet castle locs = 
-  putStrLn . concat $ ["Found a path with ",show steps," steps",
-    " (",show thruWalls," through walls)"]
-  where
-  steps = length locs
-  fields = castleFields castle
-  thruWalls = length $ filter ((==Wall) . (fields !)) locs
+showQuiet :: Castle -> Maybe [Loc] -> IO ()
+showQuiet _ Nothing = 
+  putStrLn "No path found"
+showQuiet castle (Just locs) = 
+  putStrLn . concat $ ["Found a path with ",show $ length locs," steps",
+    " (",show $ countWalls castle locs," through walls)"]
 \end{code}
 
 @Idx{Banshee.Main.showPath}
 \begin{code}
-showPath :: Castle -> [Loc] -> IO ()
-showPath castle locs = do
+showPath :: Castle -> Maybe [Loc] -> IO ()
+showPath _ Nothing = 
+  putStrLn "No path found"
+showPath castle (Just locs) = do
   forM_ [1..height] $ \y -> do
     forM_ [1..width] $ \x -> do
       putChar $ ary ! (x,y)
       putChar ' '
     putChar '\n'
-  showQuiet castle locs
+  putStrLn . concat $ [show $ length locs," steps, ",
+    " (",show $ countWalls castle locs," through walls)"]
   where
 
   ((1,1),(width,height)) = bounds $ castleFields castle
@@ -136,4 +139,21 @@ showPath castle locs = do
   pathChar (x,y) = case castleFields castle ! (x,y) of
       Free -> '+'
       Wall -> '~'
+\end{code}
+
+@Idx{Banshee.Main.countWalls}
+\begin{code}
+countWalls :: Castle -> [Loc] -> Int
+countWalls castle locs =
+  length $ filter ((==Wall) . (castleFields castle !)) locs
+\end{code}
+
+@Idx{Banshee.Main.showJson}
+\begin{code}
+showJson :: Castle -> Maybe [Loc] -> IO ()
+showJson _ Nothing =
+  putStrLn "{}"
+showJson castle (Just locs) = 
+  putStrLn . concat $ ["{ \"steps\": ",show $ length locs,
+    ", \"walls\": ",show $ countWalls castle locs," }"]
 \end{code}
