@@ -140,7 +140,10 @@ sliceCastle castle = map slice [0..period-1] where
   slice s = Slice $ accum acc sfFields
     [((x,y),next) 
     | scout <- cycledScouts
-    , let (x,y):next:_ = drop s scout]
+    , let (x,y):next:_ = drop s scout
+    , x >= 1 && x <= width
+    , y >= 1 && y <= height
+    ]
 
   acc :: SliceField -> Loc -> SliceField
   acc old scoutNext = case old of
@@ -150,6 +153,8 @@ sliceCastle castle = map slice [0..period-1] where
 
   fieldToSF Free = FreeSF
   fieldToSF Wall = WallSF
+
+  ((1,1),(width,height)) = bounds $ castleFields castle
 \end{code}
 
 Pro přehlednost bude vhodné rozebrat si jednotlivé proměnné:
@@ -172,15 +177,18 @@ nekonečně se opakující sekvence pomocí funkce @t{cycle}.
 \item[@t{slice s}] je funkce, která pro čas @t{s} vrátí příslušný řez. Získáme
 jej tak, že do \uv{čistého} pole @t{sfFields}, obsahujícího pouze @t{FreeSF} a
 @t{WallSF}, přidáme na příslušné pozice i hodnoty @t{ScoutSF}, k čemuž použijeme
-funkci @t{accum}.
+funkci @t{accum}. Nesmíme zapomenout zkontrolovat, že se zvěd nachází v hradu,
+jinak bychom mohli dostat za běhu chybu (přistupovali bychom k indexu
+nacházejícímu se mimo rozsah pole).
 
-Typ této funkce je @t{accum :: (e -> a -> e) -> Array i e -> [(i, a)] -> Array i
-e}.\footnote{Pro jednoduchost jsme vynechali omezení třídy @t{Ix i => ...}}
-První argument je akumulační funkce @ti{f}, druhým výchozí pole @ti{ary} a třetí
-seznam asociací @ti{xs}. Výsledné pole obsahuje stejné prvky jako @ti{ary}, s
-tím rozdílem, že pro každou asociaci index-hodnota @ti{(i,x)} ze seznamu @ti{xs}
-zavolá funkci @ti{f}, která na základě předchozí hodnoty z pole a hodnoty @ti{x}
-vrátí novou hodnotu, která se uloží ve výsledném poli na indexu @ti{i}. 
+Typ funkce @t{accum} je @t{accum :: (e -> a -> e) -> Array i e -> [(i, a)] ->
+Array i e}.\footnote{Pro jednoduchost jsme vynechali omezení třídy @t{Ix i =>
+...}} První argument je akumulační funkce @ti{f}, druhým výchozí pole @ti{ary} a
+třetí seznam asociací @ti{xs}. Výsledné pole obsahuje stejné prvky jako
+@ti{ary}, s tím rozdílem, že pro každou asociaci index-hodnota @ti{(i,x)} ze
+seznamu @ti{xs} zavolá funkci @ti{f}, která na základě předchozí hodnoty z pole
+a hodnoty @ti{x} vrátí novou hodnotu, která se uloží ve výsledném poli na indexu
+@ti{i}. 
 
 Důležité je, že stejný index se v seznamu @ti{xs} může objevit i vícekrát -- v
 tom případě se funkci @ti{f} předá hodnota získaná z předchozí asociace. Takto
