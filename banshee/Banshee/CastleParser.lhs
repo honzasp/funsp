@@ -123,7 +123,7 @@ políčka:
 @Idx{Banshee.CastleParser.field}
 \begin{code}
 field :: Int -> SemiCastle -> Int -> Parser SemiCastle
-field y sc x = free <|> wall <|> start <|> tv <|> scout
+field y sc x = sc `seq` free <|> wall <|> start <|> tv <|> scout
   where
     free  = char '.' >> return (scAdd (x,y) Free sc)
     wall  = char 'X' >> return (scAdd (x,y) Wall sc)
@@ -140,6 +140,14 @@ field y sc x = free <|> wall <|> start <|> tv <|> scout
             else applyMoves (x,y) $ init moves
       return $ scAdd (x,y) Free sc { scScouts = scout:scScouts sc }
 \end{code}
+
+Před samotným parsováním nejprve pomocí funkce @t{seq} vynutíme vyhodnocení
+proměnné @t{sc}. Pokud bychom to neudělali, postupně by se během parsování
+vytvořil řetěz nevyhodnocených hodnot @t{SemiCastle}. K jeho vyhodnocení by
+došlo až na konci parsování a u velkých hradů by mohlo dojít k přetečení
+zásobníku.\footnote{Velkými hrady myslíme hrady s milióny políček -- pokud
+bychom se drželi omezení na 80 krát 80 polí, jak je uvedeno v zadání, žádný
+problém by nenastal.}
 
 Pro každý typ políčka jsme si nadefinovali vlastní pomocný parser. Prázdná pole
 (parser @t{free}) a zdi (@t{wall}) jsou jednoduché, pouze do hradu přidáme jedno
