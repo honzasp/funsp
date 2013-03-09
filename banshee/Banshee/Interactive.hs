@@ -97,6 +97,7 @@ showInteractive castle slices locs = runCurses $ do
         , "  right  - one step forward"
         , "  page down - five steps forward"
         , "  page up   - five steps backward"
+        , "  space  - start autoplay mode (then any key to leave)"
         ]
 
 
@@ -107,6 +108,7 @@ showInteractive castle slices locs = runCurses $ do
         case ev of
           EventCharacter 'q' -> return ()
           EventCharacter '?' -> showHelp >> loop
+          EventCharacter ' ' -> playLoop >> loop
           EventSpecialKey KeyRightArrow   -> forward 1  >> loop
           EventSpecialKey KeyLeftArrow    -> backward 1 >> loop
           EventSpecialKey KeyNextPage     -> forward 5  >> loop
@@ -140,6 +142,7 @@ showInteractive castle slices locs = runCurses $ do
           closeWindow helpWin
           helpLoop
 
+        helpLoop :: Curses ()
         helpLoop = do
           Just ev <- getEvent win Nothing
           case ev of
@@ -147,5 +150,18 @@ showInteractive castle slices locs = runCurses $ do
             EventCharacter '\ESC' -> return ()
             EventCharacter 'q' -> return ()
             _ -> helpLoop
+
+        playLoop :: Curses ()
+        playLoop = do
+          t <- liftIO $ readIORef timeRef
+          if t < pathLen-1 then do
+              mev <- getEvent win $ Just 100
+              case mev of
+                Nothing -> forward 1 >> redraw >> playLoop
+                Just (EventCharacter _) -> return ()
+                Just (EventSpecialKey _) -> return ()
+                Just EventResized -> redraw >> playLoop
+                _ -> playLoop
+            else return ()
 
   loop
