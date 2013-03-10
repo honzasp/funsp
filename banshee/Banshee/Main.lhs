@@ -10,6 +10,7 @@ import System.Console.GetOpt
 import Control.Applicative
 import Control.Monad
 import Data.Array
+import Data.List (intersect)
 
 import Banshee.Castle
 import Banshee.CastleParser
@@ -63,17 +64,22 @@ main = do
       exitFailure
     else return ()
 
-  let thruWalls = NotThroughFlag `notElem` flags
-      quiet = QuietFlag `elem` flags
-      help = HelpFlag `elem` flags
-      interactive = InteractiveFlag `elem` flags
-      json = JsonFlag `elem` flags
 \end{code}
 
 \begin{code}
-  if help then do
+  if HelpFlag `elem` flags then do
       putStrLn usage
       exitSuccess
+    else return ()
+\end{code}
+
+\begin{code}
+  let exclusiveFlags = [QuietFlag,InteractiveFlag,JsonFlag]
+  if (>1) . length . intersect flags $ exclusiveFlags then do
+      hPutStrLn stderr usage
+      hPutStrLn stderr "The flags --quiet, --interactive and --json\
+        \ are mutually exclusive"
+      exitFailure
     else return ()
 \end{code}
 
@@ -94,12 +100,12 @@ main = do
         exitFailure
 
   let slices = sliceCastle castle
-      ui | quiet       = showQuiet castle
-         | interactive = showInteractive castle slices
-         | json        = showJson castle
+      ui | QuietFlag `elem` flags       = showQuiet castle
+         | InteractiveFlag `elem` flags = showInteractive castle slices
+         | JsonFlag `elem` flags        = showJson castle
          | otherwise   = showPath castle
 
-  ui $ navigate castle slices thruWalls
+  ui $ navigate castle slices (NotThroughFlag `notElem` flags)
         
   return ()
 \end{code}
