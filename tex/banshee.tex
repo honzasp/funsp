@@ -45,7 +45,7 @@ programovacích soutěží, tj. na prvním řádku dvě čísla určující rozm
 a na dalších řádcích po znacích jednotlivá políčka -- `@t{.}' volné, `@t{X}'
 zeď, `@t{\&}' počáteční pozice bílé paní, `@t{\#}' televizor. Zvěd je uložen
 jako znak `@t{@@}', za kterým následuje jeho trasa jako sada pohybů `@t{v}',
-`@t{>}', `@t{\^}' a `@t{<}' (dolů, doprava, nahoru a doleva). 
+`@t{>}', `@t{\^}' a `@t{<}' (na jih, východ, sever a západ). 
 
 Příklad mapy i s pohyby zvědů je na obrázku \ref{fig:banshee-castle-example}.
 
@@ -84,3 +84,34 @@ Stejně jako u Krunimíra i nyní bude vhodné program rozčlenit do modulů:
 \input{banshee/Banshee/Navigate.lhs}
 \input{banshee/Banshee/Main.lhs}
 
+\section{Závěr}
+
+Zde prezentované řešení soutěžní úlohy je téměř kompletní, podobně jako u
+Krunimíra jsme ale vynechali část s grafickým uživatelským rozhraním (editorem
+hradu). Na soutěži by nejspíše obdrželo přibližně 60 bodů z 90 (zbývajících 30
+je za editor hradu) a možná nějaký bonus za interaktivní režim.
+
+Nejdůležitější vlastností u podobných úloh je vždy rychlost. V tomto ohledu je
+naše řešení velmi dobré -- všechny testovací soubory ze složek
+@t{test/data_ukazkova/} a @t{test/data_testovaci/} se na vývojovém
+počítači\footnote{AMD Athlon\texttrademark{} 64 X2 Dual Core, frekvence
+procesoru 1000~MHz.} vyřeší za necelé dvě sekundy (z toho asi 0.4~s zabere
+nejnáročnější soubor @t{data_testovaci/vstupy/4se_zvedy_skrz_zdi/vstup8.in}),
+spotřeba paměti se pohybuje okolo 10~MB.
+
+Program je zároveň poměrně krátký, obsahuje méně než 300 řádků kódu (bez modulu
+@t{Banshee.Interactive}), včetně přívětivého uživatelského rozhraní.
+
+\subsection{Zdrojové kódy}
+
+Soubory související s úlohou Bílá paní se nachází ve složce @t{banshee/} v
+repozitáři s prací. Zdrojové kódy všech modulů jsou uloženy ve složce
+@t{banshee/Banshee/}, testovací soubory ve složce @t{banshee/test/}. Část těchto
+souborů pochází ze soutěže a část byla vytvořena v rámci této práce. Konkrétně
+ve složce @t{test/extra/huge/} se nachází velmi velké hrady a ve složce
+@t{test/extra/cellular/} jsou hrady vytvořené pomocí celulárních automatů.
+
+K automatickému testování korektnosti řešení je možné využít program
+@t{runtests.hs}, který čte názvy souborů s hrady a očekávané výsledky ze
+souboru @t{test/results.json} a kontroluje, jestli nalezená řešení témto
+očekávaným výsledkům odpovídají.

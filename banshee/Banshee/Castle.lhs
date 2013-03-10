@@ -15,21 +15,6 @@ Typ @t{Castle} reprezentuje hrad v podobě, v jaké jsme ho načetli ze souboru.
 Všechna políčka jsou uložena v poli @t{castleFields} jako typ @t{Field}, který
 může nabývat hodnot @t{Free} a @t{Wall}, tedy prázdné políčko či zeď.
 
-Pole prvků typu @t{e} indexovaná typem @t{i} mají v Haskellu typ @t{Array i e}.
-Index pole musí být instancí typové třídy @t{Ix}. Kromě celočíselných typů jako
-@t{Int} či @t{Integer} tak můžeme použít i $n$-tice (např. @t{(Int,Int,Int)}) a
-vytvořit tak vícerozměrné pole.
-
-Indexem našeho pole @t{castleFields} je @t{Loc}, což je pouze synonym pro
-@t{(Int,Int)} (dvojice celých čísel), pole je tedy dvojrozměrné.  Typ @t{Loc}
-budeme používat pro reprezentaci pozice na mapě jako dvojice souřadnic
-@t{(x,y)}. Levé horní políčko mapy má souřadnice @t{(1,1)}, pravé dolní
-@t{(\textit{šířka mapy},\textit{výška mapy})}.
-
-V @t{castleTV} je uložena pozice televizoru, v @t{castleStart} počáteční pozice
-bílé paní. @t{castleScouts} obsahuje seznam zvědů (typ @t{Scout}), kteří jsou
-reprezentování jako seznam umístění, která postupně navštěvují.
-
 @Idx{Banshee.Castle.Castle}
 @Idx{Banshee.Castle.Scout}
 @Idx{Banshee.Castle.Loc}
@@ -48,6 +33,21 @@ type Scout = [Loc]
 type Loc = (Int,Int)
 data Field = Free | Wall deriving (Eq,Show)
 \end{code}
+
+Pole prvků typu @t{e} indexovaná typem @t{i} mají v Haskellu typ @t{Array i e}.
+Index pole musí být instancí typové třídy @t{Ix}. Kromě celočíselných typů jako
+@t{Int} či @t{Integer} tak můžeme použít i $n$-tice (např. @t{(Int,Int,Int)}) a
+vytvořit tak vícerozměrné pole.
+
+Indexem našeho pole @t{castleFields} je @t{Loc}, což je pouze synonym pro
+@t{(Int,Int)} (dvojice celých čísel), pole je tedy dvojrozměrné.  Typ @t{Loc}
+budeme používat pro reprezentaci pozice na mapě jako dvojice souřadnic
+@t{(x,y)}. Levé horní políčko mapy má souřadnice @t{(1,1)}, pravé dolní
+@t{(\textit{šířka mapy},\textit{výška mapy})}.
+
+V @t{castleTV} je uložena pozice televizoru, v @t{castleStart} počáteční pozice
+bílé paní. @t{castleScouts} obsahuje seznam zvědů (typ @t{Scout}), kteří jsou
+reprezentování jako seznam umístění, která postupně navštěvují.
 
 \subsubsection{Příklad}
 
@@ -87,13 +87,13 @@ Z toho plyne, že po konečném počtu kroků se všichni zvědové z hradu dost
 zpátky na své startovní pozice. Tomuto počtu kroků budeme říkat \emph{perioda} a
 je roven nejmenšímu společnému násobku délek tras všech zvědů v
 hradu.\footnote{Z původního zadání plyne, že délka tras všech zvědů musí být
-sudá a že nepřesáhne 8, tudíž nejvyšší možná perioda je $2^3+3^1=24$. Náš
-program akceptuje libovolně dlouhé trasy zvědů, periodu tedy budeme počítat pro
-každý hrad zvlášť.}
+sudá a že nepřesáhne 8, tudíž nejvyšší možná perioda je 24. Náš program
+akceptuje libovolně dlouhé trasy zvědů, periodu tedy budeme počítat pro každý
+hrad zvlášť.}
 
 Pro hrad s periodou $p$ tedy stačí vygenerovat prvních $p$ \uv{řezů}. Pro čas
-$t$ získáme příslušný řez ze zbytku po dělení $t \div p$ (označíme-li počáteční
-stav časem $t = 0$). 
+$t$ získáme číslo příslušného řezu (\emph{offset}) ze zbytku po dělení $t \div
+p$ (označíme-li počáteční stav časem $t = 0$). 
 
 Jednotlivé \uv{řezy} pro jednoduchou mapu jsou zobrazeny na obrázku
 \ref{fig:banshee-castle-example}.
@@ -124,8 +124,8 @@ považováno za objevení bílé paní zvědem.
 
 \subsection{Řezání hradu}
 
-Pro samotné rozřezání časoprostoru v okolí hradu na tenké plátky využijeme
-funkci @t{sliceCastle}.
+Pro samotné rozřezání časoprostoru hradu na tenké plátky definujeme funkci
+@t{sliceCastle}.
 
 @Idx{Banshee.Castle.sliceCastle}
 \begin{code}
@@ -137,9 +137,9 @@ sliceCastle castle = map slice [0..period-1] where
   sfFields = fmap fieldToSF fields
 
   slice s = Slice $ accum acc sfFields
-    [((x,y),next) 
+    [((x,y),(nextx,nexty)) 
     | scout <- cycledScouts
-    , let (x,y):next:_ = drop s scout
+    , let (x,y):(nextx,nexty):_ = drop s scout
     , x >= 1 && x <= width
     , y >= 1 && y <= height
     ]
@@ -167,27 +167,26 @@ hradu.
 se o nejmenší společný násobek délek tras všech zvědů z hradu. (Funkce @t{lcm a
 b} spočte nejvyšší společný násobek dvou čísel @t{a} a @t{b}.)
 
-\item[@t{cycledScouts}] je seznam tras všech zvědů (@t{[Loc]}) \uv{zacyklený} do
-nekonečně se opakující sekvence pomocí funkce @t{cycle}.
+\item[@t{cycledScouts}] je seznam tras všech zvědů (@t{[[Loc]]})
+\uv{zacyklených} do nekonečně se opakujících sekvencí pomocí funkce @t{cycle}.
 
 \item[@t{sfFields}] je pole @t{field} převedené z hodnot typu @t{Field} na
 @t{FieldSF}. Obsahuje tedy stejnou informaci, jen jiného typu.
 
-\item[@t{slice s}] je funkce, která pro čas @t{s} vrátí příslušný řez. Získáme
-jej tak, že do \uv{čistého} pole @t{sfFields}, obsahujícího pouze @t{FreeSF} a
-@t{WallSF}, přidáme na příslušné pozice i hodnoty @t{ScoutSF}, k čemuž použijeme
-funkci @t{accum}. Nesmíme zapomenout zkontrolovat, že se zvěd nachází v hradu,
-jinak bychom mohli dostat za běhu chybu (přistupovali bychom k indexu
-nacházejícímu se mimo rozsah pole).
+\item[@t{slice s}] je funkce, která pro offset @t{s} vrátí příslušný řez.
+Získáme jej tak, že do \uv{čistého} pole @t{sfFields}, obsahujícího pouze
+@t{FreeSF} a @t{WallSF}, přidáme na příslušné pozice i hodnoty @t{ScoutSF}, k
+čemuž použijeme funkci @t{accum}. Nesmíme zapomenout zkontrolovat, že se
+přidávaný zvěd nachází v hradu, jinak bychom mohli dostat za běhu chybu
+(přistupovali bychom k indexu nacházejícímu se mimo rozsah pole).
 
-Typ funkce @t{accum} je @t{accum :: (e -> a -> e) -> Array i e -> [(i, a)] ->
-Array i e}.\footnote{Pro jednoduchost jsme vynechali omezení třídy @t{Ix i =>
-...}} První argument je akumulační funkce @ti{f}, druhým výchozí pole @ti{ary} a
-třetí seznam asociací @ti{xs}. Výsledné pole obsahuje stejné prvky jako
-@ti{ary}, s tím rozdílem, že pro každou asociaci index-hodnota @ti{(i,x)} ze
-seznamu @ti{xs} zavolá funkci @ti{f}, která na základě předchozí hodnoty z pole
-a hodnoty @ti{x} vrátí novou hodnotu, která se uloží ve výsledném poli na indexu
-@ti{i}. 
+Typ funkce @t{accum} je @t{(e -> a -> e) -> Array i e -> [(i, a)] -> Array i
+e}.\footnote{Pro jednoduchost jsme vynechali omezení třídy @t{Ix i => ...}}
+První argument je akumulační funkce @ti{f}, druhým výchozí pole @ti{ary} a třetí
+seznam asociací @ti{xs}. Výsledné pole obsahuje stejné prvky jako @ti{ary}, s
+tím rozdílem, že pro každou asociaci index-hodnota @ti{(i,x)} ze seznamu @ti{xs}
+zavolá funkci @ti{f}, která na základě předchozí hodnoty z pole a hodnoty @ti{x}
+vrátí novou hodnotu, která se uloží ve výsledném poli na indexu @ti{i}. 
 
 Důležité je, že stejný index se v seznamu @ti{xs} může objevit i vícekrát -- v
 tom případě se funkci @ti{f} předá hodnota získaná z předchozí asociace. Takto
@@ -199,16 +198,16 @@ nejde).
 
 V našem případě funkci @t{accum} předáme pomocnou akumulační funkci @t{acc},
 pole @t{sfFields} a seznam vyjádřený pomocí generátoru seznamu, který obsahuje
-dvojice @t{(\textit{p},\textit{q})}, kde \textit{p} je pozice zvěda v čase @t{s}
-a \textit{q} je pozice stejného zvěda v čase @t{s+1}. Funkce @t{accum} tedy
-pomocí funkce @t{acc} na pozici \textit{p} zapíše informaci o tom, že se zde
-nachází zvěd, jehož další destinací je pozice @t{q}.
+dvojice @t{((x,y),(nextx,nexty))}, kde @t{(x,y)} je pozice zvěda v čase @t{s} a
+@t{(nextx,nexty)} je pozice stejného zvěda v čase @t{s+1}. Funkce @t{accum} tedy
+pomocí funkce @t{acc} na pozici \textit{(x,y)} zapíše informaci o tom, že se zde
+nachází zvěd, jehož další destinací je pozice @t{(nextx,nexty)}.
 
 \item[@t{acc old scoutNext}] tedy udělá jednu ze dvou věcí: 
   \begin{inparaenum}[(a)]
     \item je-li políčko prázdné (@t{FreeSF}) nebo zeď (@t{WallSF}), nahradí jej
     hodnotou @t{ScoutSF} s jediným zvědem, jehož následující pozice je
-    @t{scoutNext};
+    @t{scoutNext}; nebo
     \item pokud na políčku již byli zapsáni nějací zvědové, přidá k seznamu
     jejich následujících pozic i @t{scoutNext}.
   \end{inparaenum}

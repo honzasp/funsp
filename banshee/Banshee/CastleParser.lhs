@@ -28,7 +28,7 @@ type Parser a = Parsec String () a
 
 \subsection{\texorpdfstring{@t{SemiCastle}}{SemiCastle}}
 
-Nyní si nadefinujeme typ @t{SemiCastle}, který budeme používat v průběhu
+Nejprve nadefinujeme typ @t{SemiCastle}, který budeme používat v průběhu
 parsování. Tento typ představuje \uv{napůl známý} hrad. Pozice startu a televize
 se dozvíme až v průběhu čtení souboru, proto na jejich uložení použijeme typ
 @t{Maybe Loc}. Podobně na uložení políček nepoužijeme pole, ale seznam, jelikož
@@ -101,10 +101,9 @@ parsování ukončíme s chybou.  Pokud ano, nic nám už nebrání vytvořit ho
 
 \subsubsection{Řádek}
 
-Na parsování jednoho řádku použijeme opět @t{foldM} a parser @t{field}, který si
-vzápětí nadefinujeme a který přečte jedno políčko z mapy. Jako argumenty funkce
-@t{row} musíme předat šířku mapy, @t{SemiCastle} který upravujeme a číslo řádku,
-který čteme.
+Na parsování jednoho řádku použijeme opět @t{foldM} a parser @t{field}, který
+přečte jedno políčko z mapy. Jako argumenty funkce @t{row} musíme předat šířku
+mapy, @t{SemiCastle} který upravujeme a číslo řádku, který čteme.
 
 Na konci řádku by měl být znak konce řádku, náš parser ovšem akceptuje jakékoli
 prázdné znaky.
@@ -128,11 +127,13 @@ field y sc x = sc `seq` free <|> wall <|> start <|> tv <|> scout
     free  = char '.' >> return (scAdd (x,y) Free sc)
     wall  = char 'X' >> return (scAdd (x,y) Wall sc)
     start = char '&' >> case scStart sc of
-      Just (x',y') -> parserFail $ "There is already starting position at " ++ show (x',y')
       Nothing -> return $ scAdd (x,y) Free sc { scStart = Just (x,y) }
+      Just (x',y') -> parserFail $
+        "There is already starting position at " ++ show (x',y')
     tv    = char '#' >> case scTV sc of
-      Just (x',y') -> parserFail $ "There is already television at " ++ show (x',y')
       Nothing -> return $ scAdd (x,y) Free sc { scTV = Just (x,y) }
+      Just (x',y') -> parserFail $
+        "There is already television at " ++ show (x',y')
     scout = char '@' >> do
       moves <- many move
       let locs = if null moves 
@@ -146,15 +147,15 @@ proměnné @t{sc}. Pokud bychom to neudělali, postupně by se během parsován�
 vytvořil řetěz nevyhodnocených hodnot @t{SemiCastle}. K jeho vyhodnocení by
 došlo až na konci parsování a u velkých hradů by mohlo dojít k přetečení
 zásobníku.\footnote{Velkými hrady myslíme hrady s milióny políček -- pokud
-bychom se drželi omezení na 80 krát 80 polí, jak je uvedeno v zadání, žádný
-problém by nenastal.}
+bychom se drželi omezení na 80\texttimes{}80 polí, jak je uvedeno v zadání,
+žádný problém by nenastal.}
 
 Pro každý typ políčka jsme si nadefinovali vlastní pomocný parser. Prázdná pole
 (parser @t{free}) a zdi (@t{wall}) jsou jednoduché, pouze do hradu přidáme jedno
 pole. 
 
 Narazíme-li na políčko s televizorem (@t{tv}) nebo startovní pozicí (@t{start}),
-nejprve zkontrolujeme, jestli už jsme příslušnou pozici jednou nenačetli, a
+nejprve zkontrolujeme, jestli už jsme televizor či start jednou nepřečetli, a
 pokud ano, skončíme parsování s chybou; v opačném případě upravíme odpovídající
 část @t{SemiCastle}.
 
@@ -190,8 +191,8 @@ move = char '^' *> return North
    <|> char '>' *> return East
 \end{code}
 
-Funkcí @t{applyMoves} pak \uv{aplikujeme} seznam pohybů na počáteční pozici,
-čímž dostaneme seznam pozic:
+Funkce @t{applyMoves} \uv{aplikuje} seznam pohybů na počáteční pozici, čímž
+dostaneme seznam pozic:
 
 @Idx{Banshee.CastleParser.applyMoves}
 \begin{code}

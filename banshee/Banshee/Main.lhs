@@ -2,13 +2,13 @@
 @Idx{Banshee.Main}
 
 Modul @t{Banshee.Main} obsahuje uživatelské rozhraní programu. Podobně jako u
-Krunimíra budeme náš program spouštět v terminálu, ale umožníme uživateli
-pomocí argumentů příkazové řádku měnit nastavení programu.
+Krunimíra budeme náš program spouštět v terminálu, ale umožníme uživateli pomocí
+argumentů zadaných na příkazovém řádku měnit chování programu.
 
 \subsection{Popis použití programu}
 
-Programu na příkazové řádce předáme jméno vstupního souboru s hradem. Chování
-programu můžeme ovlivnit pomocí následujících přepínačů:
+Programu na příkazové řádce předáme jméno vstupního souboru s hradem a navíc
+můžeme předat některé z následujících přepínačů:
 
 \begin{description}
 
@@ -110,7 +110,7 @@ Na začátku @t{main} získáme seznam předaných argumentů z příkazové ř�
 @t{getArgs} a předáme jej funkci @t{getOpt} z knihovny @t{GetOpt}. První
 argument této funkce je hodnota @t{Permute}, která značí, že přepínače a jména
 souborů mohou být na příkazové řádce uvedeny v libovolném pořadí, druhým
-argumentem seznam přepínačů @t{options}, třetím je výsledek funkce @t{getArgs}.
+argumentem je seznam @t{options}, třetím je výsledek funkce @t{getArgs}.
 
 @Idx{Banshee.Main.main}
 \begin{code}
@@ -164,7 +164,7 @@ se vzájemně vylučují, vždy lze použít nejvýše jeden.
 
 \begin{code}
   let exclusiveFlags = [QuietFlag,InteractiveFlag,JsonFlag,ShowCastleFlag]
-  if (>1) . length . intersect flags $ exclusiveFlags then do
+  if (> 1) . length . intersect flags $ exclusiveFlags then do
       hPutStrLn stderr usage
       hPutStrLn stderr "The flags --quiet, --interactive, --json\
         \ and --show-castle are mutually exclusive (use at most one)"
@@ -208,9 +208,9 @@ hledání cesty uložíme do @t{result}.
 
 \subsection{Zobrazení výsledku}
 
-Do proměnné @t{ui} na základě předaných přepínačů přiřadíme příslušnou funkci
-zobrazující výsledek a pak ji zavoláme s výsledkem hledání cesty, čímž končí
-akce @t{main}. Jednotlivé zobrazující funkce popíšeme v následujících
+Do proměnné @t{ui} na základě předaných přepínačů přiřadíme příslušnou
+zobrazovací funkci a vzápětí ji zavoláme s výsledkem hledání cesty, čímž končí
+akce @t{main}. Jednotlivé zobrazovací funkce popíšeme v následujících
 podsekcích.
 
 \begin{code}
@@ -250,8 +250,8 @@ countWalls castle locs =
 \subsection{Zobrazení ve formátu JSON}
 
 Výsledek ve formátu JSON zobrazíme podobně jako ve funkci @t{showQuiet}, pouze
-vytvoříme objekt ve tvaru @t{\{ "steps": \textit{počet_kroků}, "walls":
-\textit{počet_zdí} \}} pokud byla cesta nalezena nebo @t{\{\}} pokud ne.
+vypíšeme objekt ve tvaru @t{\{ "steps": \textit{počet_kroků}, "walls":
+\textit{počet_zdí} \}} pokud byla cesta nalezena nebo @t{\{\}} pokud nebyla.
 
 @Idx{Banshee.Main.showJson}
 \begin{code}
@@ -314,7 +314,7 @@ Interaktivní zobrazení zajišťuje funkce @t{showInteractive} z modulu
 showInteractive :: Castle -> [Slice] -> Maybe [Loc] -> IO ()
 \end{haskell}
 
-Modul @t{Banshee.Interactive} využívá knihovnu @t{ncurses} a umožňuje krok po
-kroku procházet nalezenou cestu, včetně pohybujících se zvědů. Nebudeme jej zde
-přetiskovat, jelikož je poměrně rozsáhlý (přibližně 180 řádků) a využívá
-knihovnu @t{ncurses} \cite{millikin2012ncurses}.
+Tato funkce umožňuje krok po kroku procházet nalezenou cestu, včetně
+pohybujících se zvědů. Modul @t{Banshee.Interactive} zde nebudeme přetiskovat,
+jelikož je poměrně rozsáhlý (přibližně 180 řádků) a využívá knihovnu @t{ncurses}
+\cite{millikin2012ncurses}, jejíž popis je mimo rozsah této práce.
