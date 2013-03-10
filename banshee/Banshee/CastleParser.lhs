@@ -9,7 +9,7 @@ module Banshee.CastleParser(parseCastle) where
 import Banshee.Castle
 
 import Text.Parsec
-import Control.Applicative ((<$>),(<*>),(<*),(*>))
+import Control.Applicative ((<$>),(<*),(*>))
 import Control.Monad
 import Data.Array
 \end{code}
@@ -56,7 +56,7 @@ zeroCastle = SemiCastle
   , scStart = Nothing , scScouts = [] }
 
 scAdd :: Loc -> Field -> SemiCastle -> SemiCastle
-scAdd loc field sc = sc { scFields = (loc,field):scFields sc }
+scAdd loc fld sc = sc { scFields = (loc,fld):scFields sc }
 \end{code}
 
 \subsection{Jednotlivé parsery}
@@ -135,10 +135,10 @@ field y sc x = sc `seq` free <|> wall <|> start <|> tv <|> scout
       Nothing -> return $ scAdd (x,y) Free sc { scTV = Just (x,y) }
     scout = char '@' >> do
       moves <- many move
-      let scout = if null moves 
+      let locs = if null moves 
             then [(x,y)]
             else applyMoves (x,y) $ init moves
-      return $ scAdd (x,y) Free sc { scScouts = scout:scScouts sc }
+      return $ scAdd (x,y) Free sc { scScouts = locs:scScouts sc }
 \end{code}
 
 Před samotným parsováním nejprve pomocí funkce @t{seq} vynutíme vyhodnocení

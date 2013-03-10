@@ -170,7 +170,7 @@ flood :: Castle -> [Slice] -> STArray s (Int,Loc) (Maybe Path) ->
 flood castle slices bests = step 0 (cycle slices)
   where
   step _ _ [] = return $ Right []
-  step t (slice1:slice2:slices) locpaths = do
+  step t (slice1:slice2:slices') locpaths = do
     let (starts,rest) = span ((<= t) . pathLength . snd) locpaths
         offset = t `mod` period
 
@@ -183,7 +183,7 @@ flood castle slices bests = step 0 (cycle slices)
     
     tv <- readArray bests (offset,castleTV castle)
     case tv of
-      Nothing -> (fmap (starts'++)) <$> step (t+1) (slice2:slices) (concat nextss ++ rest)
+      Nothing -> (fmap (starts'++)) <$> step (t+1) (slice2:slices') (concat nextss ++ rest)
       Just path -> return $ Left path
 
   period = length slices
@@ -238,7 +238,7 @@ navigate castle slices thruWalls = runST $ do
     then wallStep bests start
     else flood castle slices bests start
   case result of
-    Left (Path len locs) -> return . Just . reverse $ castleTV castle : locs
+    Left (Path _ locs) -> return . Just . reverse $ castleTV castle : locs
     Right _ -> return Nothing
 
   where

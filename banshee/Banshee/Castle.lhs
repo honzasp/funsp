@@ -7,7 +7,6 @@ modulech.
 \begin{code}
 module Banshee.Castle where
 import Data.Array
-import Control.Monad
 \end{code}
 
 \subsection{Hrad}

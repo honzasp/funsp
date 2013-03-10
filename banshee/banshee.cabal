@@ -61,3 +61,7 @@ executable banshee
     ncurses ==0.2.*,
     transformers ==0.3.*
   
+  ghc-options: 
+    -Wall 
+    -fno-warn-missing-signatures
+    -fno-warn-incomplete-patterns

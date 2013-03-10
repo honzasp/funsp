@@ -12,7 +12,7 @@ showInteractive _ _ Nothing =
   putStrLn "No path found"
 showInteractive castle slices (Just locs) = runCurses $ do
   win <- defaultWindow
-  setCursorMode CursorInvisible
+  _ <- setCursorMode CursorInvisible
   setEcho False
 
   normalColorID  <- newColorID ColorBlack ColorWhite 1
@@ -58,8 +58,8 @@ showInteractive castle slices (Just locs) = runCurses $ do
 
               clear = do
                 setColor normalColorID
-                forM [0..mcols-1] $ \col ->
-                  forM [0..mrows-1] $ \row -> do
+                forM_ [0..mcols-1] $ \col ->
+                  forM_ [0..mrows-1] $ \row -> do
                     moveCursor row col
                     drawString " "
 
@@ -132,7 +132,8 @@ showInteractive castle slices (Just locs) = runCurses $ do
           updateWindow helpWin $ do
             setColor normalColorID
 
-            forM_ [0..hrows-1] $ \row ->
+            forM_ [0..hrows-1] $ \row -> do
+              moveCursor row 0
               drawString $ replicate (fromIntegral hcols-1) ' '
 
             drawBox Nothing Nothing
