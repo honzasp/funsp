@@ -1,6 +1,39 @@
 \section{\texorpdfstring{@t{Banshee.Main}}{Banshee.Main}}
 @Idx{Banshee.Main}
 
+Modul @t{Banshee.Main} obsahuje uživatelské rozhraní programu. Podobně jako u
+Krunimíra budeme náš program spouštět v terminálu, ale umožníme uživateli
+pomocí argumentů příkazové řádku měnit nastavení programu.
+
+\subsection{Popis použití programu}
+
+Programu na příkazové řádce předáme jméno vstupního souboru s hradem. Chování
+programu můžeme ovlivnit pomocí dalších argumentů:
+
+\begin{description}
+
+\item[@t{-h}, @t{-?} nebo @t{-{}-help}] zobrazí návod na použití programu a
+skončí.
+
+\item[@t{-n} nebo @t{-{}-not-through}] zakáže procházení zdmi (ve výchozím
+nastavení je procházení zdmi povoleno).
+
+\item[@t{-s} nebo @t{-{}-show-castle}] vypíše předaný hrad se zvýrazněnou
+nalezenou cestou (výchozí chování).
+
+\item[@t{-q} nebo @t{-{}-quiet}] způsobí, že se vypíše pouze jeden řádek s počtem
+kroků cesty a počtem zdí, kterými cesta vede (hrad ani zvýrazněná cesta se
+nevypisuje).
+
+\item[@t{-i} nebo @t{-{}-interactive}] po nalezení cesty zobrazí textové rozhraní
+(založené na knihovně @t{ncurses}), které umožní interaktivně zobrazit průchod
+bílé paní hradem po nalezené nekratší cestě, včetně pohybů zvědů.
+
+\item[@t{-j} nebo @t{-{}-json}] zobrazí podobný výstup jako @t{-{}-quiet}, pouze ve
+stojově čitelném formátu JSON (využívá se při automatickém testování programu).
+
+\end{description}
+
 \begin{code}
 module Banshee.Main(main) where
 import System.IO
@@ -23,6 +56,7 @@ import Banshee.Interactive
 data Flag
   = HelpFlag
   | NotThroughFlag
+  | ShowCastleFlag
   | QuietFlag
   | InteractiveFlag
   | JsonFlag
@@ -32,10 +66,12 @@ data Flag
 @Idx{Banshee.Main.options}
 \begin{code}
 options =
-  [ Option ['h','?'] ["help","use"] (NoArg HelpFlag) 
+  [ Option ['h','?'] ["help"] (NoArg HelpFlag) 
     "show the help"
   , Option ['n'] ["not-through"] (NoArg NotThroughFlag)
     "disable going through the walls"
+  , Option ['s'] ["show-castle"] (NoArg ShowCastleFlag)
+    "show the castle with highlighted path (default)"
   , Option ['q'] ["quiet"] (NoArg QuietFlag)
     "show just the minimal information about the found path"
   , Option ['i'] ["interactive"] (NoArg InteractiveFlag)
@@ -46,7 +82,7 @@ options =
 \end{code}
 
 \begin{code}
-header progname = "Usage: " ++ progname ++ " [-hnq?] castle-file"
+header progname = "Usage: " ++ progname ++ " [flags] castle-file"
 \end{code}
 
 @Idx{Banshee.Main.main}
@@ -74,7 +110,7 @@ main = do
 \end{code}
 
 \begin{code}
-  let exclusiveFlags = [QuietFlag,InteractiveFlag,JsonFlag]
+  let exclusiveFlags = [QuietFlag,InteractiveFlag,JsonFlag,ShowCastleFlag]
   if (>1) . length . intersect flags $ exclusiveFlags then do
       hPutStrLn stderr usage
       hPutStrLn stderr "The flags --quiet, --interactive and --json\
