@@ -5,24 +5,22 @@
 Haskell je \textit{de-facto} standardní líný čistě funkcionální jazyk. Jeho
 vývoj začal v září roku 1987, přičemž první verze jazyka (Haskell 1.0) byla
 vydána 1. března 1990. Postupně následovaly verze 1.1 až 1.4. V roce 1999 byla
-vytvořena \uv{stabilní} verze Haskell 98\comment{cite Haskell 98 Report}, která
-byla později revidována.\comment{cite Haskell 98 Revised Report}
-
-\marginnote{Citace, citace, citace!}
+vytvořena \uv{stabilní} verze Haskell 98, která byla později revidována
+\cite{jones2003haskell}. \cite{hudak2007history}
 
 Od roku 2006 probíhá proces nazývaný Haskell' (Haskell Prime), jehož cílem je
 vytvářet nové revize standardu každý rok. První a zatím poslední revizí je
-Haskell 2010.\comment{cite Haskell 2010 Report}
+Haskell 2010 \cite{haskellreport2010}.
 
 V následujících podsekcích budou představeny základní vlastnosti jazyka Haskell,
 v práci ovšem budeme předpokládat jistou základní znalost funkcionálního
 programování v tomto jazyku. Pokud se čtenář s tímto stylem programování ještě
 nesetkal, autor mu může doporučit knihu slovinského studena Mirana Lipovači
 \emph{Learn You a Haskell for Great Good} \cite{lipovaca2011learn}, která je
-volně dostupná na Internetu jak v původní anglické verzi,\footnote{\url{http://learnyouahaskell.com/}} tak v částečném českém
+volně dostupná na Internetu jak v původní anglické
+verzi,\footnote{\url{http://learnyouahaskell.com/}} tak v částečném českém
 překladu.\footnote{\url{http://naucte-se.haskell.cz/}} Práce by nicméně měla být
-srozumitelná i se základními znalostmi \uv{klasického}
-programování.
+srozumitelná i se základními znalostmi \uv{klasického} programování.
 
 \subsection{Čistě funkcionální jazyk}
 
@@ -36,11 +34,11 @@ programovací styl.
 jejich fundamentálním typem je \emph{funkce}. Narozdíl od imperativních jazyků,
 kde vyhodnocování výrazů a volání procedur (metod) může mít \emph{vedlejší
 účinky}, např. změnu hodnoty proměnných nebo vypsání řetězce na obrazovku,
-jediný účinek, který má \uv{zavolání} (aplikace) funkce v čistě funkcionálním
-jazyku, je získání jejího výsledku. Jelikož neexistuje žádný stav, na němž by
-výsledek funkce mohl záviset, je garantováno, že aplikujeme-li funkci vícekrát
-na stejné argumenty, dostaneme vždy stejný výsledek. Tato vlastnost se nazývá
-\emph{referenční transparentnost}.
+jediný účinek, který má \uv{zavolání} (\emph{aplikace}) funkce v čistě
+funkcionálním jazyku, je získání jejího výsledku. Jelikož neexistuje žádný stav,
+na němž by výsledek funkce mohl záviset, je garantováno, že aplikujeme-li funkci
+vícekrát na stejné argumenty, dostaneme vždy stejný výsledek. Tato vlastnost se
+nazývá \emph{referenční transparentnost}.
 
 Na funkce je tedy možno nahlížet jako na funkce v matematice, takže pro
 programátora i pro kompilátor je snadné zjišťovat a \emph{dokazovat} chování
@@ -56,11 +54,12 @@ ovlivňovat.
 \subsection{Líné vyhodnocování}
 
 Haskell je \emph{líně vyhodnocovaný} jazyk, což znamená, že hodnoty výrazů se
-zjišťují až ve chvíli, kdy je to nezbytně nutné, a někdy se nemusí zjišťovat
-vůbec. Tím se nejen zvýší efektivita programu (výpočty se provedou jen když jsou
-zapotřebí, nemusí se tedy vyhodnotit vůbec), ale hlavně se programátor zbaví
-nutnosti zabývat se pořadím vyhodnocování výrazů. Je tedy možné oddělit kód
-produkující a kód konzumující data, čímž se zvýší modularita. \cite{hughes1989functional}
+vyhodnocují až ve chvíli, kdy je to nezbytně nutné, přičemž hodnoty, které
+nejsou potřeba, se nevyhodnotí vůbec. Tím se nejen zvýší efektivita programu
+(neprovádí se zbytečné výpočty), ale hlavně se programátor zbaví nutnosti
+zabývat se pořadím vyhodnocování výrazů. Je tedy možné například snadno oddělit
+kód produkující a kód konzumující data, čímž se zvýší modularita.
+\cite{hughes1989functional}
 
 Ve funkcionálních programech je běžné používat nekonečné struktury, např.
 nekonečné seznamy či nekonečně se větvící stromy, a nechat vyhodnotit pouze tu
@@ -84,8 +83,9 @@ způsob kontroly určené pro člověka (programátora).
 
 S typovým systémem úzce souvisí \emph{typové třídy}. Typové třídy byly do
 Haskellu zavedeny, aby se vyřešil problém s \uv{přetěžováním} funkcí jako je
-porovnávání (@t{==}), které bychom potřebovali použít s větším množstvím typů
-(operace ekvivalence má smysl např. pro čísla, řetězce, seznamy, množiny...).
+například porovnávání (@t{==}), které bychom potřebovali použít s větším
+množstvím typů (operace ekvivalence má smysl např. pro čísla, řetězce, seznamy,
+množiny...).
 
 Ukažme si příklad typové třídy @t{Eq}, která slouží k implementaci porovnání
 dvou hodnot:
@@ -106,7 +106,10 @@ data Bit = On | Off
 \end{haskell}
 
 Pro oba tyto typy určitě dává operace porovnání smysl, proto můžeme nadefinovat
-\emph{instanci} třídy @t{Eq}:
+\emph{instanci} třídy @t{Eq}:\footnote{Haskell umožňuje pro datové typy
+  automaticky odvodit instance tříd ze standardní knihovny, jako je @t{Eq} nebo
+@t{Ord}, pomocí klauzule @t{deriving}, takže jen zřídka definujeme operaci
+@t{==} takto \uv{ručně}.}
 
 \begin{haskell}
 instance Eq Color where
@@ -121,14 +124,12 @@ instance Eq Bit where
   _   == _   = False
 \end{haskell}
 
-Touto deklarací specifikujeme, že typy @t{Color} a @t{Bit} jsou instancemi třídy @t{Eq}, a
-poskytneme implementaci metody @t{==}. Nyní můžeme používat funkci @t{==} s
-barvami i bity, např. @t{Red == Red} vrátí @t{True} a @t{On == Off} vrátí
-@t{False}.
-
-Všimněte si, že nemůžeme porovnávat barvy a bity -- napíšeme-li @t{Red == On},
-kompilátor ohlásí typovou chybu, jelikož funkce @t{==} akceptuje pouze hodnoty
-stejného typu.
+Touto deklarací specifikujeme, že typy @t{Color} a @t{Bit} jsou instancemi
+třídy @t{Eq}, a poskytneme implementaci metody @t{==}. Nyní můžeme používat
+funkci @t{==} s barvami i bity, např. @t{Red == Red} vrátí @t{True} a @t{On ==
+Off} vrátí @t{False}. Zároveň ale nemůžeme omylem porovnávat barvy a bity --
+napíšeme-li @t{Red == On}, kompilátor ohlásí typovou chybu, jelikož funkce
+@t{==} akceptuje pouze hodnoty stejného typu.
 
 Kdybychom chtěli funkci, která otestuje, jestli se daný prvek nachází v
 seznamu, mohli bychom ji nadefinovat takto:
@@ -160,8 +161,8 @@ instance Eq a => Eq (Tree a) where
   _ == _ = False
 \end{haskell}
 
-Tato instance deklaruje, že pro všechny typy @t{a} je typ @t{Tree a} instancí
-třídy @t{Eq}, platí-li, že typ @t{a} je rovněž instancí @t{Eq}.
+Tato instance deklaruje, že pro všechny typy @t{a} náleží typ @t{Tree a} do
+třídy @t{Eq}, platí-li, že typ @t{a} náleží do třídy @t{Eq}.
 
 \subsection{Monadický vstup/výstup}
 
@@ -202,9 +203,9 @@ naopak řádek vypsat, můžeme použít @t{putStrLn}, což je funkce, které p�
 řetězec, jež si přejeme vypsat, a dostaneme vstupně/výstupní operaci, která
 tento řetězec vypíše. Jelikož tato operace nemá žádný smyslupný výsledek, vrací
 tzv. \emph{nulový typ} @t{()}, který má jedinou hodnotu (rovněž se zapisuje
-@t{()}) a používá se jako \uv{výplň}. \footnote{Jde o jistou obdobu typu @t{void} z
-jazyka C nebo @t{nil} či @t{null} z dynamických jazyků jako Ruby či JavaScript,
-která je ovšem typově bezpečná.}
+@t{()}) a používá se jako \uv{výplň}.\footnote{Jde o jistou obdobu typu
+  @t{void} z jazyka C nebo @t{nil} či @t{null} z dynamických jazyků jako Ruby či
+JavaScript, která je ovšem typově bezpečná.}
 
 Abychom přečetli soubor, musíme znát jeho umístění, proto je @t{readFile}
 funkce, které předáme cestu k souboru\footnote{Typ @t{FilePath} je synonym k
@@ -244,7 +245,7 @@ slouží funkce @t{>>=}, někdy též nazývaná \uv{bind}. Její typ je takový
 (>>=) :: IO a -> (a -> IO b) -> IO b
 \end{haskell}
 
-Jako první argument ji předáme první vstupně/výstupní operaci, kterou si přejeme
+Jako první argument jí předáme první vstupně/výstupní operaci, kterou si přejeme
 vykonat a její výsledek dát jako vstupní hodnotu funkci předané jako druhý
 argument. Výsledek této funkce \uv{zabalený} v typu @t{IO} je výsledkem celé
 @t{>>=}.
@@ -287,7 +288,7 @@ main =
 Tento kód ale není příliš přehledný a pokud bychom jej chtěli ještě dále
 rozšířit, mohli bychom se v něm brzy ztratit. Protože zřetězené používání
 @t{>>=} a @t{>>} je v Haskellu velmi časté, obsahuje jazyk tzv. @t{do}-syntaxi,
-která nám umožňuje zapisovat série monadických operací o něco úhledněji:
+která nám umožňuje zapisovat série takovýchto operací o něco úhledněji:
 
 \begin{haskell}
 main = do
@@ -323,7 +324,7 @@ tato hodnota.
 Kromě typu @t{IO} jsou ze standardní knihovny monádami například i typy @t{[]},
 @t{Maybe}, @t{Either e} či @t{(->) a} (funkce, jejímž argumentem je typ @t{a}).
 
-\subsection{Dokumentace Haskellu}
+\section{Dokumentace}
 
 Veškeré knihovny použité v této práci se, včetně dokumentace, nachází na serveru
 Hackage.\footnote{\url{http://hackage.haskell.org/packages/hackage.html}} Pro
@@ -349,7 +350,7 @@ stranách \pageref{pdf:krunimir} a \pageref{pdf:banshee}.
 
 \section{Technická stránka práce}
 
-V této práci jsou popsány dva programy, jež řeší obě úlohy. Kód je zapsán ve
+V této práci jsou popsány dva programy, jež řeší tyto úlohy. Kód je zapsán ve
 stylu \emph{literárního programování}, kdy se volně střídá kód srozumitelný pro
 počítač a komentář pro člověka, což znamená, že zdrojový kód Haskellu obou
 programů je zároveň zdrojovým kódem systému \LaTeX, kterým je tato práce
@@ -360,9 +361,10 @@ programy, které je možno přeložit a spustit. Tímto je zajištěno, že zde
 prezentovaný kód je plně funkční.
 
 Zdrojový kód práce je spravován pomocí distribuovaného systému správy verzí Git.
-Repozitář je volně přístupný na serveru \href{http://github.com}{github.com},
-adresa repozitáře s prací je \url{https://github.com/honzasp/funsp}. Detailnější
-popis jednotlivých souborů a složek se nachází v souboru @t{README}.
+Repozitář je volně přístupný na serveru
+\href{http://github.com}{github.com},\footnote{\url{http://github.com}} adresa
+práce je \url{https://github.com/honzasp/funsp}. Detailnější popis jednotlivých
+souborů a složek se nachází v souboru @t{README}.
 
 Jako kompilátor byl využit GHC (Glasgow Haskell Compiler), který je dnes mezi
 překladači Haskellu dominantní.
