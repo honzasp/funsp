@@ -212,8 +212,9 @@ cesta, vrátíme @t{Nothing}.
 Tímto získáme seznam @t{[Maybe ((Loc,Path),[(Loc,Path)])]}, který následně
 pomocí složené funkce @t{unzip . catMaybes} převedeme na
 @t{([(Loc,Path)],[[(Loc,Path)]])}, tedy dvojici, jejíž první prvek je seznam
-pozic a cest, které byly uznány za nejlepší, a seznam seznamů políček a cest k
-nim, na které se z těchto nejlepších cest můžeme dostat.
+pozic a cest, které byly uznány za nejlepší (tento seznam označíme jako
+@t{starts'}), a seznam seznamů políček a cest k nim, na které se z těchto
+nejlepších cest můžeme dostat (v proměnné @t{nextss}).
 
 Pak zkontrolujeme, jestli jsme neobjevili nejkratší cestu k televizoru. Pokud
 ano, tak tuto cestu vrátíme jako @t{Left}, jinak rekurzivně zavoláme @t{step}
@@ -222,7 +223,9 @@ znovu a pomocí funkce @t{fmap} k jejímu výsledku přidáme ještě seznam
 
 \subsection{Hledání cest včetně procházení zdí}
 
-\marginnote{Zbytek popisu se musí doplnit :-)}
+Jako poslední implementujeme vlastní funkci @t{navigate}. Budeme jí předávat
+hrad, seznam řezů tohoto hradu a hodnotu @t{Bool} značící, jestli povolíme
+procházení zdí.
 
 @Idx{Banshee.Navigate.navigate}
 \begin{code}
@@ -244,14 +247,50 @@ navigate castle slices thruWalls = runST $ do
   wallStep bests locpaths = do
     result <- flood castle slices bests locpaths
     case result of
+      Left tvPath -> return $ Left tvPath
       Right [] -> return $ Right []
       Right locpaths' -> do
-        let nextss = (`map` locpaths') $ \((x,y),path@(Path len _)) ->
+        let nexts = concat . (`map` locpaths') $ \((x,y),path@(Path len _)) ->
               let offset = len `mod` period
                   offset' = (len+1) `mod` period
               in  moves True (slices !! offset) (slices !! offset') ((x,y),path)
-        wallStep bests (concat nextss)
-      Left _ -> return result
+        wallStep bests nexts
 
   period = length slices
 \end{code}
+
+Veškerou práci ve funkci @t{navigate} provedeme v monádě @t{ST s}, pomocí
+@t{runST} ji ale \uv{spustíme} a získáme výsledek. Poté, co zjistíme šířku a
+výšku hradu a nadefinujeme seznam startovních pozic (@t{start}), vytvoříme pole
+@t{bests}. Veškeré prvky tohoto pole budou nastaveny na hodnotu @t{Nothing}.
+
+Pokud nemáme povoleno procházet skrz zdi (argument @t{thruWalls} má hodnotu
+@t{False}), použijeme funkci @t{flood}, jelikož ta nikdy negeneruje cesty které
+prochází zdmi. V opačném případě zavoláme pomocnou funkci @t{wallStep}, jež
+najde i cesty skrz zdi a kterou si vzápětí popíšeme.
+
+Ať už jsme použili @t{flood} nebo @t{wallStep}, získali jsme výsledek typu
+@t{Either Path [(Loc,Path)]} v proměnné @t{result}. Pokud jsme dostali @t{Left},
+byla nalezena cesta k televizi. K seznamu pozic z této cesty ještě přidáme
+pozici televizoru a \uv{otočíme} ji tak, ať je pozice startu na prvním místě a
+televize na místě posledním.  Hodnota @t{Right} značí, že cesta k televizoru
+nebyla nalezena; v tom případě vrátíme @t{Nothing}.
+
+\subsubsection{\texorpdfstring
+  {Pomocná funkce @t{wallStep}}
+  {Pomocná funkce wallStep}}
+
+Funkci @t{wallStep} předáme jako argument pole @t{bests} a seznam startovních
+pozic a cest. Nejprve zavoláme funkci @t{flood} a její výsledek přiřadíme
+proměnné @t{result}. Pokud nalezla cestu k televizoru, jednoduše ji vrátíme.
+Pokud takovou cestu nenalezla a zároveň nenašla cestu ani do jedné nové pozice v
+hradě, znamená to, že už žádnou novou cestu nalézt nemůžeme a proto vrátíme
+hodnotu @t{Right} značící neúspěch.
+
+Pokud ale funkce @t{flood} nalezla cestu do nových pozic v hradě, seznam dvojic
+těchto pozic a cest do nich uložíme do proměnné @t{locpaths'}. Následně každou z
+těchto pozic projdeme a pomocí funkce @t{moves} (jíž jako první argument předáme
+@t{True}) získáme seznam pozic, do kterých se z nich můžeme jedním pohybem i
+skrz zeď dostat. Proměnná @t{nexts} tedy obsahuje seznam pozic a cest, které
+můžou mít o jednu zeď v cestě více. S tímto seznamem poté znovu rekurzivně
+zavoláme @t{wallStep}.
