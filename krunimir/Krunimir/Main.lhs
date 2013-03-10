@@ -42,7 +42,9 @@ a @t{steps}, což je @t{Just \textit{početKroků}} pokud máme zadaný
 počet kroků, nebo @t{Nothing} pokud jej zadaný nemáme (takže předpokládáme
 že uživatel chce vykreslit celý obrázek).\footnote{V zadání je specifikováno, že
 nula zadaná jako počet kroků znamená vykreslit celý obrázek, a chování našeho
-programu je odlišné -- nevykreslí nic.}
+programu je odlišné -- nevykreslí nic.} Pokud uživatel zadal jiný počet
+argumentů než jeden nebo dva, vypíšeme chybu a pomocí IO operace @t{exitFailure}
+ukončíme program s návratovým kódem, který signalizuje selhání.
 
 \begin{code}
   args <- getArgs
@@ -54,9 +56,6 @@ programu je odlišné -- nevykreslí nic.}
       hPutStrLn stderr $ "Use: " ++ progname ++ " input-file [steps]"
       exitFailure
 \end{code}
-
-@t{exitFailure} je speciální IO operace, která způsobí že program skončí s
-návratovým kódem, který signalizuje selhání.
 
 Nyní můžeme přečíst požadovaný soubor a jeho obsah předat funkci @t{parse}
 z modulu @t{Krunimir.Parser}. Pokud dostaneme chybu, zobrazíme ji na
@@ -86,12 +85,12 @@ celou (@t{prunedTrace}).
         Just count -> prune count fullTrace
 \end{code}
 
-Všimněte si, že díky línému vyhodnocování se v případě, kdy je počet kroků
-omezen, vypočítá jen část stopy, která nás zajímá. Máme tedy zajištěno, že i
-když bude mít stopa desetitisíce kroků a uživatel bude chtít zobrazit jen
-prvních několik, nebudeme počítat celou stopu, ale jen zobrazenou část. Naše
-implementace dokonce umožňuje spouštět nekonečné programy, samozřejmě pouze
-pokud uživatel specifikuje počet kroků, jež si přeje vykonat.
+Díky línému vyhodnocování se v případě, kdy je počet kroků omezen, vypočítá jen
+ta část stopy, která nás zajímá. Máme tedy zajištěno, že i když bude mít stopa
+desetitisíce kroků a uživatel bude chtít zobrazit jen prvních několik, nebudeme
+počítat celou stopu, ale jen zobrazenou část. Naše implementace dokonce umožňuje
+spouštět nekonečné programy, samozřejmě pouze pokud uživatel specifikuje počet
+kroků, jež si přeje vykonat.
 
 \begin{code}
   let outputPng = replaceExtension inputFile ".test.png"

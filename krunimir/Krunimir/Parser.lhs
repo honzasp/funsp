@@ -3,8 +3,8 @@
 @Idx{Krunimir.Parser}
 
 Pro syntaktickou analýzu (\uv{parsování}) použijeme knihovnu @t{parsec}
-\cite{parsec}. Jedná se o \textit{de-facto} standardní nástroj na tvorbu
-parserů v Haskellu.
+\cite{parsec}. Jedná se o jeden z nejpoužívanějších nástrojů na tvorbu parserů v
+Haskellu.
 
 \begin{code}
 module Krunimir.Parser (Krunimir.Parser.parse) where
@@ -57,43 +57,40 @@ Některé kombinátory definuje přímo @t{parsec}:
 
 \begin{description}
 \item[@t{char :: Char -> Parser Char}] \hfill \\
-  @t{char c} vytvoří parser, který akceptuje znak @t{c} a v případě
-  úspěchu jej vrátí.
+  @t{char c} vytvoří parser, který akceptuje znak @t{c} a v případě úspěchu jej
+  vrátí.
 
 \item[@t{string :: [Char] -> Parser [Char]}] \hfill \\
-  @t{string cs} je parser, jenž akceptuje sekvenci znaků (řetězec)
-  @t{cs}.
+  @t{string cs} je parser, jenž akceptuje sekvenci znaků (řetězec) @t{cs}.
 
 \item[@t{(<|>) :: Parser a -> Parser a -> Parser a}] \hfill \\
-  @t{p <|> q} představuje volbu -- nejprve aplikuje @t{p}, a
-  pokud selže \emph{aniž zkonzumoval nějaký vstup}, aplikuje @t{q}.
+  @t{p <|> q} představuje volbu -- nejprve aplikuje parser @t{p}, a pokud selže
+  \emph{aniž zkonzumoval nějaký vstup}, aplikuje parser @t{q}.
 
 \item[@t{(<?>) :: Parser a -> String -> Parser a}] \hfill \\
-  @t{p <?> msg} aplikuje parser @t{p}, a pokud selže \emph{aniž
-  zkonzumoval část vstupu}, nahradí část @t{"Expected ..."} chybové zprávy
-  řetězcem @t{msg}.
+  @t{p <?> msg} aplikuje parser @t{p}, a pokud selže \emph{aniž zkonzumoval část
+  vstupu}, nahradí část @t{"Expected ..."} chybové zprávy řetězcem @t{msg}.
 
 \item[@t{try :: Parser a -> Parser a}] \hfill \\
-  @t{try p} funguje jako @t{p}, ale s tím rozdílem, že pokud
-  @t{p} selže, předstírá, že nic nezkonzumoval. Použijeme ho nejčastěji ve
-  spojení s @t{<|>}.
+  @t{try p} funguje jako @t{p}, ale s tím rozdílem, že pokud @t{p} selže,
+  předstírá, že nic nezkonzumoval. Použijeme ho nejčastěji ve spojení s @t{<|>}.
 
 \item[@t{many :: Parser a -> Parser [a]}] \hfill \\
-  @t{many p} aplikuje parser @t{p} \emph{nula} či vícekrát a vrátí
-  seznam výsledků z @t{p} (což znamená, že pokud @t{p} poprvé skončí
-  neúspěchem, @t{many} vrátí prázdný seznam).
+  @t{many p} aplikuje parser @t{p} \emph{nula} či vícekrát a vrátí seznam
+  výsledků z @t{p} (což znamená, že pokud @t{p} poprvé skončí neúspěchem,
+  @t{many} vrátí prázdný seznam).
 
 \item[@t{many1 :: Parser a -> Parser [a]}] \hfill \\
-  @t{many1 p} funguje obdobně jako @t{many p}, s tím rozdílem, že
-  @t{p} aplikuje \emph{alespoň jednou} (pokud @t{p} napoprvé selže,
-  skončí neúspěchem i @t{many1}).
+  @t{many1 p} funguje obdobně jako @t{many p}, s tím rozdílem, že @t{p} aplikuje
+  \emph{vždy alespoň jednou} (pokud @t{p} napoprvé selže, skončí neúspěchem i
+  @t{many1}).
 
 \item[@t{sepBy :: Parser a -> Parser sep -> Parser [a]}] \hfill \\
-  @t{p `sepBy` s} zparsuje \emph{nula} či více výskytů @t{p}
-  oddělených @t{s}.\footnote{Zápis pomocí @t{`} je pouze syntaktický
-  cukr, kterým můžeme zapsat infixově volání jakékoli funkce; jinak je
-  ekvivalentí klasickému @t{sepBy p s}.} Obdobně jako u @t{many}
-  existuje varianta @t{sepBy1}, která aplikuje @t{p} alespoň jednou.
+  @t{p `sepBy` s} zparsuje \emph{nula} či více výskytů @t{p} oddělených
+  @t{s}.\footnote{Zápis pomocí @t{`} je pouze syntaktický cukr, kterým můžeme
+  zapsat infixově volání jakékoli funkce; jinak je ekvivalentí klasickému
+  @t{sepBy p s}.} Obdobně jako u @t{many} existuje varianta @t{sepBy1}, která
+  aplikuje @t{p} alespoň jednou.
 
 \end{description}
 
@@ -102,12 +99,11 @@ operace:
 
 \begin{description}
 \item[@t{(>>=) :: Parser a -> (a -> Parser b) -> Parser b}] \hfill \\
-  @t{p >>= f} aplikuje parser @t{p} a jeho výsledek předá funkci
-  @t{f}.
+  @t{p >>= f} aplikuje parser @t{p} a jeho výsledek předá funkci @t{f}.
 
 \item[@t{(>>) :: Parser a -> Parser b -> Parser a}] \hfill \\
-  @t{p >> q} nejprve aplikuje parser @t{p}, jeho výsledek zahodí a
-  aplikuje @t{q}.
+  @t{p >> q} nejprve aplikuje parser @t{p}, jeho výsledek zahodí a aplikuje
+  @t{q}.
 
 \item[@t{return :: a -> Parser a}] \hfill \\
   @t{return x} vytvoří parser, který vždy uspěje a vrátí @t{x}.
@@ -119,16 +115,16 @@ funkce:
 
 \begin{description}
 \item[@t{(<\$>) :: (a -> b) -> Parser a -> Parser b}] \hfill \\
-  @t{f <\$> p} aplikuje parser @t{p} a v případě úspěchu předá jeho
-  výsledek funkci @t{f}, jejíž výstup se stane výsledkem.
+  @t{f <\$> p} aplikuje parser @t{p} a v případě úspěchu předá jeho výsledek
+  funkci @t{f}, jejíž výstup se stane výsledkem @t{<\$>}.
 
 \item[@t{(<*>) :: Parser (a -> b) -> Parser a -> Parser b}] \hfill \\
-  @t{p <*> q} nejprve aplikuje @t{p}, poté @t{q} a výsledek
-  @t{q} předá funkci získané z @t{p}, jejíž výstup je výsledem.
+  @t{p <*> q} nejprve aplikuje @t{p}, poté @t{q} a výsledek z @t{q} předá funkci
+  získané z @t{p}, jejíž výstup se stane výsledkem @t{<*>}.
 
 \item[@t{(<\$) :: a -> Parser b -> Parser a}] \hfill \\
-  @t{x <\$ p} aplikuje parser @t{p}, ale jeho výsledek zahodí a namísto
-  toho vrátí @t{x}.
+  @t{x <\$ p} aplikuje parser @t{p}, ale jeho výsledek zahodí a namísto toho
+  vrátí @t{x}.
 
 \item[@t{(<*) :: Parser a -> Parser b -> Parser a}] \hfill \\
   @t{p <* q} aplikuje nejprve parser @t{p}, poté parser @t{q},
@@ -137,9 +133,7 @@ funkce:
 \item[@t{(*>) :: Parser a -> Parser b -> Parser b}] \hfill \\
   @t{p *> q} aplikuje parser @t{p}, poté @t{q}, jehož výsledek
   vrátí. Tato funkce je ekvivalentní s @t{>>}, ale použití spolu s
-  @t{<*} dáme přednost této variantě.\footnote{Všiměte si, že každý z
-  operátorů @t{<*} nebo @t{*>} \uv{ukazuje} na ten parser, jehož
-  hodnota bude vrácena.}
+  @t{<*} dáme přednost této variantě.
 
 \end{description}
 
@@ -163,8 +157,8 @@ parse filename txt =
 
 \subsection{Programy}
 
-Na začátku programu může být libovolné množství prázdných znaků\, následuje nula a více top-příkazů
-a konec souboru.
+Na začátku programu může být libovolné množství prázdných znaků, následuje nula
+a více top-příkazů a konec souboru.
 
 @Idx{Krunimir.Parser.program}
 \begin{code}
@@ -172,26 +166,19 @@ program :: Parser Program
 program = spaces *> many topStmt <* eof
 \end{code}
 
-Operátory @t{*>} a @t{<*} mají stejnou prioritu a jsou asociativní
-zleva, což znamená že tento kód je ekvivalentní @t{(spaces *> many topStmt)
-<* eof}. Nejprve se tedy aplikuje @t{spaces},\footnote{Parser @t{spaces} definuje samotná
-knihovna @t{parsec}, má typ @t{Parser ()} a zahodí nula a více
-prázdných znaků.} jehož výsledek se zahodí, poté @t{many topStmt}, kterým
-získáme seznam top-příkazů, a nakonec @t{eof}. Pokud @t{eof} uspěje,
-dostaneme výsledek z @t{many topStmt}, pokud ne, parser vrátí chybu.
+Operátory @t{*>} a @t{<*} mají stejnou prioritu a jsou asociativní zleva, což
+znamená že tento kód je ekvivalentní @t{(spaces *> many topStmt) <* eof}.
+Nejprve se tedy aplikuje @t{spaces},\footnote{Parser @t{spaces} definuje samotná
+knihovna @t{parsec}, má typ @t{Parser ()} a zahodí nula a více prázdných znaků.}
+jehož výsledek se zahodí, poté @t{many topStmt}, kterým získáme seznam
+top-příkazů, a nakonec @t{eof}. Pokud @t{eof} uspěje, dostaneme výsledek z
+@t{many topStmt}, pokud ne, parser vrátí chybu.
 
 \subsubsection{Top-příkazy}
 
-Top-příkaz je buď definice procedury (parser @t{define}) nebo příkaz
-(parser @t{stmt}), ze kterých pomocí příslušných datových konstruktorů
-(@t{TopDefine}, resp. @t{TopStmt}) vytvoříme typ
-@t{TopStmt}.\footnote{
-Všimněte si, že identifikátor @t{TopStmt} může označovat dvě odlišné entity
--- \emph{typový} konstruktor @t{TopStmt} (v deklaraci @t{topStmt ::
-Parser \emph{TopStmt}}) a \emph{datový} konstruktor @t{TopStmt}
-příslušející stejnojmennému typu (ve výrazu @t{\emph{TopStmt} <\$> stmt}).
-V Haskellu se s takovýmito případy, kdy definujeme datový typ se stejnojmenným
-konstruktorem, setkáváme poměrně často.}
+Top-příkaz je buď definice procedury (parser @t{define}) nebo příkaz (parser
+@t{stmt}), ze kterých pomocí příslušných datových konstruktorů (@t{TopDefine},
+resp. @t{TopStmt}) vytvoříme typ @t{TopStmt}.
 
 @Idx{Krunimir.Parser.topStmt}
 \begin{code}
@@ -240,8 +227,8 @@ stmt =
 \subsubsection{Volání procedur}
 
 Začneme syntaxí užitou při volání procedur. Jak zabudované primitivní
-(@t{forward}, @t{color}...), tak programátorem definované procedury se
-volají stejně, proto je musíme rozlišit podle jména a podle toho vytvořit
+(@t{forward}, @t{color}...), tak programátorem definované procedury se volají
+syntaktivky stejně, proto je musíme rozlišit podle jména a podle toho vytvořit
 příslušný uzel syntaktického stromu.
 
 Volání začíná jménem volané procedury a následuje v závorkách seznam argumentů,
@@ -297,14 +284,13 @@ ifStmt = do
   return $ IfStmt cond stmts
 \end{code}
 
-Pomocný parser @t{keyword} nadefinujeme později; kdybychom místo něj
-použili jednoduše @t{string}, například @t{string "if"}, a programátor
-by nadefinoval třeba proceduru @t{iffy} a pokusil by se ji zavolat
-(@t{iffy(42)}), parser by přečetl pouze @t{"if"}, domníval by se, že
-jde o příkaz @t{if}, a pak nevěděl co s @t{"fy(42)"}, protože očekává
-otevírací závorku. Naproti tomu @t{keyword "if"} se aplikuje pouze na
-sekvenci znaků @t{"if"} za kterou \emph{nenásleduje písmenko}, čímž
-zajistíme, že jsme opravdu narazili na celé slovo @t{if}.
+Pomocný parser @t{keyword} nadefinujeme později; kdybychom místo něj použili
+jednoduše @t{string}, například @t{string "if"}, a programátor by nadefinoval
+třeba proceduru @t{iffy} a pokusil by se ji zavolat (@t{iffy(42)}), parser by
+přečetl pouze @t{"if"}, domníval by se, že jde o příkaz @t{if}, a pak nevěděl co
+s @t{"fy(42)"}, protože očekává otevírací závorku. Naproti tomu @t{keyword "if"}
+se aplikuje pouze na sekvenci znaků @t{"if"} za kterou \emph{nenásleduje
+písmeno}, čímž zajistíme, že jsme opravdu narazili na klíčové slovo @t{if}.
 
 \subsubsection{Konstrukce @t{split}}
 
@@ -330,31 +316,27 @@ Gramatiku matematických výrazů můžeme vyjádřit v bezkontextové gramatice
 \begin{grammar}
 <expr> ::= <add-expr>
 
-<add-expr> ::= <add-expr> <add-op> <neg-expr>
+<add-expr> ::= <add-expr> "+" <neg-expr>
+\alt <add-expr> "-" <neg-expr>
 \alt <neg-expr>
 
 <neg-expr> ::= "-" <mul-expr>
 \alt <mul-expr>
 
-<mul-expr> ::= <mul-expr> <mul-op> <a-expr>
+<mul-expr> ::= <mul-expr> "*" <a-expr>
+\alt <mul-expr> "/" <a-expr>
 \alt <a-expr>
 
 <a-expr> ::= variable
 \alt literal
 \alt "(" <expr> ")"
-
-<add-op> ::= "+"
-\alt "-"
-
-<mul-op> ::= "*"
-\alt "/"
 \end{grammar}
 
 \input{tex/parsetrees.tex}
 
 Problém je, že pravidla pro sčítání/odčítání a násobení/dělení jsou rekurzivní
-zleva, takže je nelze zpracovávat pomocí gramatiky PEG. Proto je musíme
-přeformulovat do podoby (ošetření mezer jsme pro přehlednost vynechali):
+zleva, takže je nelze v této podobě zpracovávat pomocí gramatiky PEG. Proto je
+musíme přeformulovat (ošetření mezer jsme pro přehlednost vynechali):
 
 \begin{peg}
 expr         <- add-expr
@@ -406,8 +388,6 @@ varExpr = VariableExpr <$> identifier
 litExpr = LiteralExpr <$> integer
 \end{code}
 
-\marginnote{Tady je příklad téměř nutností, bez něj nelze chainl1 pochopit.}
-
 \subsection{Pomocné parsery}
 
 Nakonec si nadefinujeme drobné parsery, které jsme použili. Každý z nich
@@ -436,14 +416,14 @@ lparen = char '(' >> spaces
 rparen = char ')' >> spaces
 lbrace = char '{' >> spaces
 rbrace = char '}' >> spaces
-comma = char ',' >> spaces
+comma  = char ',' >> spaces
 
 parens,braces :: Parser a -> Parser a
 parens = between lparen rparen
 braces = between lbrace rbrace
 \end{code}
-\marginnote{Vysvětlit between?}
 
+\newpage
 \subsection{PEG gramatika}
 
 Na závěr uvedeme kompletní \uv{referenční} PEG gramatiku Krunimírova jazyka.
@@ -458,14 +438,14 @@ define       <- "define" space+ identifier
 
 stmt         <- repeat-stmt / if-stmt / split-stmt / proc-stmt
 repeat-stmt  <- "repeat" lparen expr rparen lbrace stmt* rbrace
-if-stmt      <- "if" lparen expr rparen lbrace stmt* rbrace
-split-stmt   <- "split" lbrace stmt* rbrace
-proc-stmt    <- "forward" lparen expr rparen
-              / "left" lparen expr rparen
-              / "right" lparen expr rparen
-              / "pen" lparen expr rparen
-              / "color" lparen expr comma expr comma expr rparen
-              / identifier lparen (identifier (comma identifier)*)? rparen
+if-stmt      <- "if" space* lparen expr rparen lbrace stmt* rbrace
+split-stmt   <- "split" space* lbrace stmt* rbrace
+proc-stmt    <- "forward" space* lparen expr rparen
+              / "left" space* lparen expr rparen
+              / "right" space* lparen expr rparen
+              / "pen" space* lparen expr rparen
+              / "color" space* lparen expr comma expr comma expr rparen
+              / identifier space* lparen (expr (comma expr)*)? rparen
 
 expr         <- add-expr
 add-expr     <- mul-expr (add-op space* mul-expr)*
@@ -481,15 +461,18 @@ lit-expr     <- integer
 var-expr     <- identifier
 
 integer      <- digit+ space*
-digit        <- [0-9]
-
 identifier   <- letter alpha-num space*
-letter       <- [a-zA-Z]
-alpha-num    <- [a-zA-Z0-9]
 
 lparen       <- "(" space*
 rparen       <- ")" space*
 lbrace       <- "{" space*
 rbrace       <- "}" space*
 comma        <- "," space*
+
+digit        <- [0-9]
+letter       <- [a-zA-Z]
+alpha-num    <- [a-zA-Z0-9]
+space        <- [ \t\r\n\v\f]
+eof          <- !.
 \end{peg}
+\clearpage

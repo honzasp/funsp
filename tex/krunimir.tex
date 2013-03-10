@@ -17,30 +17,41 @@ vás.
 \end{quotation}
 
 Takto začíná zadání finální úlohy Soutěže v programování z roku
-2010 \cite{krunimir-task} (zadání je přetisknuto na straně
-\pageref{pdf:krunimir}). Popisuje jednoduchý procedurální jazyk na generování
-želví grafiky, inspirovaný jazykem Logo, a úkolem je vytvořit interpret tohoto
-jazyka, jehož vstupem je text programu a výstupem vykreslený obrázek. 
+2010 \cite{krunimir-task} (přetisknuto na straně \pageref{pdf:krunimir}).
+Popisuje jednoduchý procedurální jazyk na generování želví grafiky, inspirovaný
+jazykem Logo, a úkolem je vytvořit interpret tohoto jazyka, jehož vstupem je
+text programu a výstupem vykreslený obrázek. 
 
 \begin{figure}
   \includegraphics[width=0.9\textwidth]{krunimir/examples/dragon}
-  \caption{Příklad obrázku vykresleného pomocí Krunimírova jazyka (Dračí křivka)}
+
+  \caption{Příklad obrázku vykresleného pomocí Krunimírova jazyka (Dračí
+  křivka)}
   \label{fig:krunimir-dragon}
 \end{figure}
 
 \section{Popis jazyka}
 
-Uživatel má k dispozici několik primitivních kreslících funkcí:
+Krunimírův jazyk umožňuje vykreslovat obrázky principem želví grafiky. Na
+začátku se želva nachází uprostřed obrázku o velikosti 701\texttimes701 pixelů
+vyplněného bílou barvou a je otočená směrem nahoru. Uživatel má k dispozici
+několik primitivních kreslících procedur, kterými může želvu ovládat:
 
 \begin{description}
-\item[@t{forward(d)}] Želva se posune vpřed o @t{d} jednotek (pixelů).
-Pokud je tloušťka pera kladná, zanechá za sebou čáru vedoucí z původní pozice do
-nové. Takovýto pohyb se považuje za jeden \emph{tah}.
-\item[@t{right(a)}, @t{left(a)}] Želva se otočí doprava, resp. doleva o
-@t{a} stupňů.
-\item[@t{pen(s)}] Nastaví tloušťku pera na @t{s}
-\item[@t{color(r, g, b)}] Nastaví barvu pera, @t{r}, @t{g} a
-@t{b} jsou jednotlivé složky modelu RGB v rozsahu 0 až 255.
+
+\item[@t{forward(d)}] Želva se posune vpřed o @t{d} jednotek (pixelů).  Pokud je
+  tloušťka pera kladná, zanechá za sebou čáru vedoucí z původní pozice do nové.
+  Takovýto pohyb se považuje za jeden \emph{tah}.
+
+\item[@t{right(a)}, @t{left(a)}] Želva se otočí doprava, resp. doleva o @t{a}
+  stupňů.
+
+\item[@t{pen(s)}] Nastaví tloušťku pera na @t{s} pixelů. Je-li tloušťka pera
+  nulová, želva nic nekreslí.
+
+\item[@t{color(r,g,b)}] Nastaví barvu pera, @t{r}, @t{g} a @t{b} jsou jednotlivé
+  složky barevného modelu RGB v rozsahu 0 až 255.
+
 \end{description}
 
 Jazyk dále umožňuje použít jednoduchou podmínku a cyklus:
@@ -74,22 +85,22 @@ Uživatel může definovat vlastní procedury a volat je:
 Poslední a nejzajímavější struktura je rozdvojení:
 
 \begin{description}
-\item[@t{split \{ ... \}}] Vytvoří klon aktuální želvy, která vykoná
-příkazy v těle struktury @t{split}, přičemž původní želva pokračuje ve vykonávání
-dalších příkazů. Všechny želvy se pohybují paralelně, vždy všechny provedou
-jeden \emph{krok}, poté druhý atd.
+\item[@t{split \{ ... \}}] Vytvoří klon aktuální želvy, která vykoná příkazy v
+  těle struktury @t{split}, přičemž původní želva pokračuje ve vykonávání
+  dalších příkazů. Všechny želvy se pohybují paralelně, vždy všechny provedou
+  jeden \emph{tah}, poté druhý atd.
 \end{description}
 
 Jako argumenty při volání procedur lze používat výrazy vytvořené z celočíselných
-literálů, parametrů aktuální procedury, binárních operátorů @t{+}, @t{-},
-@t{*} a @t{/} (celočíselné dělení) a negace pomocí operátoru
-@t{-}. Ve výrazech je možno používat závorky @t{(} a @t{)},
-priorita a asociativita operátorů je jako v matematice.
+literálů, parametrů aktuální procedury, binárních operátorů @t{+}, @t{-}, @t{*}
+a @t{/} (dělení je celočíselné) a negace pomocí operátoru @t{-}. Ve výrazech je
+možno používat závorky @t{(} a @t{)}, priorita a asociativita operátorů je jako
+v matematice.
 
 \subsection{Příklady}
 
 Uvedeme si několik příkladů, které ilustrují využití veškerých příkazů
-Krunimírova jazyka. Výstupy těchto příkladů jsou na obrázku
+Krunimírova jazyka. Vygenerované výstupy těchto příkladů jsou na obrázku
 \ref{fig:krunimir-examples}.
 
 \subsubsection{Čtverec (\ref{fig:krunimir-square1})}
@@ -159,12 +170,13 @@ modulů:
 \begin{description}
 
 \item @t{Krunimir.Main} exportuje @t{main}, která slouží jako rozhraní s
-uživatelem. \footnote{Podobně jako funkce @t{main()} v jazyku C}
+uživatelem.\footnote{Podobně jako funkce @t{main()} v jazyku C}
   @idx{Krunimir.Main}
   @idx{Krunimir.Main.main}
 
 \item @t{Krunimir.Parser} exportuje funkci @t{parse}, která z textového
-zápisu programu vytvoří syntaktický strom (nebo syntaktickou chybu).
+zápisu programu vytvoří syntaktický strom (nebo syntaktickou chybu, pokud
+program není korektní).
   @idx{Krunimir.Parser}
   @idx{Krunimir.Parser.parse}
 
@@ -207,16 +219,14 @@ vykreslení několika známých fraktálů.
 
 \subsection{Hilbertova křivka}
 
-Hilbertova křivka je plochu-vyplňující fraktál popsaný roku 1891 německým
-matematikem Davidem Hilbertem. \cite{wiki:hilbert-curve}
-
-Na obrázku \ref{fig:krunimir-hilbert-gen} jsou zakresleny první čtyři iterace
-Hilbertovy křivky a na obrázku \ref{fig:krunimir-hilbert} je výsledek tohoto
-programu.
+Hilbertova křivka je plochu vyplňující fraktál popsaný roku 1891 německým
+matematikem Davidem Hilbertem. \cite{wiki:hilbert-curve} První čtyři iterace
+této křivky jsou zakresleny na obrázku \ref{fig:krunimir-hilbert-gen}.
 
 Hlavní část programu je procedura @t{hilbert(n,side)}, která nakreslí Hilbertovu
 křivku @t{n}-té iterace. Parametr @t{side} nabývá hodnot @t{-1} a @t{1} a
-určuje, na kterou stranu se křivka nakreslí.
+určuje, na kterou stranu se křivka nakreslí. Výsledek programu je na obrázku
+\ref{fig:krunimir-hilbert}.
 
 \lstinputlisting[style=krunimir]{krunimir/examples/hilbert.txt}
 
@@ -244,10 +254,10 @@ Kochova vločka je známý fraktál založený na Kochově křivce, kterou v roc
 vytvořil švédský matematik Helge von Koch. \cite{wiki:koch-snowflake}
 
 Obrázek \ref{fig:krunimir-koch-gen} zachycuje první čtyři iterace Kochovy
-křivky, výsledek příkladového programu je na obrázku \ref{fig:krunimir-koch}. O
-kreslení se stará procedura @t{koch(n)}, jež nakreslí @t{n}-tou iteraci Kochovy
-křivky. Tuto proceduru posléze zavoláme třikrát po sobě, čímž vytvoříme Kochovu
-vločku.
+křivky. O kreslení se stará procedura @t{koch(n)}, jež nakreslí @t{n}-tou
+iteraci Kochovy křivky. Tuto proceduru posléze zavoláme třikrát po sobě, čímž
+vytvoříme Kochovu vločku. Výsledek programu je na obrázku
+\ref{fig:krunimir-koch}.
 
 \lstinputlisting[style=krunimir]{krunimir/examples/koch.txt}
 
@@ -273,7 +283,7 @@ vločku.
 \subsection{Gosperova křivka}
 
 Gosperova křivka, pojmenovaná po svém objeviteli, americkém programátorovi a
-matematikovi Billu Gosperovi, je plochu-vyplňující fraktál.
+matematikovi Billu Gosperovi, je plochu vyplňující fraktál.
 \cite{wiki:gosper-curve}
 
 Na vykreslení této křivky musíme použít dvojici procedur, @t{gosperA} a
@@ -321,7 +331,7 @@ procedury @t{arrowhead(n,side)}. Postup generování ukazuje obrázek
   \label{fig:krunimir-arrowhead-all}
 
   \begin{subfigure}{0.8\textwidth}
-    \includegraphics[width=\textwidth,trim=0 250 50 200]
+    \includegraphics[width=\textwidth,trim=0 250 50 150]
       {krunimir/examples/arrowhead-gen}
     \caption{Prvních pět iterací křivky arrowhead.}
     \label{fig:krunimir-arrowhead-gen}
@@ -349,26 +359,39 @@ Všechny zdrojové soubory mají dohromady asi 350 řádků kódu. Vezmeme-li v 
 že se jedná o kompletní implementaci netriviálního programovacího jazyka, je
 toto číslo poměrně nízké.\footnote{Je nutno podotknout, že program nebyl psán
   tak, aby řádků bylo co nejméně, ale aby byl co nejpřehlednější.} Kód je
-rozdělen do modulů s minimálními vzájemnými závislostmi, což nám umožňuje snadné
-udržování, upravování a rozšiřování. 
+rozdělen do modulů s minimálními vzájemnými závislostmi, může tedy být snadno
+udržován, upravován a rozšiřován.
 
 Pokud bychom namísto Haskellu použili nějaký imperativní programovací jazyk,
-například \Cplusplus{}, Ruby nebo dokonce Javu, náš program by byl nejspíš delší
-a jeho modularita by byla nižší.\footnote{
-  Pokud bychom využili dynamický jazyk jako Ruby, mohli bychom si ušetřit práci
-  a několika jednoduchými textovými úpravami převést program pro Krunimíra na
-  program v použitém programovacím jazyku, který bychom vyhodnotili pomocí
-  funkce @t{eval}. Tento postup svého času autor na soutěži úspěšně využil.
-  Jedinou nevýhodou je nesnadnost korektní implementace příkazu @t{split}, jinak
-  jde o řešení téměř dokonalé :-)
-} Program
-by pravděpodobně sestával z parseru vytvořeného pomocí nějakého externího
-nástroje, který by vytvořil syntaktický strom sestávající z objektů. Vyhodnocení
-by bylo sloučeno s vykreslováním a probíhalo by voláním metod objektů ze
-syntaktického stromu, jejichž definice by byly roztroušeny u definic
+například \Cplusplus{}, Ruby\footnote{
+  Pokud bychom využili dynamický jazyk jako
+  Ruby, mohli bychom si ušetřit práci a několika jednoduchými textovými úpravami
+  převést program pro Krunimíra na program v použitém programovacím jazyku,
+  který bychom vyhodnotili pomocí funkce @t{eval}. Tento postup svého času autor
+  na soutěži úspěšně využil.  Jedinou nevýhodou je nesnadnost korektní
+  implementace příkazu @t{split}, jinak jde o řešení téměř dokonalé :-) 
+} nebo dokonce Javu, náš program by byl nejspíš delší a jeho modularita by byla
+nižší. Program by pravděpodobně sestával z parseru vytvořeného pomocí nějakého
+externího nástroje, který by vytvořil syntaktický strom sestávající z objektů.
+Vyhodnocení by bylo sloučeno s vykreslováním a probíhalo by voláním metod
+objektů ze syntaktického stromu, jejichž definice by byly roztroušeny u definic
 jednotlivých tříd.\footnote{
   V Javě bychom nejspíše vytvořili třídu @t{Statement}, která by měla potomky
   @t{ForwardStatement}, @t{LeftStatement}, @t{RepeatStatement} apod. přičemž
-  každý by byl ve vlastním souboru...
-}
-Implementovat příkaz @t{split} by bylo přinejmenším obtížné.
+  každý by byl ve vlastním souboru...  
+  } Implementovat příkaz @t{split} by bylo přinejmenším obtížné.
+
+\subsection{Zdrojové kódy}
+
+Veškeré soubory související s Krunimírem jsou v repozitáři s prací uloženy
+ve složce @t{krunimir/}. Zdrojové kódy všech uvedených modulů jsou ve složce
+@t{krunimir/Krunimir}, testovací soubory ve složce @t{krunimir/test}. Část
+testovacích souborů pochází ze soutěže, část byla vytvořena v rámci této práce.
+
+Pro testování je možné použít skript @t{runtest.sh}, který spustí program pro
+všechny soubory ze složky @t{krunimir/test}. Výsledné soubory (s příponou
+@t{.test.png} a @t{.test.svg}) je pak možno vizuálně porovnat s očekávanými
+výsledky (přípona pouze @t{.png}).
+
+Složka @t{krunimir/examples} obsahuje zdrojové kódy příkladů, ze kterých se
+generují obrázky, jež jsou v práci vloženy.

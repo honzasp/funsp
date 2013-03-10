@@ -11,11 +11,16 @@ import Krunimir.Trace
 
 Podobně jako v modulu @t{Krunimir.PngRenderer} si nejprve stopu převedeme funkcí 
 @t{Krunimir.Trace.traceToSegss} na seznam seznamů segmentů. Každému segmentu
-poté pouze vytvoříme jeden element @t{<line/>}, kterým se v SVG reprezentuje
-jednoduchá úsečka.
+poté pouze vytvoříme jeden element úsečky ve tvaru 
+@t{<line x1="\textit{x1}"{}
+y1="\textit{y1}"{} 
+x2="\textit{x2}"{}
+y2="\textit{y2}"{}
+stroke="rgb(\textit{červená},\textit{zelená},\textit{modrá})"{}
+stroke-width="\textit{šířka pera}"/>}.
 
 Tyto elementy stačí obalit do kořenového elementu @t{<svg> ... </svg>}, ve
-kterém specifikujeme velikost obrázku, a máme hotovo!
+kterém specifikujeme velikost obrázku, přidat hlavičku a máme hotovo.
 
 @Idx{Krunimir.SvgRenderer.renderSvg}
 \begin{code}

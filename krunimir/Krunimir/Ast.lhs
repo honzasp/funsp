@@ -4,11 +4,11 @@
 V tomto modulu definujeme datové typy popisující syntaktický strom, které
 využijeme v modulech @t{Krunimir.Parser} a @t{Krunimir.Evaluator}.
 
-\subsection{Definice typů}
-
 \begin{code}
 module Krunimir.Ast where
 \end{code}
+
+\subsection{Definice typů}
 
 \subsubsection{Příkazy}
 
@@ -80,8 +80,13 @@ type Program = [TopStmt]
 
 data TopStmt = TopDefine Define | TopStmt Stmt
   deriving Show
-
 \end{code}
+
+Identifikátor @t{TopStmt} může označovat dvě odlišné entity -- \emph{typový}
+konstruktor @t{TopStmt} a \emph{datový} konstruktor @t{TopStmt} příslušející
+stejnojmennému typu, podle kontextu je ale vždy jasné, který z těchto dvou
+konstruktorů myslíme.  V Haskellu se s takovýmito případy, kdy definujeme datový
+typ se stejnojmenným konstruktorem, setkáváme poměrně často.
 
 \subsection{Příklad}
 

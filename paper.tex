@@ -21,6 +21,7 @@
 \usepackage{pdfpages}
 \usepackage{paralist}
 \usepackage{amsfonts}
+\usepackage{textcomp}
 \usepackage{tikz}
 \usetikzlibrary{positioning}
 \usetikzlibrary{calc}
@@ -41,7 +42,11 @@
 
 \lstdefinelanguage{PEG}{
   string=[b]{"},
-  otherkeywords={?,*,+,\&,!,/,.,(,),\[,\],<-},
+  % HACK: character classes delimited by [ and ] should be formatted like
+  % strings, but listings package doesn't allow strings with two delimiters, so
+  % we highlight character classes as comments and format them as strings
+  comment=[s]{[}{]},
+  otherkeywords={?,*,+,\&,!,/,.,(,),<-},
 }
 
 \lstdefinestyle{ttcode}{
@@ -72,6 +77,7 @@
   basicstyle=\itshape\ttfamily,
   keywordstyle=\upshape,
   stringstyle=\upshape,
+  commentstyle=\upshape, % hack; see PEG language definition
   xleftmargin=1em,
 }
 

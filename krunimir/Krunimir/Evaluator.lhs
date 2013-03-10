@@ -2,7 +2,7 @@
 @Idx{Krunimir.Evaluator}
 
 Nyní se dostáváme k jádru problému, totiž samotnému \emph{vyhodnocování}
-Krunimírova programu, implementováno funkcí @t{eval}. Vstupem této funkce je
+Krunimírova programu, implementovanému funkcí @t{eval}. Vstupem této funkce je
 syntaktický strom v podobě typu @t{Program} (což je jen synonym pro
 @t{[TopStmt]}), výstupem stopa želvy jako typ @t{Trace}.
 
@@ -14,10 +14,6 @@ import Krunimir.Ast
 import qualified Data.Map as M
 import Data.List (genericReplicate)
 \end{code}
-
-Funkce @t{genericReplicate} je verze funkce @t{replicate} ze standardního
-@t{Prelude}, které můžeme předat jakýkoli celočíselný typ, není omezena pouze na
-@t{Int} (my jí budeme předávat @t{Integer}).
 
 \subsection{Pomocné typy}
 
@@ -39,8 +35,8 @@ data Turtle = Turtle
 
 V průběhu vyhodnocování musíme mít uloženy informace o definovaných procedurách
 a aktuálních hodnotách argumentů (proměnných). K tomu slouží typ @t{Env}.
-Definujeme si synonyma @t{ProcMap} a @t{VarMap}, mapující jména na definice
-procedur, respektive proměnných.
+Definujeme si synonyma @t{ProcMap} a @t{VarMap}, což jsou \emph{mapy} mapující
+jména procedur na jejich definice a jména proměnných na hodnoty.
 
 @Idx{Krunimir.Evaluator.Env}
 @Idx{Krunimir.Evaluator.ProcMap}
@@ -68,16 +64,16 @@ budeme potřebovat @t{Env}, z něhož získáme hodnoty aktuálních proměnnýc
 evalExpr :: Env -> Expr -> Integer
 \end{haskell}
 
-Dále bude třeba vytvořit funkci, která vyhodnotí příkaz. Parametry této funkce
+Dále bude třeba vytvořit funkci, která vyhodnotí příkaz. Argumenty této funkce
 bude učitě znovu @t{Env} (potřebujeme znát, jaké procedury existují) a
 @t{Turtle} (musíme vědět, jaký je aktuální stav želvy). 
 
 Jakou hodnotu bychom měli vrátit? Každý příkaz změní stav želvy, proto bychom
 novou želvu měli vrátit jako část výsledku. Hlavní je ale to, jestli příkaz
-nezmění stopu, kterou za sebou želva zanechává. Jakým způsobem ale tuto
-\uv{změnu} reprezentovat? Nemůžeme použít přímo typ @t{Trace}, jelikož ten
-reprezentuje \emph{celou} želvinu trasu, kdežto my spočteme jen její
-\emph{začátek}.
+nezmění stopu, kterou za sebou želva zanechá. Jakým způsobem ale tuto změnu
+reprezentovat? Nemůžeme použít přímo typ @t{Trace}, jelikož ten reprezentuje
+\emph{celou} želvinu trasu, kdežto my spočteme jen její \emph{začátek}, neboť
+za tímto jedním příkazem mohou následovat další, které trasu rovněž prodlouží.
 
 Nejlepší bude, když vrátíme \emph{funkci}, která jako argument dostane @t{Trace}
 získaný z \emph{následujících} příkazů a vrátí novou @t{Trace}.
@@ -131,7 +127,7 @@ elegantně a jednoduše.
 \subsection{Funkce \texorpdfstring{@t{eval}}{eval}}
 @Idx{Krunimir.Evaluator.eval}
 
-Funkce @t{eval}, která vyhodnotí celý program.
+Nejprve představíme funkce @t{eval}, která vyhodnotí celý program:
 
 \begin{code}
 eval :: Program -> Trace
@@ -165,9 +161,10 @@ programu nenachází žádné proměnné, proto je mapa proměnných prázdná.
 vypnutým černým perem a je otočená směrem nahoru.
 
 V samotném těle funkce @t{eval} nejprve vyhodnotíme pomocí funkce @t{evalStmts}
-seznam příkazů, čímž získáme @t{diff}, hodnotu @t{DiffTrace}, která reprezentuje
-změnu, jenž program vykoná na celkové stopě želvy. Tuto změnu aplikujeme na
-prázdnou stopu, čímž získáme kýženou hodnotu @t{Trace}.
+seznam příkazů, čímž získáme dvojici @t{(Turtle,DiffTrace)}. První prvek, želva,
+nás nezajímá, ale funkcí @t{snd} získáme hodnotu @t{DiffTrace}, která
+reprezentuje změnu, jenž program vykoná na celkové stopě želvy. Tuto změnu
+aplikujeme na prázdnou stopu, takže získáme kýženou hodnotu @t{Trace}.
 
 \subsection{Vyhodnocování příkazů}
 
@@ -217,10 +214,11 @@ musíme vytvořit novou mapu proměnných z předaných argumentů.
 
 Nyní se dostáváme k implementaci jednotlivých funkcí použitých v @t{evalStmt}.
 Všimněte si, že jsme využili \emph{curryingu} -- ač @t{evalStmt} vyžaduje tři
-argumenty, definovali jsme ji pouze pro první dva (@t{env} a @t{stmt}), tudíž na
-pravé straně musíme vrátit funkci @t{Turtle -> (Turtle,DiffTrace} (viz typovou
-deklaraci funkce @t{evalStmt}). Tímto se zbavíme neustálého opakování a
-předávání argumentu @t{Turtle} jednotlivým specializovaným funkcím.
+argumenty, na levé straně rovnice jsme uvedli pouze první dva (@t{env} a
+@t{stmt}), tudíž na pravé straně musí být funkce typu @t{Turtle ->
+(Turtle,DiffTrace)} (podle typové deklarace funkce @t{evalStmt}). Tímto se
+zbavíme neustálého opakování a předávání argumentu @t{Turtle} jednotlivým
+specializovaným funkcím.
 
 \subsubsection{Prázdná operace}
 
@@ -245,10 +243,10 @@ zachycuje, pokud ne, dostaneme identitu.
 forward :: Integer -> Turtle -> (Turtle,DiffTrace)
 forward len turtle = (turtle',DiffTrace diff) where
   (x,y) = getPos turtle
-  ang = getAngle turtle
-  p = getPen turtle
-  x' = x + sinDeg ang * fromIntegral len
-  y' = y - cosDeg ang * fromIntegral len
+  ang   = getAngle turtle
+  p     = getPen turtle
+  x'    = x + sinDeg ang * fromIntegral len
+  y'    = y - cosDeg ang * fromIntegral len
   turtle' = turtle { getPos = (x',y') } 
   segment = Segment (x,y) (x',y') (getColor turtle) p
   diff = if p > 0 then SegmentTrace segment else id
@@ -316,7 +314,7 @@ přímočará:
 @Idx{Krunimir.Evaluator.evalExpr}
 \begin{code}
 evalExpr :: Env -> Expr -> Integer
-evalExpr _ (LiteralExpr n) = n
+evalExpr _   (LiteralExpr n) = n
 evalExpr env (VariableExpr name) = lookupVar env name
 evalExpr env (BinopExpr op left right) =
   let a = evalExpr env left
