@@ -129,9 +129,8 @@ showPath castle (Just locs) = do
   forM_ [1..height] $ \y -> do
     forM_ [1..width] $ \x -> do
       putChar $ ary ! (x,y)
-      putChar ' '
     putChar '\n'
-  putStrLn . concat $ [show $ length locs," steps, ",
+  putStrLn . concat $ [show $ length locs," steps",
     " (",show $ countWalls castle locs," through walls)"]
   where
 
