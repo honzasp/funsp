@@ -210,15 +210,16 @@ implementujeme později. Podmínka a cyklus v podobě @t{RepeatStmt} a @t{IfStmt
 jsou implementovány pomocí @t{evalStmts}, stejně jako volání procedury, kde ale
 musíme vytvořit novou mapu proměnných z předaných argumentů.
 
-\subsection{Jednotlivé příkazy}
-
-Nyní se dostáváme k implementaci jednotlivých funkcí použitých v @t{evalStmt}.
-Všimněte si, že jsme využili \emph{curryingu} -- ač @t{evalStmt} vyžaduje tři
+S výhodou jsme využili \emph{curryingu} -- ač @t{evalStmt} vyžaduje tři
 argumenty, na levé straně rovnice jsme uvedli pouze první dva (@t{env} a
 @t{stmt}), tudíž na pravé straně musí být funkce typu @t{Turtle ->
 (Turtle,DiffTrace)} (podle typové deklarace funkce @t{evalStmt}). Tímto se
 zbavíme neustálého opakování a předávání argumentu @t{Turtle} jednotlivým
-specializovaným funkcím.
+specializovaným funkcím.  
+
+\subsection{Jednotlivé příkazy}
+
+Nyní se dostáváme k implementaci jednotlivých funkcí použitých v @t{evalStmt}.
 
 \subsubsection{Prázdná operace}
 

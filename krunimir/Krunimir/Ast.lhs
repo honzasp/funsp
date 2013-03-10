@@ -50,10 +50,8 @@ data Op = AddOp | SubOp | MulOp | DivOp
 
 \subsubsection{Definice}
 
-Poslední strukturou je definice uživatelské procedury, pro kterou použijeme datový
-typ s pojmenovanými prvky (záznam).
-
-% TODO: anglický název
+Poslední strukturou je definice uživatelské procedury, pro kterou použijeme
+datový typ s pojmenovanými prvky (záznam neboli \emph{record}).
 
 @Idx{Krunimir.Ast.Define}
 @Idx{Krunimir.Ast.defineName}
