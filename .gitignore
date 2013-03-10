@@ -3,7 +3,6 @@
 *.test.png
 *.test.svg
 krunimir/basic.*
-banshee/test/**.png
 paper.aux
 paper.log
 paper.pdf
