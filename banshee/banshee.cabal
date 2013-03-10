@@ -41,6 +41,9 @@ build-type:          Simple
 -- Constraint on the version of Cabal needed to build this package.
 cabal-version:       >=1.8
 
+flag interactive
+  description:       Enable ncurses-based interactive mode
+  default:           True
 
 executable banshee
   -- .hs or .lhs file containing the Main module.
@@ -52,13 +55,19 @@ executable banshee
     Banshee.CastleParser
     Banshee.Main
     Banshee.Navigate
+
+  if flag(interactive)
+    build-depends:     ncurses ==0.2.*
+    other-modules:     Banshee.Interactive
+    cpp-options:       -DENABLE_INTERACTIVE
+  else
+    cpp-options:       -UENABLE_INTERACTIVE
   
   -- Other library packages from which modules are imported.
   build-depends:       
     base ==4.5.*,
     parsec ==3.1.*,
     array ==0.4.*,
-    ncurses ==0.2.*,
     transformers ==0.3.*
   
   ghc-options: 

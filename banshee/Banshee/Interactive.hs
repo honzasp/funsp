@@ -1,4 +1,15 @@
+{-# LANGUAGE CPP #-}
 module Banshee.Interactive (showInteractive) where
+
+#ifndef ENABLE_INTERACTIVE
+import System.IO
+import Banshee.Castle
+
+showInteractive :: Castle -> [Slice] -> Maybe [Loc] -> IO ()
+showInteractive _ _ _ = 
+  hPutStrLn stderr "banshee was build with disabled support for interactive mode"
+#else
+
 import Control.Monad
 import Control.Monad.IO.Class
 import Data.Array
@@ -168,3 +179,5 @@ showInteractive castle slices (Just locs) = runCurses $ do
             else return ()
 
   loop
+
+#endif
