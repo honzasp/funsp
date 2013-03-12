@@ -11,22 +11,17 @@ Funkcionální programování, vycházející z λ-kalkulu, tvoří alternativu 
 široce využívanému imperativnímu přístupu k programování, reprezentovanému
 jazyky jako C, C++, Java, C#, Objective-C, JavaScript, Python, Ruby či PHP.
 
-Tyto jazyky jsou založeny na postupném vykonávání příkazů, jež mění stav
-programu (zvláště hodnoty proměnných). Naproti tomu funkcionální jazyky provádí
-výpočty vyhodnocováním výrazů. Základní stavební prvky – funkce – jsou od
-imperativních protějšků (ať už procedur, metod nebo „funkcí“ jako v jazyce C)
-odlišné tím, že jejich výsledek vždy závisí pouze na vstupních argumentech, čímž
-se přibližují matematickým funkcím.
-
-Algoritmy zapsané ve funkcionálním jazyce tudíž nemají podobu série kroků, jež
-se musí postupně vykonat a jež určují jak se k výsledku dostat, ale spíše
-popisují co je jejich výsledkem.
-
 V této práci je představeno řešení dvou úloh Ústředního kola ČR Soutěže v
-programování z let 2010 a 2012 užitím funkcionálního programovacího jazyka
-Haskell. Cílem je čtenáře seznámit s vysokoúrovňovými koncepty, které se ve
-funkcionálních programech používají, a jejich aplikací při řešení „skutečných“
-úloh.
+programování z let 2010 a 2012 s využitím líně vyhodnocovaného funkcionálního
+jazyka Haskell. První úloha je implementace jednoduchého programovacího
+jazyka, podobného jazyku Logo, sloužícího k vykreslování želví grafiky. Druhá
+úloha se zabývá hledáním nejkratší cesty v bludišti s pohyblivými překážkami
+a omezenou schopností procházet zdmi.
+
+Cílem práce je prezentovat funkcionální programování a techniky, které se
+v něm využívají, a ukázat, že tento programovací styl není pouze předmětem
+akademického výzkumu, ale že se dá využít i k řešení „skutečných“ úloh.
+
 
 Sazba práce
 -----------
