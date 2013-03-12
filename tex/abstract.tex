@@ -9,52 +9,25 @@ dnes široce využívanému imperativnímu přístupu k programování, reprezen
 jazyky jako C, \Cplusplus{}, Java, \Csh{}, Objective-C, JavaScript, Python, Ruby
 či PHP.
 
-Tyto jazyky jsou založeny na postupném vykonávání příkazů, jež mění stav
-programu (zvláště hodnoty proměnných). Naproti tomu funkcionální jazyky provádí
-výpočty vyhodnocováním výrazů. Základní stavební prvky -- funkce -- jsou od
-imperativních protějšků (ať už procedur, metod nebo \uv{funkcí} jako v jazyce C)
-odlišné tím, že jejich výsledek vždy závisí pouze na vstupních argumentech, čímž
-se přibližují matematickým funkcím.
-
-Algoritmy zapsané ve funkcionálním jazyce tudíž nemají podobu série kroků, jež
-se musí postupně vykonat a jež určují \emph{jak} se k výsledku dostat, ale spíše
-popisují \emph{co} je jejich výsledkem.
-
 V této práci je představeno řešení dvou úloh Ústředního kola ČR Soutěže v
-programování z let 2010 a 2012 užitím funkcionálního programovacího jazyka
-Haskell. Cílem je čtenáře seznámit s vysokoúrovňovými koncepty, které se ve
-funkcionálních programech používají, a jejich aplikací při řešení
-\uv{skutečných} úloh.
+programování z let 2010 a 2012 s využitím líného funkcionálního jazyka Haskell.
+První úlohou je implementovat jednoduchý programovací jazyk, podobný jazyku
+Logo, sloužící k vykreslování želví grafiky. Druhá úloha se zabývá hledáním
+nejkratší cesty v bludišti s pohyblivými překážkami a omezenou schopností
+procházet zdmi.
+
+Cílem práce je prezentovat funkcionální programování a techniky, které se v něm
+využívají, a ukázat, že tento programovací styl není pouze akademickou
+kuriozitou, ale že se dá využít i k řešení \uv{skutečných} úloh.
 
 \paragraph*{Klíčová slova}
-Funkcionální programování; Haskell; želví grafika; AI.
+Funkcionální programování; Haskell; želví grafika; programovací jazyky; hledání
+cest.
 
 \section*{Abstract}
 
-Functional programming, rooted in $\lambda$-calculus, is an alternative to the
-mainstream imperative approach to programming, as seen in languages like C,
-\Cplusplus{}, Java, \Csh{}, Objective-C, JavaScript, Python, Ruby či PHP.
-
-These languages are based on statements, which are sequentially executed and
-change the program's state. In contrast, functional languages treat computations
-as evaluation of expressions. The fundamental way in which basic building blocks
-of functional languages -- functions -- differ from their imperative
-counterparts (procedures, methods or C-style ``functions'') is that their result
-depends entirely on their arguments. This makes the functions used in
-programming much closer to functions used in mathematics.
-
-Algorithms in a functional language are not a sequence of steps describing
-\emph{how} the result should be computed, but they rather specify \emph{what}
-the result is.
-
-In this paper, we present a solution to two tasks from the final of The Czech
-Programming Contest held in 2010 and 2012, using the functional programming
-language Haskell. The goal of the paper is to make the reader familiar with the
-high-level concepts used in functional programs and their usage in solving
-``real'' problems.
-
-
 \paragraph*{Keywords}
-Functional programming; Haskell; turtle graphics; AI.
+Functional programming; Haskell; turtle graphics; programming languages;
+pathfinding.
 
 \end{adjustwidth}
