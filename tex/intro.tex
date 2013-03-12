@@ -1,6 +1,39 @@
 \chapter{Úvod}
 
-\section{Co je to Haskell}
+Funkcionální programování má původ v $\lambda$-kalkulu, matematickém formálním
+systému, jež popisuje výpočty jako vyhodnocování výrazů tvořených funkcemi.  S
+funkcemi se v $\lambda$-kalkulu pracuje jako s hodnotami\footnote{Základní
+$\lambda$-kalkulus dokonce žádné jiné hodnoty než funkce nezná.} a lze je
+\emph{aplikovat} na argument a získat jejich výsledek nebo je vytvořit pomocí
+\emph{$\lambda$-abstrakce}. Tento systém je svou výpočetní silou ekvivalentní
+Turingovu stroji, je v něm tedy možno vyjádřit jakýkoli strojem proveditelný
+výpočet.
+
+V \emph{imperativních} programovacích jazycích (C, \Cplusplus{}, Java, Ruby,
+JavaScript, Befunge, PHP...) jsou algoritmy vyjádřeny jako sekvence kroků --
+příkazů, které mění stav programu, zvláště hodnoty proměnných. Postupným
+vykonáváním těchto kroků se provádí výpočet. Tento přístup přímo vychází ze
+strojového kódu počítačů a v dnešní době jde o dominantní programovací styl.
+
+Ve funkcionálních jazycích se naproti tomu výpočty provádí \emph{vyhodnocováním
+výrazů}. Aplikace (\uv{zavolání}) funkce má jediný účinek, a to je získání
+jejího výsledku. Jelikož neexistuje žádný stav, na němž by výsledek funkce mohl
+záviset, je garantováno, že aplikujeme-li funkci vícekrát na stejné argumenty,
+dostaneme vždy stejný výsledek. Tato vlastnost se nazývá \emph{referenční
+transparentnost}.
+
+Na funkce je tedy možno nahlížet podobně jako na funkce v matematice, takže pro
+programátora i pro kompilátor je snadné zjišťovat a \emph{dokazovat} chování
+funkcí. Kompilátor může kód Haskellu snadno optimalizovat
+\cite{santos1995compilation}, takže programátor může v programech používat
+vysokoúrovňové konstrukce bez obav z negativního dopadu na rychlost programu.
+
+Další vlastností funkcionálních jazyků je snadná paralelizace. Potřebujeme-li
+zjistit hodnotu dvou výrazů, můžeme bez obav každý výpočet provést na
+samostatném procesoru, jelikož máme zaručeno, že se výpočty nebudou navzájem
+ovlivňovat.
+
+\section{Haskell}
 
 Haskell je \textit{de-facto} standardní líný čistě funkcionální jazyk. Jeho
 vývoj začal v září roku 1987, přičemž první verze jazyka (Haskell 1.0) byla
@@ -22,34 +55,19 @@ verzi,\footnote{\url{http://learnyouahaskell.com/}} tak v částečném českém
 překladu.\footnote{\url{http://naucte-se.haskell.cz/}} Práce by nicméně měla být
 srozumitelná i se základními znalostmi \uv{klasického} programování.
 
-\subsection{Čistě funkcionální jazyk}
+\subsection{Čistý funkcionální jazyk}
 
-V \emph{imperativních} programovacích jazycích (C, \Cplusplus{}, Java, Ruby,
-JavaScript, Befunge, PHP...) jsou algoritmy vyjádřeny jako sekvence kroků --
-příkazů, které mění stav programu, zvláště hodnoty proměnných.  Tento přístup
-přímo vychází ze strojového kódu počítačů a v dnešní době jde o dominantní
-programovací styl.
+Haskell je \emph{čistý} funkcionální jazyk,\footnote{Někdy se používá rovněž
+označení \uv{čistě funkcionální jazyk}, které ovšem není úplně přesné.} což
+znamená, že \emph{všechny} funkce jsou referenčně transparentní a nemají žádný
+vnitřní stav, jsou tedy prosty vedlejších účinků.  
 
-\emph{Funkcionální} jazyky jsou oproti tomu založeny na vyhodnocování výrazů a
-jejich fundamentálním typem je \emph{funkce}. Narozdíl od imperativních jazyků,
-kde vyhodnocování výrazů a volání procedur (metod) může mít \emph{vedlejší
-účinky}, např. změnu hodnoty proměnných nebo vypsání řetězce na obrazovku,
-jediný účinek, který má \uv{zavolání} (\emph{aplikace}) funkce v čistě
-funkcionálním jazyku, je získání jejího výsledku. Jelikož neexistuje žádný stav,
-na němž by výsledek funkce mohl záviset, je garantováno, že aplikujeme-li funkci
-vícekrát na stejné argumenty, dostaneme vždy stejný výsledek. Tato vlastnost se
-nazývá \emph{referenční transparentnost}.
-
-Na funkce je tedy možno nahlížet jako na funkce v matematice, takže pro
-programátora i pro kompilátor je snadné zjišťovat a \emph{dokazovat} chování
-funkcí. Kompilátor může kód Haskellu snadno optimalizovat, takže programátor
-může v programech používat vysokoúrovňové konstrukce bez obav z negativního
-dopadu na rychlost programu.
-
-Další vlastností funkcionálních jazyků je snadná paralelizace. Potřebujeme-li
-zjistit hodnotu dvou výrazů, můžeme bez obav každý výpočet provést na
-samostatném procesoru, jelikož máme zaručeno, že se výpočty nebudou navzájem
-ovlivňovat.
+Většina jazyků, které bývají označováný jako funkcionální, totiž funkce s
+vedlejšími účinky povoluje, například pro vykonávání vstupně-výstupních operací
+nebo používání měnitelných datových struktur, potřebných pro efektivní
+implementaci některých algoritmů. Haskell ovšem pro tyto účely používá jiné
+prostředky, především \emph{monády}, které si představíme v podsekci
+\ref{subsec:intro-monad} a které umožňují zachovat čistotu jazyka.
 
 \subsection{Líné vyhodnocování}
 
@@ -165,6 +183,7 @@ Tato instance deklaruje, že pro všechny typy @t{a} náleží typ @t{Tree a} do
 třídy @t{Eq}, platí-li, že typ @t{a} náleží do třídy @t{Eq}.
 
 \subsection{Monadický vstup/výstup}
+\label{subsec:intro-monad}
 
 Jak už bylo zmíněno výše, vyhodnocování výrazů v čistě funkcionálním jazyce
 nemůže mít žádné vedlejší efekty a musí být referenčně transparentní. Co když
@@ -304,8 +323,8 @@ teorie kategorií, je v Haskellu možno považovat za \emph{výpočty} nebo
 \emph{akce}, které je možno \emph{skládat}, tedy přesměrovat \emph{výstup} z
 jedné monády do druhé.
 
-V Haskellu jsou monády implementovány pomocí typové třídy @t{Monad} ze
-standardní knihovny jazyka. Tato třída je definována takto:
+Do Haskellu jsou monády zahrnuty pomocí typové třídy @t{Monad} ze standardní
+knihovny jazyka. Tato třída je definována takto:
 
 \begin{haskell}
 class Monad m where
@@ -321,8 +340,13 @@ použití s typem @t{IO}, jsou tedy ve skutečnosti definované pro všechny mon
 Funkce @t{return} pak pro libovolnou hodnotu vytvoří monádu, jejímž výstupem je
 tato hodnota.
 
-Kromě typu @t{IO} jsou ze standardní knihovny monádami například i typy @t{[]},
-@t{Maybe}, @t{Either e} či @t{(->) a} (funkce, jejímž argumentem je typ @t{a}).
+Kromě typu @t{IO} jsou ze standardní knihovny monádami například i typy @t{[]}
+(seznam), @t{Maybe}, @t{Either e} či @t{(->) a} (funkce, jejímž argumentem je
+typ @t{a}).  V podsekci \ref{subsec:banshee-st} na straně
+\pageref{subsec:banshee-st} si představíme monádu @t{ST s}, kterou je možno
+považovat za \uv{odlehčený} typ @t{IO}, umožňující v čistém kódu využívat
+měnitelné datové struktury a efektivně implementovat algoritmy, které takovéto
+struktury vyžadují.
 
 \section{Dokumentace}
 

@@ -101,6 +101,7 @@ zvědem prohodí místo, což znamená, že by ji zvěd objevil a do této pozic
 nemůžeme.
 
 \subsection{\texorpdfstring{Monáda @t{ST}}{Monáda ST}}
+\label{subsec:banshee-st}
 
 V našem algoritmu budeme pracovat s polem, ve kterém si budeme ukládat nejlepší
 cesty, které jsme nalezli do každé časopozice v hradě. Mohli bychom použít
