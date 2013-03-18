@@ -33,6 +33,43 @@ zjistit hodnotu dvou výrazů, můžeme bez obav každý výpočet provést na
 samostatném procesoru, jelikož máme zaručeno, že se výpočty nebudou navzájem
 ovlivňovat.
 
+\section{Řešené úlohy}
+
+V této práci je představeno řešení dvou úloh z programátorských soutěží s užitím
+funkcionálního jazyka Haskell. Úlohy pochází z Ústředních kol Soutěže v
+programování, vyhlašované Ministerstvem školství, mládeže a tělovýchovy a
+pořádané Národním institutem dětí a mládeže, z let 2010 (Krunimír -- želví
+grafika) a 2012 (Bílá paní -- hledání cesty v bludišti),
+
+Tyto úlohy byly vybrány, protože nejsou ani příliš rozsáhlé, ani příliš
+jednoduché, a není je možno podezírat, že by byly vytvořeny funkcionálnímu jazyku
+\uv{na míru}.
+
+Zadání obou původních úloh je možno nalézt jak na Internetu na stránkách soutěže
+(\cite{krunimir-task}, \cite{banshee-task}), tak přetištěné v této práci na
+stranách \pageref{pdf:krunimir} a \pageref{pdf:banshee}.
+
+\section{Technická stránka práce}
+
+V této práci jsou vytvořeny dva programy, jež řeší tyto úlohy. Kód je zapsán ve
+stylu \emph{literárního programování}, kdy se volně střídá kód srozumitelný pro
+počítač a komentář pro člověka, což znamená, že zdrojový kód Haskellu obou
+programů je zároveň zdrojovým kódem systému \LaTeX, kterým je tato práce
+vysázena.
+
+Texty kapitol \ref{chap:krunimir} a \ref{chap:banshee} jsou tedy kompletní
+programy, které je možno přeložit a spustit. Tímto je zajištěno, že zde
+prezentovaný kód je plně funkční.
+
+Zdrojový kód práce je spravován pomocí distribuovaného systému správy verzí Git.
+Repozitář je volně přístupný na serveru
+\href{http://github.com}{github.com},\footnote{\url{http://github.com}} adresa
+práce je \url{https://github.com/honzasp/funsp}. Detailnější popis jednotlivých
+souborů a složek se nachází v souboru @t{README}.
+
+Jako kompilátor byl využit GHC (Glasgow Haskell Compiler), který je dnes mezi
+překladači Haskellu dominantní.
+
 \section{Haskell}
 
 Haskell je \textit{de-facto} standardní líný čistě funkcionální jazyk. Jeho
@@ -354,41 +391,5 @@ Veškeré knihovny použité v této práci se, včetně dokumentace, nachází 
 Hackage.\footnote{\url{http://hackage.haskell.org/packages/hackage.html}} Pro
 vyhledávání v dokumentaci je možno použít vyhledávač
 Hoogle.\footnote{\url{http://www.haskell.org/hoogle/}} Tento vyhledávač umožňuje
-vyhledávat nejen podle jména požadované funkce či třídy, ale i podle přibližného
-\emph{typu}, což z něj činí velmi užitečný nástroj.
-
-\section{Řešené úlohy}
-
-Řešené úlohy pochází z Ústředních kol Soutěže v programování, vyhlašované
-Ministerstvem školství, mládeže a tělovýchovy a pořádané Národním institutem
-dětí a mládeže, z let 2010 (soutěžní úloha s Krunimírem) a 2012 (úloha s Bílou
-paní),
-
-Tyto úlohy byly vybrány, protože nejsou ani příliš rozsáhlé, ani příliš
-jednoduché, a není je možno podezírat, že by byly vytvořeny funkcionálnímu jazyku
-\uv{na míru}.
-
-Zadání obou původních úloh je možno nalézt jak na Internetu
-(\cite{krunimir-task}, \cite{banshee-task}), tak přetištěné v této práci na
-stranách \pageref{pdf:krunimir} a \pageref{pdf:banshee}.
-
-\section{Technická stránka práce}
-
-V této práci jsou popsány dva programy, jež řeší tyto úlohy. Kód je zapsán ve
-stylu \emph{literárního programování}, kdy se volně střídá kód srozumitelný pro
-počítač a komentář pro člověka, což znamená, že zdrojový kód Haskellu obou
-programů je zároveň zdrojovým kódem systému \LaTeX, kterým je tato práce
-vysázena.
-
-Texty kapitol \ref{chap:krunimir} a \ref{chap:banshee} jsou tedy kompletní
-programy, které je možno přeložit a spustit. Tímto je zajištěno, že zde
-prezentovaný kód je plně funkční.
-
-Zdrojový kód práce je spravován pomocí distribuovaného systému správy verzí Git.
-Repozitář je volně přístupný na serveru
-\href{http://github.com}{github.com},\footnote{\url{http://github.com}} adresa
-práce je \url{https://github.com/honzasp/funsp}. Detailnější popis jednotlivých
-souborů a složek se nachází v souboru @t{README}.
-
-Jako kompilátor byl využit GHC (Glasgow Haskell Compiler), který je dnes mezi
-překladači Haskellu dominantní.
+vyhledávat funkce, datové typy či třídy podle jména, ale dokáže najít funkci i
+podle přibližného \emph{typu}, což z něj činí velmi užitečný nástroj.
