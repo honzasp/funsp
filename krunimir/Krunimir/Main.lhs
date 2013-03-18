@@ -32,22 +32,22 @@ main = do
 \end{code}
 @Idx{Krunimir.Main.main}
 
-Uložíme si čas na začátku, bude se nám hodit až budeme chtít zjistit, jak dlouho
-výpočet trval.
+Uložíme si čas na začátku běhu programu, bude se nám hodit, až budeme chtít
+zjistit, jak dlouho výpočet trval.
 
 \begin{code}
   startTime <- getCurrentTime
 \end{code}
 
 Nejprve se podíváme, jaké argumenty jsme dostali na příkazové řádce, a podle
-toho nastavíme proměnnou @t{inputFile} obsahující jméno vstupního souboru,
-a @t{steps}, což je @t{Just \textit{početKroků}} pokud máme zadaný
-počet kroků, nebo @t{Nothing} pokud jej zadaný nemáme (takže předpokládáme
-že uživatel chce vykreslit celý obrázek).\footnote{V zadání je specifikováno, že
-nula zadaná jako počet kroků znamená vykreslit celý obrázek, a chování našeho
-programu je odlišné -- nevykreslí nic.} Pokud uživatel zadal jiný počet
-argumentů než jeden nebo dva, vypíšeme chybu a pomocí IO operace @t{exitFailure}
-ukončíme program s návratovým kódem, který signalizuje selhání.
+toho nastavíme proměnnou @t{inputFile} obsahující jméno vstupního souboru, a
+@t{steps}, což je @t{Just \textit{početKroků}}, pokud máme zadaný počet kroků,
+nebo @t{Nothing}, pokud jej zadaný nemáme (takže předpokládáme, že uživatel chce
+vykreslit celý obrázek).\footnote{V zadání je specifikováno, že nula zadaná jako
+počet kroků znamená vykreslit celý obrázek, a chování našeho programu je odlišné
+-- nevykreslí nic.} Pokud uživatel zadal jiný počet argumentů než jeden nebo
+dva, vypíšeme chybu a pomocí IO operace @t{exitFailure} ukončíme program s
+návratovým kódem, který signalizuje selhání.
 
 \begin{code}
   args <- getArgs
@@ -110,7 +110,7 @@ jen změníme příponu. Zbývá jen vykreslit
   renderSvg prunedTrace outputSvg
 \end{code}
 
-a vypsat řádek, který nás informuje o délce výpočtu.
+a vypsat řádek, který nás informuje o délce výpočtu:
 
 \begin{code}
   endTime <- getCurrentTime

@@ -64,12 +64,12 @@ Některé kombinátory definuje přímo @t{parsec}:
   @t{string cs} je parser, jenž akceptuje sekvenci znaků (řetězec) @t{cs}.
 
 \item[@t{(<|>) :: Parser a -> Parser a -> Parser a}] \hfill \\
-  @t{p <|> q} představuje volbu -- nejprve aplikuje parser @t{p}, a pokud selže
+  @t{p <|> q} představuje volbu -- nejprve aplikuje parser @t{p}, a pokud selže,
   \emph{aniž zkonzumoval nějaký vstup}, aplikuje parser @t{q}.
 
 \item[@t{(<?>) :: Parser a -> String -> Parser a}] \hfill \\
-  @t{p <?> msg} aplikuje parser @t{p}, a pokud selže \emph{aniž zkonzumoval část
-  vstupu}, nahradí část @t{"Expected ..."} chybové zprávy řetězcem @t{msg}.
+  @t{p <?> msg} aplikuje parser @t{p}, a pokud selže, \emph{aniž zkonzumoval
+  část vstupu}, nahradí část @t{"Expected ..."} chybové zprávy řetězcem @t{msg}.
 
 \item[@t{try :: Parser a -> Parser a}] \hfill \\
   @t{try p} funguje jako @t{p}, ale s tím rozdílem, že pokud @t{p} selže,
@@ -289,7 +289,7 @@ jednoduše @t{string}, například @t{string "if"}, a programátor by nadefinova
 třeba proceduru @t{iffy} a pokusil by se ji zavolat (@t{iffy(42)}), parser by
 přečetl pouze @t{"if"}, domníval by se, že jde o příkaz @t{if}, a pak nevěděl co
 s @t{"fy(42)"}, protože očekává otevírací závorku. Naproti tomu @t{keyword "if"}
-se aplikuje pouze na sekvenci znaků @t{"if"} za kterou \emph{nenásleduje
+se aplikuje pouze na sekvenci znaků @t{"if"}, za kterou \emph{nenásleduje
 písmeno}, čímž zajistíme, že jsme opravdu narazili na klíčové slovo @t{if}.
 
 \subsubsection{Konstrukce @t{split}}

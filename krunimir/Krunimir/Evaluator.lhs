@@ -72,11 +72,11 @@ Jakou hodnotu bychom měli vrátit? Každý příkaz změní stav želvy, proto 
 novou želvu měli vrátit jako část výsledku. Hlavní je ale to, jestli příkaz
 nezmění stopu, kterou za sebou želva zanechá. Jakým způsobem ale tuto změnu
 reprezentovat? Nemůžeme použít přímo typ @t{Trace}, jelikož ten reprezentuje
-\emph{celou} želvinu trasu, kdežto my spočteme jen její \emph{začátek}, neboť
-za tímto jedním příkazem mohou následovat další, které trasu rovněž prodlouží.
+celou želvinu trasu, kdežto my spočteme jen její začátek, neboť za tímto jedním
+příkazem mohou následovat další, které trasu rovněž prodlouží.
 
 Nejlepší bude, když vrátíme \emph{funkci}, která jako argument dostane @t{Trace}
-získaný z \emph{následujících} příkazů a vrátí novou @t{Trace}.
+získaný z následujících příkazů a vrátí novou @t{Trace}.
 
 Tím získáváme typ:
 

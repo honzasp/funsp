@@ -85,10 +85,10 @@ moves thruWalls (Slice foreslice) (Slice afterslice) ((x,y),Path len ps) =
     ((1,1),(width,height)) = bounds foreslice
 \end{code}
 
-Funkci jsme implementovali pomocí generátoru seznamu. Nejprve si vygenerujeme
-dvojice @t{(tox,toy)} všech čtyř pozic sousedících s výchozí pozicí @t{(x,y)}.
-Následně zkontrolujeme, jestli se tyto pozice nachází v hradu a podíváme se, co
-nás na této pozici v hradu čeká.
+Funkci jsme implementovali pomocí generátoru seznamu (\emph{list
+comprehension}). Nejprve si vygenerujeme dvojice @t{(tox,toy)} všech čtyř pozic
+sousedících s výchozí pozicí @t{(x,y)}.  Následně zkontrolujeme, jestli se tyto
+pozice nachází v hradu, a podíváme se, co nás na této pozici v hradu čeká.
 
 Je-li to volné políčko, je vše v pořádku. Pokud narazíme na zeď, tak pokračujeme
 pouze pokud má argument @t{thruWalls} hodnotu @t{True}. Pokud by se bílá paní
@@ -171,7 +171,7 @@ Jednotlivé argumenty této funkce jsou následující:
 \item První argument (typ @t{Castle}) je hrad, ve kterém hledáme cestu.
 
 \item Druhý argument (@t{[Slice]}) je seznam řezů, na které je tento hrad
-nakrájen.
+\uv{nakrájen}.
 
 \item Třetí argument (@t{STArray s (Int,Loc) (Maybe Path)}) je měnitelné pole
 @t{bests}, které každé časopozici přiřazuje nejlepší cestu, pokud taková
@@ -181,7 +181,7 @@ existuje.
 seřazených podle délky (tyto ještě nejsou zapsány v poli @t{bests}).
 
 \item Výsledek (@t{ST s (Either Path [(Loc,Path)])}) je výpočet v monádě @t{ST
-s}, jehož výsledek je buď cesta k televizoru (hodnota @t{Left}) nebo seznam
+s}, jehož výsledek je buď cesta k televizoru (hodnota @t{Left}), nebo seznam
 pozic a cest, jež byly přidány do pole @t{bests}, seřazených podle délky.
 
 \end{itemize}
