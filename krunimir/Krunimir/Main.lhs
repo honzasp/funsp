@@ -1,6 +1,9 @@
 \section{\texorpdfstring{@t{Krunimir.Main}}{Krunimir.Main}}
 @Idx{Krunimir.Main}
 
+Začneme modulem @t{Krunimir.Main}, ve kterém definujeme hodnotu @t{main}, která
+tvoří \uv{tělo} programu.
+
 \begin{code}
 module Krunimir.Main (main) where
 \end{code}
