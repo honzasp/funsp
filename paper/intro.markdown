@@ -367,15 +367,15 @@ užitečný nástroj.
   dynamických jazyků jako Ruby či JavaScript, která je ovšem typově bezpečná.
   </p>
 
-  <p id="fn8"><sup><a href="#fl8">8</a></sup>Typ <code>FilePath</code> je
+  <p id="fn8"><sup><a href="#fl8">8</a></sup> Typ <code>FilePath</code> je
   synonym k typu <code>String</code>, který se ve standardní knihovně používá
   pro označení cest k souboru.</p>
 
-  <p id="fn9"><sup><a href="#fl9">9</a></sup>„Proměnná“ samozřejmě neznamená, že
-  se její hodnota nějakým způsobem mění; tento pojem se používá podobně jako v
-  matematice. V imperativním jazyku bychom řekli „konstanta“.  </p>
+  <p id="fn9"><sup><a href="#fl9">9</a></sup> „Proměnná“ samozřejmě neznamená,
+  že se její hodnota nějakým způsobem mění; tento pojem se používá podobně jako
+  v matematice. V imperativním jazyku bychom řekli „konstanta“.  </p>
 
-  <p id="fn10"><sup><a href="#fl10">10</a></sup>Syntaxe <code>\x -> E</code>
+  <p id="fn10"><sup><a href="#fl10">10</a></sup> Syntaxe <code>\x -> E</code>
   znamená anonymní (lambda) funkci s parametrem <code>x</code> a tělem
   <code>E</code>.</p>
 
