@@ -120,7 +120,7 @@ Při vykreslování stromů prokáže svoji užitečnost příkaz split.
 
     forward(-250) pen(1) tree(5)
 
-<figure class="multifigure" id="img-2.2">
+<figure class="multifigure horizontal" id="img-2.2">
   <figure id="img-2.2-a">
     <div class="image"><img src="../img/square1.svg" width="250"
     height="250"></div>
@@ -680,7 +680,37 @@ Gramatiku matematických výrazů můžeme vyjádřit v bezkontextové gramatice
                  | literal
                  | "(" <expr> ")"
 
-# PARSE TREES !!!
+<figure class="multifigure vertical" id="img-2.3">
+  <figcaption>Obrázek 2.3: Příklady parsování výrazu
+  <code>2*x/3+(8-y)-z*7</code> </figcaption>
+
+  <figure id="img-2.3-a">
+    <div class="image"><img src="../img/parsetree-a.svg" width="400"></div>
+    <figcaption>
+      (a) Syntaktický strom, reprezentující tento výraz. Binární operace
+      (zaznačené kolečky) mají vždy dva operandy, které jsou mohou být číslo,
+      proměnná nebo další binární operace.  
+    </figcaption>
+  </figure>
+
+  <figure id="img-2.3-b">
+    <div class="image"><img src="../img/parsetree-b.svg" width="600"></div>
+    <figcaption> 
+      (b) Ilustrace způsobu, jakým tento výraz zpracuje bezkontextová gramatika.
+      Tečkovanými čarami je zaznačena struktura výsledného syntaktického stromu,
+      která přímo vyplývá z postupného dělení výrazu na menší části.
+    </figcaption>
+  </figure>
+
+  <figure id="img-2.3-c">
+    <div class="image"><img src="../img/parsetree-c.svg" width="500"></div>
+    <figcaption> 
+      (c) Tentýž výraz zparsovaný gramatikou PEG se znázorněným výsledným
+      syntaktic- kým stromem. Postup parsování již jeho struktuře přímo
+      nedpovídá.
+    </figcaption>
+  </figure>
+</figure>
 
 Problém je, že pravidla pro sčítání/odčítání a násobení/dělení jsou rekurzivní
 zleva, takže je nelze v této podobě zpracovávat pomocí gramatiky PEG. Proto je
@@ -848,7 +878,17 @@ Typ `Segment` představuje úsečku mezi dvěma body, která má barvu a tlouš�
     type Point = (Float,Float)
     type Color = (Int,Int,Int)
 
-# TRACE EXAMPLE
+<figure id="img-2.4">
+  <div class="image"><img src="../img/trace.svg" width="600"></div>
+
+  <figcaption>
+    Obrázek 2.4: Grafické znázornění stopy. Obrázek nalevo odpovídá vykreslené
+    stopě, šipky od jednotlivých segmentů ukazují na příslušné úsečky na
+    obrázku.  Důležitý je způsob, jakým se čáry překrývají – segment, jenž je
+    blíž kořeni stromu, je překryt segmentem nacházejícím se ve stromu
+    „hlouběji“.
+  </figcaption>
+</figure>
 
 ### Funkce
 
