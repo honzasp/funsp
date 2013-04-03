@@ -1294,6 +1294,241 @@ kterém specifikujeme velikost obrázku, přidat hlavičku a máme hotovo.
             \ stroke=\"rgb(" ++ show r ++ "," ++ show g ++ "," ++ show b ++  ")\"\
             \ stroke-width=\"" ++ show pen ++ "\"/>"
 
+## Příklady
+
+Závěrem uvedeme několik rozsáhlejších příkladů, kdy využijeme želví grafiku k
+vykreslení několika známých fraktálů. 
+
+### Hilbertova křivka
+
+Hilbertova křivka je plochu vyplňující fraktál popsaný roku 1891 německým
+matematikem Davidem Hilbertem. <a href="bib.html#b19" class="cite">[19]</a>
+První čtyři iterace této křivky jsou zakresleny na obrázku
+[2.5a](#img-2.5-a).
+
+Hlavní část programu je procedura `hilbert(n,side)`, která nakreslí Hilbertovu
+křivku `n`-té iterace. Parametr `side` nabývá hodnot `-1` a `1` a
+určuje, na kterou stranu se křivka nakreslí. Výsledek programu je na obrázku
+[2.5b](#img-2.5-b).
+
+    define hilbert(n,side) {
+      left(90*side)
+      if(n) {
+        hilbert(n-1,-side)
+        left(90*side) forward(10)
+        hilbert(n-1,side)
+        right(90*side) forward(10) right(90*side)
+        hilbert(n-1,side)
+        forward(10) left(90*side)
+        hilbert(n-1,-side)
+      }
+      left(90*side)
+    }
+
+    forward(310) right(90)
+    forward(310) right(90)
+    pen(1) hilbert(6,-1)
+
+<figure id="img-2.5" class="multifigure vertical">
+  <figcaption>Obrázek 2.5: Hilbertova křivka</figcaption>
+
+  <figure id="img-2.5-a">
+    <div class="image"><img src="../img/hilbert-gen.svg" width="600"></div>
+    <figcaption>(a) Postupné generování Hilbertovy křivky (zleva doprava iterace
+    1 až 4).</figcaption>
+  </figure>
+
+  <figure id="img-2.5-b">
+    <div class="image"><img src="../img/hilbert.svg" width="600"></div>
+    <figcaption>(b) Hilbertova křivka vykreslená Krunimírem</figcaption>
+  </figure>
+</figure>
+
+### Kochova vločka
+
+Kochova vločka je známý fraktál založený na Kochově křivce, kterou v roce 1904
+vytvořil švédský matematik Helge von Koch. \cite{wiki:koch-snowflake}
+
+Obrázek [2.6a](#img-2.6-a) zachycuje první čtyři iterace Kochovy křivky. O
+kreslení se stará procedura `koch(n)`, jež nakreslí `n`-tou iteraci Kochovy
+křivky. Tuto proceduru posléze zavoláme třikrát po sobě, čímž vytvoříme Kochovu
+vločku. Výsledek programu je na obrázku [2.6b](#img-2.6-b).
+
+    define koch(n) {
+      if(n) {
+        koch(n-1)
+        left(60) koch(n-1)
+        right(120) koch(n-1)
+        left(60) koch(n-1)
+      }
+      if(1-n) {
+        forward(2)
+      }
+    }
+
+    pen(0) forward(-175) left(90) forward(250) right(120)
+    pen(1) koch(5) right(120) koch(5) right(120) koch(5)
+
+<figure id="img-2.6" class="multifigure vertical">
+  <figcaption>Obrázek 2.6: Kochova vločka</figcaption>
+
+  <figure id="img-2.6-a">
+    <div class="img"><img src="../img/koch-gen.svg" width="600"></div>
+    <figcaption>(a) Iterace Kochovy křivky. Kochovu vločku dostaneme spojením
+    tří Kochových křivek.</figcaption>
+  </figure>
+
+  <figure id="img-2.6-b">
+    <div class="img"><img src="../img/koch.svg" width="600"></div>
+    <figcaption>(b) Kochova vločka vykreslená Krunimírem.</figcaption>
+  </figure>
+</figure>
+
+### Gosperova křivka
+
+Gosperova křivka, pojmenovaná po svém objeviteli, americkém programátorovi a
+matematikovi Billu Gosperovi, je plochu vyplňující fraktál.
+<a href="bib.html#b18" class="cite">[18]</a>
+
+Na vykreslení této křivky musíme použít dvojici procedur, `gosperA` a `gosperB`,
+přičemž každá kreslí křivku z jiné strany (odpředu a odzadu).  Způsob generování
+je zobrazen na obrázku [2.7a](#img-2.7-a), výstup programu na obrázku
+[2.7b](#img-2.7-b).
+
+    define gosperA(n) {
+      if(n) {
+        right(19)  gosperA(n-1)
+        left(60)   gosperB(n-1)
+        left(120)  gosperB(n-1)
+        right(60)  gosperA(n-1)
+        right(120) gosperA(n-1) gosperA(n-1)
+        right(60)  gosperB(n-1)
+        left(79)
+      }
+      if(1-n) { forward(4) }
+    }
+
+    define gosperB(n) {
+      if(n) {
+        right(79)  gosperA(n-1)
+        left(60)   gosperB(n-1) gosperB(n-1)
+        left(120)  gosperB(n-1)
+        left(60)   gosperA(n-1)
+        right(120) gosperA(n-1)
+        right(60)  gosperB(n-1)
+        left(19)
+      }
+      if(1-n) { forward(4) }
+    }
+
+    left(19) forward(-250) right(30)
+    pen(1) gosperA(5)
+
+<figure class="multifigure vertical" id="img-2.7">
+  <figcaption>Obrázek 2.7: Gosperova křivka</figcaption>
+
+  <figure id="img-2.7-a">
+    <div class="image"><img src="../img/gosper-gen.svg" width="600"></div>
+    <figcaption>(a) První tři iterace Gosperovy křivky.</figcaption>
+  </figure>
+
+  <figure id="img-2.7-b">
+    <div class="image"><img src="../img/gosper.svg" width="600"></div>
+    <figcaption>(b) Gosperova křivka vykreslená Krunimírem</figcaption>
+  </figure>
+</figure>
+
+### Křivka arrowhead
+
+Křivka arrowhead je podobná Sierpińského trojúhelníku, fraktálu polského
+matematika Wacłava Sierpińského, který jej popsal v roce 1915.
+<a href="bib.html#b17" class="cite">[17]</a>
+
+Podobně jako u Hilbertovy křivky i zde musíme počítat s tím, že křivku musíme
+vykreslovat ve dvou zrcadlových variantách, k čemuž využijeme parametr `side`
+procedury `arrowhead(n,side)`. Postup generování ukazuje obrázek
+[2.8a](#img-2.8-a), výsledek programu obrázek [2.8b](#img-2.8-b).
+
+    define arrowhead(n,side) {
+      if(n) {
+        left(60*side)
+        arrowhead(n-1,-side)
+        right(60*side)
+        arrowhead(n-1,side)
+        right(60*side)
+        arrowhead(n-1,-side)
+        left(60*side)
+      }
+      if(1-n) { forward(2) }
+    }
+
+    right(90) forward(128) left(60) forward(256) left(120)
+    pen(1) arrowhead(8,1)
+
+
+<figure id="img-2.8" class="multifigure vertical">
+  <figcaption>Obrázek 2.8: Křivka arrowhead</figcaption>
+
+  <figure id="img-2.8-a">
+    <div class="image"><img src="../img/arrowhead-gen.svg" width="600"></div>
+    <figcaption>(a) Prvních pět iterací křivky arrowhead.</figcaption>
+  </figure>
+
+  <figure id="img-2.8-b">
+    <div class="image"><img src="../img/arrowhead.svg" width="600"></div>
+    <figcaption>(b) Křivka arrowhead vykreslená Krunmírem</figcaption>
+  </figure>
+</figure>
+
+## Závěr
+
+Vytvořili jsme interpret zadaného programovacího jazyka Krunimír, podporující
+veškerá rozšíření, vykreslování do dvou grafických formátů, a s velmi
+přijatelným výkonem.
+
+Představený program by byl podle zadání ze soutěže nejspíše ohodnocen přibližně
+300 body z 333.  Chybějících 33 bodů je za „televizní přenos“, neboli
+grafické uživatelské rozhraní (GUI). Tvorba GUI není nijak zvlášť
+programátorsky zajímavá, proto ji náš program neimplementuje.
+
+Všechny zdrojové soubory mají dohromady asi 350 řádků kódu. Vezmeme-li v úvahu,
+že se jedná o kompletní implementaci netriviálního programovacího jazyka, je
+toto číslo poměrně nízké.<sup><a id="fl7" href="#fn7">7</a></sup> Kód je
+rozdělen do modulů s minimálními vzájemnými závislostmi, může tedy být snadno
+udržován, upravován a rozšiřován.
+
+Pokud bychom namísto Haskellu použili nějaký imperativní programovací jazyk,
+například \Cplusplus{}, Ruby  <sup><a id="fl8" href="#fn8">8</a></sup> nebo
+dokonce Javu, náš program by byl nejspíš delší a jeho modularita by byla nižší.
+Program by pravděpodobně sestával z parseru vytvořeného pomocí nějakého
+externího nástroje, který by vytvořil syntaktický strom sestávající z objektů.
+Vyhodnocení by bylo sloučeno s vykreslováním a probíhalo by voláním metod
+objektů ze syntaktického stromu, jejichž definice by byly roztroušeny u definic
+jednotlivých tříd.<sup><a id="fl9" href="#fn9">9</a></sup> Implementovat příkaz
+`split` by bylo přinejmenším obtížné.
+
+### Zdrojové kódy
+
+Veškeré soubory související s Krunimírem jsou v repozitáři s prací uloženy ve
+složce [`krunimir/`](https://github.com/honzasp/funsp/tree/master/krunimir).
+Zdrojové kódy všech uvedených modulů jsou ve složce
+[`krunimir/Krunimir`](https://github.com/honzasp/funsp/tree/master/krunimir/Krunimir),
+testovací soubory ve složce
+[`krunimir/test`](https://github.com/honzasp/funsp/tree/master/krunimir/test).
+Část testovacích souborů pochází ze soutěže, část byla vytvořena v rámci této
+práce.
+
+Pro testování je možné použít skript
+[`runtest.sh`](https://github.com/honzasp/funsp/blob/master/krunimir/runtest.sh),
+který spustí program pro všechny soubory ze složky `krunimir/test`. Výsledné
+soubory (s příponou `.test.png` a `.test.svg`) je pak možno vizuálně porovnat s
+očekávanými výsledky (přípona pouze `.png`).
+
+Složka
+[`krunimir/examples`](https://github.com/honzasp/funsp/tree/master/krunimir/examples)
+obsahuje zdrojové kódy příkladů, ze kterých se generují obrázky, jež jsou v
+práci vloženy.
+
 <div class="footnotes">
 
   <!-- <sup><a id="fl1" href="#fn1">1</a></sup> -->
@@ -1321,5 +1556,22 @@ kterém specifikujeme velikost obrázku, přidat hlavičku a máme hotovo.
   totiž vyžadovat pouze 4 bajty namísto 8. Jelikož Krunimírovy programy
   pracující s desetitisíci želvami nejsou žádnou výjimkou, ušetřené bajty se na
   výkonu programu pozitivně projeví.</p>
+
+  <p id="fn7"><sup><a href="#fl7">7</a></sup> Je nutno podotknout, že program
+  nebyl psán tak, aby řádků bylo co nejméně, ale aby byl co nejpřehlednější.</p>
+
+  <p id="fn8"><sup><a href="#fl8">8</a></sup> Pokud bychom využili dynamický
+  jazyk jako Ruby, mohli bychom si ušetřit práci a několika jednoduchými
+  textovými úpravami převést program pro Krunimíra na program v použitém
+  programovacím jazyku, který bychom vyhodnotili pomocí funkce
+  <code>eval</code>. Tento postup svého času autor na soutěži úspěšně využil.
+  Jedinou nevýhodou je nesnadnost korektní implementace příkazu
+  <code>split</code>, jinak jde o řešení téměř dokonalé :-) </p>
+
+  <p id="fn9"><sup><a href="#fl9">9</a></sup> V Javě bychom nejspíše vytvořili
+  třídu <code>Statement</code>, která by měla potomky
+  <code>ForwardStatement</code>, <code>LeftStatement</code>,
+  <code>RepeatStatement</code> apod. přičemž každý by byl ve vlastním souboru...
+  </p>
 
 </div>
