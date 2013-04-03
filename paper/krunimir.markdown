@@ -51,14 +51,22 @@ Jazyk dále umožňuje použít jednoduchou podmínku a cyklus:
 
 Uživatel může definovat vlastní procedury a volat je:
 
-* <code>define <i>procedura</i>(<i>p1</i>,<i>p2</i>,...) { ... }</code> --
-  Definuje proceduru procedura, která má libovolný počet parametrů (<i>p1</i>,
-  <i>p2</i>, ...). Tyto parametry mohou být v těle procedury použity ve výrazech
-  a nabývají hodnoty předané v místě volání.
+<ul>
 
-* <code><i>procedura</i>(arg1,arg2,...)</code> -- Zavolá proceduru *procedura* s
-  argumenty (arg1, arg2, ...). Procedura musí být definována *před* svým voláním
-  a může být rekurzivní.
+  <li>
+    <code>define <i>procedura</i>(<i>p1</i>,<i>p2</i>,...) { ... }</code> –
+    Definuje proceduru <i>procedura</i>, která má libovolný počet parametrů
+    (<i>p1</i>, <i>p2</i>, ...). Tyto parametry mohou být v těle procedury
+    použity ve výrazech a nabývají hodnoty předané v místě volání.
+  </li>
+
+  <li>
+    <code><i>procedura</i>(arg1,arg2,...)</code> – Zavolá proceduru
+    <i>procedura</i> s argumenty (arg1, arg2, ...). Procedura musí být
+    definována <em>před</em> svým voláním a může být rekurzivní.
+  </li>
+
+</ul>
 
 Poslední a nejzajímavější struktura je rozdvojení:
 
