@@ -1,6 +1,7 @@
 ---
 layout: paper
 title: Kapitola 1 &mdash; Úvod
+root: ..
 ---
 
 # {{ page.title }}
@@ -164,11 +165,11 @@ Pro oba tyto typy určitě dává operace porovnání smysl, proto můžeme nade
       Green == Green = True
       Blue  == Blue  = True
       _     == _     = False
-
+    
     instance Eq Bit where
-    On  == On  = True
-    Off == Off = True
-    _   == _   = False
+      On  == On  = True
+      Off == Off = True
+      _   == _   = False
 
 Touto deklarací specifikujeme, že typy `Color` a `Bit` jsou instancemi třídy
 `Eq`, a poskytneme implementaci metody `==`. Nyní můžeme používat funkci `==` s

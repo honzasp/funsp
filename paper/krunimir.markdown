@@ -1,6 +1,7 @@
 ---
 layout: paper
 title: "Kapitola 2 &mdash; Krunimír: želví grafika"
+root: ..
 ---
 
 # {{ page.title }}
@@ -130,7 +131,7 @@ Při vykreslování stromů prokáže svoji užitečnost příkaz split.
 
 <figure class="multifigure horizontal" id="img-2.2">
   <figure id="img-2.2-a">
-    <div class="image"><img src="../img/square1.svg" width="250"
+    <div class="image"><img type="image/svg+xml" src="../img/square1.svg" width="250"
     height="250"></div>
     <figcaption>(a) Čtverec</figcaption>
   </figure>
@@ -219,7 +220,9 @@ a také námi definované funkce z ostatních modulů
 Uložíme si čas na začátku běhu programu, bude se nám hodit, až budeme chtít
 zjistit, jak dlouho výpočet trval.
 
-      startTime <- getCurrentTime
+<!-- highlight.js fails to recognize this line -->
+<pre><code class="haskell">  startTime &lt;- getCurrentTime
+</code></pre>
 
 Nejprve se podíváme, jaké argumenty jsme dostali na příkazové řádce, a podle
 toho nastavíme proměnnou `inputFile` obsahující jméno vstupního souboru, a
@@ -273,13 +276,15 @@ kroků, jež si přeje vykonat.
 Jména výstupních souborů (jak PNG, tak SVG) odvodíme ze jména souboru vstupního,
 jen změníme příponu. Zbývá jen vykreslit
 
-      renderPng prunedTrace outputPng
-      renderSvg prunedTrace outputSvg
+<pre><code class="haskell">  renderPng prunedTrace outputPng
+  renderSvg prunedTrace outputSvg
+</code></pre>
 
 a vypsat řádek, který nás informuje o délce výpočtu:
 
-      endTime <- getCurrentTime
-      putStrLn $ show (diffUTCTime endTime startTime) ++ " : " ++ inputFile
+<pre><code class="haskell">  endTime &lt;- getCurrentTime
+  putStrLn $ show (diffUTCTime endTime startTime) ++ " : " ++ inputFile
+</code></pre>
 
 
 ## 2.4 `Krunimir.Ast`
@@ -671,22 +676,24 @@ prioritami a asociativitami jednotlivých operátorů.
 
 Gramatiku matematických výrazů můžeme vyjádřit v bezkontextové gramatice takto:
 
-    <expr>     ::= <add-expr>
+<pre><code class="cf-grammar">
+&lt;expr&gt;     ::= &lt;add-expr&gt;
 
-    <add-expr> ::= <add-expr> "+" <neg-expr>
-                 | <add-expr> "-" <neg-expr>
-                 | <neg-expr>
+&lt;add-expr&gt; ::= &lt;add-expr&gt; "+" &lt;neg-expr&gt;
+             | &lt;add-expr&gt; "-" &lt;neg-expr&gt;
+             | &lt;neg-expr&gt;
 
-    <neg-expr> ::= "-" <mul-expr>
-                 | <mul-expr>
+&lt;neg-expr&gt; ::= "-" &lt;mul-expr&gt;
+             | &lt;mul-expr&gt;
 
-    <mul-expr> ::= <mul-expr> "*" <a-expr>
-                 | <mul-expr> "/" <a-expr>
-                 | <a-expr>
+&lt;mul-expr&gt; ::= &lt;mul-expr&gt; "*" &lt;a-expr&gt;
+             | &lt;mul-expr&gt; "/" &lt;a-expr&gt;
+             | &lt;a-expr&gt;
 
-    <a-expr>   ::= variable
-                 | literal
-                 | "(" <expr> ")"
+&lt;a-expr&gt;   ::= variable
+             | literal
+             | "(" &lt;expr&gt; ")"
+</code></pre>
 
 <figure class="multifigure vertical" id="img-2.3">
   <figcaption>Obrázek 2.3: Příklady parsování výrazu
@@ -724,14 +731,16 @@ Problém je, že pravidla pro sčítání/odčítání a násobení/dělení jso
 zleva, takže je nelze v této podobě zpracovávat pomocí gramatiky PEG. Proto je
 musíme přeformulovat (ošetření mezer jsme pro přehlednost vynechali):
 
-    expr         <- add-expr
-    add-expr     <- neg-expr (add-op neg-expr)*
-    neg-expr     <- "-"? mul-expr
-    mul-expr     <- a-expr (mul-op a-expr)*
-    a-expr       <- variable / literal / "(" expr ")" "blaah"
+<pre><div><code class="peg-grammar">
+expr         &lt;- add-expr
+add-expr     &lt;- neg-expr (add-op neg-expr)*
+neg-expr     &lt;- "-"? mul-expr
+mul-expr     &lt;- a-expr (mul-op a-expr)*
+a-expr       &lt;- variable / literal / "(" expr ")" "blaah"
 
-    add-op       <- "+" / "-"
-    mul-op       <- "*" / "/"
+add-op       &lt;- "+" / "-"
+mul-op       &lt;- "*" / "/"
+</code></div></pre>
 
 Tuto PEG gramatiku již můžeme použít, ale struktura gramatiky již neodpovídá
 struktuře syntaktického stromu. `parsec` naštěstí obsahuje pomocné
@@ -800,51 +809,53 @@ začátku.
 
 Na závěr uvedeme kompletní „referenční“ PEG gramatiku Krunimírova jazyka.
 
-    program      <- space* top-stmt* eof
-    top-stmt     <- define / stmt
+<pre><div><code class="peg-grammar">
+program      &lt;- space* top-stmt* eof
+top-stmt     &lt;- define / stmt
 
-    define       <- "define" space+ identifier 
-                    lparen (identifier (comma identifier)*)? rparen
-                    lbrace stmt* rbrace
+define       &lt;- "define" space+ identifier 
+              /  lparen (identifier (comma identifier)*)? rparen
+              /  lbrace stmt* rbrace
 
-    stmt         <- repeat-stmt / if-stmt / split-stmt / proc-stmt
-    repeat-stmt  <- "repeat" lparen expr rparen lbrace stmt* rbrace
-    if-stmt      <- "if" space* lparen expr rparen lbrace stmt* rbrace
-    split-stmt   <- "split" space* lbrace stmt* rbrace
-    proc-stmt    <- "forward" space* lparen expr rparen
-                  / "left" space* lparen expr rparen
-                  / "right" space* lparen expr rparen
-                  / "pen" space* lparen expr rparen
-                  / "color" space* lparen expr comma expr comma expr rparen
-                  / identifier space* lparen (expr (comma expr)*)? rparen
+stmt         &lt;- repeat-stmt / if-stmt / split-stmt / proc-stmt
+repeat-stmt  &lt;- "repeat" lparen expr rparen lbrace stmt* rbrace
+if-stmt      &lt;- "if" space* lparen expr rparen lbrace stmt* rbrace
+split-stmt   &lt;- "split" space* lbrace stmt* rbrace
+proc-stmt    &lt;- "forward" space* lparen expr rparen
+              / "left" space* lparen expr rparen
+              / "right" space* lparen expr rparen
+              / "pen" space* lparen expr rparen
+              / "color" space* lparen expr comma expr comma expr rparen
+              / identifier space* lparen (expr (comma expr)*)? rparen
 
-    expr         <- add-expr
-    add-expr     <- mul-expr (add-op space* mul-expr)*
-    mul-expr     <- neg-expr (mul-op space* neg-expr)*
-    neg-expr     <- (neg-op space*)? a-expr
+expr         &lt;- add-expr
+add-expr     &lt;- mul-expr (add-op space* mul-expr)*
+mul-expr     &lt;- neg-expr (mul-op space* neg-expr)*
+neg-expr     &lt;- (neg-op space*)? a-expr
 
-    add-op       <- "+" / "-"
-    mul-op       <- "*" / "/"
-    neg-op       <- "-"
+add-op       &lt;- "+" / "-"
+mul-op       &lt;- "*" / "/"
+neg-op       &lt;- "-"
 
-    a-expr       <- lit-expr / var-expr / lparen expr rparen
-    lit-expr     <- integer
-    var-expr     <- identifier
+a-expr       &lt;- lit-expr / var-expr / lparen expr rparen
+lit-expr     &lt;- integer
+var-expr     &lt;- identifier
 
-    integer      <- digit+ space*
-    identifier   <- letter alpha-num space*
+integer      &lt;- digit+ space*
+identifier   &lt;- letter alpha-num space*
 
-    lparen       <- "(" space*
-    rparen       <- ")" space*
-    lbrace       <- "{" space*
-    rbrace       <- "}" space*
-    comma        <- "," space*
+lparen       &lt;- "(" space*
+rparen       &lt;- ")" space*
+lbrace       &lt;- "{" space*
+rbrace       &lt;- "}" space*
+comma        &lt;- "," space*
 
-    digit        <- [0-9]
-    letter       <- [a-zA-Z]
-    alpha-num    <- [a-zA-Z0-9]
-    space        <- [ \t\r\n\v\f]
-    eof          <- !.
+digit        &lt;- [0-9]
+letter       &lt;- [a-zA-Z]
+alpha-num    &lt;- [a-zA-Z0-9]
+space        &lt;- [ \t\r\n\v\f]
+eof          &lt;- !.
+</code></div></pre>
 
 
 ## `Krunimir.Trace`
