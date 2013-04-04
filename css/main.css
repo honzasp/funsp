@@ -104,16 +104,32 @@ code.haskell .type    { color: #010c19; }
 code.cf-grammar,
 code.peg-grammar      { color: #000; }
 
+figcaption {
+  margin: 10px 6px;
+  font-size: 0.9em;
+  text-align: center;
+}
 
-.multifigure {
-  width: 900px;
+figure {
+  background-color: #f8f8f8;
+  padding: 5px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.paper .multifigure {
+  width: 710px;
 }
 
 .multifigure.horizontal figure {
   float: left;
-  width: 280px;
   padding: 0;
-  margin: 0;
+  margin: 5px;
+}
+
+figure .image img {
+  display: block;
+  margin: 0 auto;
 }
 
 .clear {

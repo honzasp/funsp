@@ -130,27 +130,24 @@ Při vykreslování stromů prokáže svoji užitečnost příkaz split.
     forward(-250) pen(1) tree(5)
 
 <figure class="multifigure horizontal" id="img-2.2">
+  <figcaption>Obrázek 2.2: Výsledné obrázky z příkladů</figcaption>
+
   <figure id="img-2.2-a">
-    <div class="image"><img type="image/svg+xml" src="../img/square1.svg" width="250"
-    height="250"></div>
+    <div class="image"><img type="image/svg+xml" src="../img/square1.svg" width="200"></div>
     <figcaption>(a) Čtverec</figcaption>
   </figure>
 
   <figure id="img-2.2-b">
-    <div class="image"><img src="../img/squares.svg" width="250"
-    height="250"></div>
+    <div class="image"><img src="../img/squares.svg" width="200"></div>
     <figcaption>(b) Mřížka čtverců</figcaption>
   </figure>
 
   <figure id="img-2.2-c">
-    <div class="image"><img src="../img/bintree.svg" width="250"
-    height="250"></div>
+    <div class="image"><img src="../img/bintree.svg" width="200"></div>
     <figcaption>(c) Binární strom</figcaption>
   </figure>
 
   <span class="clear">.</span>
-
-  <figcaption>Obrázek 2.2: Výsledné obrázky z příkladů</figcaption>
 </figure>
 
 ## 2.2 Analýza

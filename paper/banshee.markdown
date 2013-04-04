@@ -613,6 +613,8 @@ seřazených podle délky (tyto ještě nejsou zapsány v poli `bests`).
 s`, jehož výsledek je buď cesta k televizoru (hodnota `Left`), nebo seznam
 pozic a cest, jež byly přidány do pole `bests`, seřazených podle délky.
 
+<span></span>
+
     flood :: Castle -> [Slice] -> STArray s (Int,Loc) (Maybe Path) ->
       [(Loc,Path)] -> ST s (Either Path [(Loc,Path)])
     flood castle slices bests = step 0 (cycle slices)
