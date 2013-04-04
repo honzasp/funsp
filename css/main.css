@@ -9,7 +9,7 @@ body {
 
 #container {
   width: 960px;
-  margin: 0 auto;
+  margin: 0 auto 20px auto;
 }
 
 #content p {
@@ -125,4 +125,8 @@ code.peg-grammar      { color: #000; }
   border-top: 1px solid #0b4baa;
   width: 90%;
   padding: 20px 5%;
+}
+
+#bibliography li {
+  margin-top: 10px;
 }

@@ -6,7 +6,7 @@ root: ..
 
 # {{ page.title }}
 
-<ul>
+<ul id="bibliography">
 
 <li id="b1">[1] <em>Soutěžní úloha Bílá paní</em>. Zadání Ústředního kola ČR
 Soutěže v programování 2012. <a
