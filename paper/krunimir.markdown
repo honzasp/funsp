@@ -294,7 +294,7 @@ využijeme v modulech `Krunimir.Parser` a `Krunimir.Evaluator`.
 
     module Krunimir.Ast where
 
-### Definice typů
+### 2.4.1 Definice typů
 
 #### Příkazy
 
@@ -431,7 +431,7 @@ implementace, jelikož popisují *rozpoznávání* jazyka, narozdíl od tradičn
 bezkontextových gramatik, které byly vytvořeny pro popis lidských jazyků a
 definují jejich *generování*. 
 
-### Základní definice
+### 2.5.1 Základní definice
 
 Parsery v knihovně `parsec` mají typ `Parsec s u a`, kde:
 
@@ -449,7 +449,7 @@ kombinátorů.
 
     type Parser a = Parsec String () a
 
-### Představení základních kombinátorů
+### 2.5.2 Představení základních kombinátorů
 
 Některé kombinátory definuje přímo `parsec`:
 
@@ -504,9 +504,9 @@ operace:
 Každá monáda je *aplikativní funktor*, tudíž můžeme použít i následující
 funkce:
 
-* `(<\$>) :: (a -> b) -> Parser a -> Parser b` <br>
-  `f <\$> p` aplikuje parser `p` a v případě úspěchu předá jeho výsledek
-  funkci `f`, jejíž výstup se stane výsledkem `<\$>`.
+* `(<$>) :: (a -> b) -> Parser a -> Parser b` <br>
+  `f <$> p` aplikuje parser `p` a v případě úspěchu předá jeho výsledek
+  funkci `f`, jejíž výstup se stane výsledkem `<$>`.
 
 * `(<*>) :: Parser (a -> b) -> Parser a -> Parser b` <br>
   `p <*> q` nejprve aplikuje `p`, poté `q` a výsledek z `q` předá funkci
@@ -526,7 +526,7 @@ funkce:
   `<*` dáme přednost této variantě.
 
 
-### Funkce `parse`
+### 2.5.3 Funkce `parse`
 
 Funkce `parse` představuje „rozhraní“ modulu `Krunimir.Parser`. Vstupem
 je jméno parsovaného souboru (použije se v případných chybových hláškách) a
@@ -541,7 +541,7 @@ argumenty.
     parse filename txt =
       Text.Parsec.parse program filename txt
 
-### Programy
+### 2.5.4 Programy
 
 Na začátku programu může být libovolné množství prázdných znaků, následuje nula
 a více top-příkazů a konec souboru.
@@ -584,7 +584,7 @@ Tělo procedury je uzavřeno ve složených závorkách.
 Použili jsme pomocné funkce `parens` a `braces`, které slouží k
 „obalování závorkami“ a které si nadefinujeme později.
 
-### Příkazy
+### 2.5.5 Příkazy
 
 K parsování *příkazů* slouží `stmt`, která jen aplikuje další
 pomocné parsery a pojmenuje případnou chybu.
@@ -669,7 +669,7 @@ složené závorky se seznamem příkazů.
       stmts <- braces $ many stmt
       return $ SplitStmt stmts
 
-### Výrazy
+### 2.5.6 Výrazy
 
 Parsování *výrazů* je o něco složitější, jelikož se musíme vypořádat s
 prioritami a asociativitami jednotlivých operátorů.
@@ -777,7 +777,7 @@ výskytů `p` oddělených `op`. Výsledky z `p` postupně odleva
     varExpr = VariableExpr <$> identifier
     litExpr = LiteralExpr <$> integer
 
-### Pomocné parsery
+### 2.5.7 Pomocné parsery
 
 Nakonec si nadefinujeme drobné parsery, které jsme použili. Každý z nich
 zkonzumuje i všechny prázdné znaky, které se za ním nachází, takže se s jejich
@@ -805,7 +805,7 @@ začátku.
     parens = between lparen rparen
     braces = between lbrace rbrace
 
-### PEG gramatika
+### 2.5.8 PEG gramatika
 
 Na závěr uvedeme kompletní „referenční“ PEG gramatiku Krunimírova jazyka.
 
@@ -858,7 +858,7 @@ eof          &lt;- !.
 </code></div></pre>
 
 
-## `Krunimir.Trace`
+## 2.6 `Krunimir.Trace`
 
 Než představíme vyhodnocování programu reprezentovaného syntaktickým stromem,
 musíme ukázat modul `Krunimir.Trace`, který poskytuje datové typy pro práci se
@@ -872,7 +872,7 @@ Tyto stopy jsou výstupem funkce `Krunimir.Evaluator.eval`.
     , traceToSegss
     ) where
 
-### Typy
+### 2.6.1 Typy
 
 Nejdůležitějším typem je `Trace`, reprezentující stopu želvy. `Trace` má tři
 konstruktory:
@@ -909,7 +909,7 @@ Typ `Segment` představuje úsečku mezi dvěma body, která má barvu a tlouš�
   </figcaption>
 </figure>
 
-### Funkce
+### 2.6.2 Funkce
 
 V ostatních modulech budeme potřebovat pomocné funkce `prune` a
 `traceToSegss`.
@@ -948,7 +948,7 @@ V případě `SplitTrace` nejprve vyhodnotíme seznamy seznamů segmentů pro
 každou stranu zvlášt a pak je pomocnou funkcí `zipSegs` „slijeme“
 dohromady.
 
-## `Krunimir.Evaluator`
+## 2.7 `Krunimir.Evaluator`
 
 Nyní se dostáváme k jádru problému, totiž samotnému *vyhodnocování*
 Krunimírova programu, implementovanému funkcí `eval`. Vstupem této funkce je
@@ -962,7 +962,7 @@ syntaktický strom v podobě typu `Program` (což je jen synonym pro
     import qualified Data.Map as M
     import Data.List (genericReplicate)
 
-### Pomocné typy
+### 2.7.1 Pomocné typy
 
 Definujeme si datový typ `Turtle`, který zahrnuje celý stav želvy -- její
 pozici, natočení a barvu a tloušťku pera.<sup><a id="fl6"
@@ -984,7 +984,7 @@ jména procedur na jejich definice a jména proměnných na hodnoty.
     type ProcMap = M.Map String Define
     type VarMap = M.Map String Integer
 
-### Představení `DiffTrace`
+### 2.7.2 Představení `DiffTrace`
 
 Nyní se musíme rozhodnout, jak přesně budeme vyhodnocování stopy v syntaktickém
 stromu implementovat. Určitě bude vhodné vytvořit funkci na vyhodnocení jednoho
@@ -1045,7 +1045,7 @@ I když toto typové kung-fu může vypadat na první pohled zbytečně kompliko
 složitě, opak je pravdou -- umožní nám vyhodnocování příkazů implementovat velmi
 elegantně a jednoduše.
 
-### Funkce `eval`
+### 2.7.3 Funkce `eval`
 
 Nejprve představíme funkce `eval`, která vyhodnotí celý program:
 
@@ -1084,7 +1084,7 @@ nás nezajímá, ale funkcí `snd` získáme hodnotu `DiffTrace`, která
 reprezentuje změnu, jenž program vykoná na celkové stopě želvy. Tuto změnu
 aplikujeme na prázdnou stopu, takže získáme kýženou hodnotu `Trace`.
 
-### Vyhodnocování příkazů
+### 2.7.4 Vyhodnocování příkazů
 
 Funkce `evalStmts`, která vyhodnotí seznam příkazů, vždy vyhodnotí jeden
 příkaz, poté seznam následujících příkazů a vrátí výslednou želvu a složený
@@ -1129,7 +1129,7 @@ argumenty, na levé straně rovnice jsme uvedli pouze první dva (`env` a
 zbavíme neustálého opakování a předávání argumentu `Turtle` jednotlivým
 specializovaným funkcím.  
 
-### Jednotlivé příkazy
+### 2.7.5 Jednotlivé příkazy
 
 Nyní se dostáváme k implementaci jednotlivých funkcí použitých v `evalStmt`.
 
@@ -1201,7 +1201,7 @@ uložíme částečně aplikovaný konstruktor `SplitTrace`.
           branch = applyDT dt EmptyTrace
       in (turtle,DiffTrace { applyDT = SplitTrace branch })
 
-### Vyhodnocení výrazů
+### 2.7.6 Vyhodnocení výrazů
 
 Typ funkce `evalExpr` jsme si představili již dříve, její implementace je
 přímočará:
@@ -1219,7 +1219,7 @@ přímočará:
         DivOp -> a `div` b
     evalExpr env (NegateExpr expr) = negate $ evalExpr env expr
 
-### Pomocné funkce
+### 2.7.7 Pomocné funkce
 
 Zbývá nám definovat jen pomocné funkce pro vyhledávání proměnných a procedur v
 `Env`:
@@ -1248,7 +1248,7 @@ A nakonec funkce sinus a kosinus na stupních:
     sinDeg n = sin $ fromIntegral n * pi / 180.0
     cosDeg n = cos $ fromIntegral n * pi / 180.0
 
-## `Krunimir.PngRenderer`
+## 2.8 `Krunimir.PngRenderer`
 
 K renderování stop ve formátu PNG použijeme knihovnu *GD* <a href="bib.html#b4"
 class="cite">[4]</a>. Její výhodou je, že je velmi jednoduchá na použití.
@@ -1273,7 +1273,7 @@ monádě `IO`.
       drawSegment gimg (Segment (x1,y1) (x2,y2) (r,g,b) _pen) =
         GD.drawLine (floor x1,floor y1) (floor x2,floor y2) (GD.rgb r g b) gimg
 
-## `Krunimir.SvgRenderer`
+## 2.9 `Krunimir.SvgRenderer`
 
 Na exportování do SVG nebudeme potřebovat žádnou speciální knihovnu,
 jelikož se jedná o formát založený na XML.
@@ -1313,12 +1313,12 @@ kterém specifikujeme velikost obrázku, přidat hlavičku a máme hotovo.
             \ stroke=\"rgb(" ++ show r ++ "," ++ show g ++ "," ++ show b ++  ")\"\
             \ stroke-width=\"" ++ show pen ++ "\"/>"
 
-## Příklady
+## 2.10 Příklady
 
 Závěrem uvedeme několik rozsáhlejších příkladů, kdy využijeme želví grafiku k
 vykreslení několika známých fraktálů. 
 
-### Hilbertova křivka
+### 2.10.1 Hilbertova křivka
 
 Hilbertova křivka je plochu vyplňující fraktál popsaný roku 1891 německým
 matematikem Davidem Hilbertem. <a href="bib.html#b19" class="cite">[19]</a>
@@ -1363,7 +1363,7 @@ určuje, na kterou stranu se křivka nakreslí. Výsledek programu je na obrázk
   </figure>
 </figure>
 
-### Kochova vločka
+### 2.10.2 Kochova vločka
 
 Kochova vločka je známý fraktál založený na Kochově křivce, kterou v roce 1904
 vytvořil švédský matematik Helge von Koch. \cite{wiki:koch-snowflake}
@@ -1403,7 +1403,7 @@ vločku. Výsledek programu je na obrázku [2.6b](#img-2.6-b).
   </figure>
 </figure>
 
-### Gosperova křivka
+### 2.10.3 Gosperova křivka
 
 Gosperova křivka, pojmenovaná po svém objeviteli, americkém programátorovi a
 matematikovi Billu Gosperovi, je plochu vyplňující fraktál.
@@ -1457,7 +1457,7 @@ je zobrazen na obrázku [2.7a](#img-2.7-a), výstup programu na obrázku
   </figure>
 </figure>
 
-### Křivka arrowhead
+### 2.10.4 Křivka arrowhead
 
 Křivka arrowhead je podobná Sierpińského trojúhelníku, fraktálu polského
 matematika Wacłava Sierpińského, který jej popsal v roce 1915.
@@ -1499,7 +1499,7 @@ procedury `arrowhead(n,side)`. Postup generování ukazuje obrázek
   </figure>
 </figure>
 
-## Závěr
+## 2.11 Závěr
 
 Vytvořili jsme interpret zadaného programovacího jazyka Krunimír, podporující
 veškerá rozšíření, vykreslování do dvou grafických formátů, a s velmi
@@ -1526,7 +1526,7 @@ objektů ze syntaktického stromu, jejichž definice by byly roztroušeny u defi
 jednotlivých tříd.<sup><a id="fl9" href="#fn9">9</a></sup> Implementovat příkaz
 `split` by bylo přinejmenším obtížné.
 
-### Zdrojové kódy
+### 2.11.1 Zdrojové kódy
 
 Veškeré soubory související s Krunimírem jsou v repozitáři s prací uloženy ve
 složce [`krunimir/`](https://github.com/honzasp/funsp/tree/master/krunimir).

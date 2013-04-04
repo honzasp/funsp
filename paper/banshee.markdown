@@ -22,7 +22,7 @@ jim musí vyhnout. Bílá paní sice může procházet zdmi, ale snaží se proc
 omezit na minimum, dá přednost delší cestě s menším počtem zdí než kratší cestě
 s větším počtem zdí.
 
-## Popis úlohy
+## 3.1 Popis úlohy
 
 Bludiště představuje hrad sestávající z volných políček a zdí, ve kterém se po
 předem daných cyklických drahách pohybují zvědové. Je dána počáteční pozice bílé
@@ -62,7 +62,7 @@ rozfázovanými pohyby zvědů. Zvědové mají pohyby s periodou 4 a 6, což zn
   </figcaption>
 </figure>
 
-## Banshee
+## 3.2 Banshee
 
 I když bychom mohli do angličtiny přeložit „bílou paní“ jako "white lady",
 budeme o ní v programu hovořit jako o "banshee", což je v irské mytologii duch
@@ -70,7 +70,7 @@ budeme o ní v programu hovořit jako o "banshee", což je v irské mytologii du
 nejde o ekvivalent klasické české hradní bílé paní, ale pro naše účely je název
 `Banshee` vhodnější než `WhiteLady`.
 
-## Analýza
+## 3.3 Analýza
 
 Stejně jako u Krunimíra i nyní bude vhodné program rozčlenit do modulů:
 
@@ -87,7 +87,7 @@ Stejně jako u Krunimíra i nyní bude vhodné program rozčlenit do modulů:
   rozhraní programu.
 
 
-## `Banshee.Castle`
+## 3.4 `Banshee.Castle`
 
 V tomto modulu si nadefinujeme datové typy, které využijeme v ostatních
 modulech.
@@ -95,7 +95,7 @@ modulech.
     module Banshee.Castle where
     import Data.Array
 
-### Hrad
+### 3.4.1 Hrad
 
 Typ `Castle` reprezentuje hrad v podobě, v jaké jsme ho načetli ze souboru.
 Všechna políčka jsou uložena v poli `castleFields` jako typ `Field`, který
@@ -146,7 +146,7 @@ Zde je bludiště z obrázku [3.1](#img-3.1) uložené jako typ `Castle`.
         , [(4,2),(4,1),(5,1),(5,2)]]
       }
 
-### Řezy hradu
+### 3.4.2 Řezy hradu
 
 V průběhu hledání cesty budeme muset být schopni rychle určit, zda se v daném
 čase nachází na daném políčku zvěd nebo ne. K tomu využijeme typ `Slice`,
@@ -164,10 +164,8 @@ je roven nejmenšímu společnému násobku délek tras všech zvědů v
 hradu.<sup><a id="fl1" href="#fn1">1</a></sup>
 
 Pro hrad s periodou <i>p</i> tedy stačí vygenerovat prvních <i>p</i> „řezů“. Pro
-čas
-
-$t$ získáme číslo příslušného řezu (*offset*) ze zbytku po dělení <i>t ÷ p</i>
-(označíme-li počáteční stav časem <i>t = 0</i>). 
+čas <i>t</i> získáme číslo příslušného řezu (*offset*) ze zbytku po dělení <i>t
+÷ p</i> (označíme-li počáteční stav časem <i>t = 0</i>). 
 
 Jednotlivé „řezy“ pro jednoduchou mapu jsou zobrazeny na [obrázku
 3.1](#img-3.1).
@@ -189,7 +187,7 @@ následující pozice zvědů nacházejících se na tomto políčku; využijeme
 zjišťování, zda si bílá paní a zvěd v jednom kroku nevyměnili pozice, což je
 považováno za objevení bílé paní zvědem.
 
-### Řezání hradu
+### 3.4.3 Řezání hradu
 
 Pro samotné rozřezání časoprostoru hradu na tenké plátky definujeme funkci
 `sliceCastle`.
@@ -278,7 +276,7 @@ nachází zvěd, jehož další destinací je pozice `(nextx,nexty)`.
 `sfFields`.
 
 
-## `Banshee.CastleParser`
+## 3.5 `Banshee.CastleParser`
 
 Na parsování vstupního souboru s hradem použijeme opět knihovnu `parsec`,
 kterou jsme si popsali v sekci [2.5](banshee.html#25_).
@@ -299,7 +297,7 @@ Krunimírovi:
 
     type Parser a = Parsec String () a
 
-### `SemiCastle`
+### 3.5.1 `SemiCastle`
 
 Nejprve nadefinujeme typ `SemiCastle`, který budeme používat v průběhu
 parsování. Tento typ představuje „napůl známý“ hrad. Pozice startu a televize
@@ -325,7 +323,7 @@ jedno políčko.
     scAdd :: Loc -> Field -> SemiCastle -> SemiCastle
     scAdd loc fld sc = sc { scFields = (loc,fld):scFields sc }
 
-### Jednotlivé parsery
+### 3.5.2 Jednotlivé parsery
 
 #### Celý hrad
 
@@ -425,7 +423,7 @@ všechny pohyby kromě posledního (funkcí `init`), protože v posledním kroku
 svého cyklu se zvěd vždy přesune na svou počáteční pozici (tuto vlastnost
 nekontrolujeme, ale tímto si ji vynutíme).
 
-### Pohyby
+### 3.5.3 Pohyby
 
 Pro reprezentaci pohybů využijeme jednoduchý algebraický datový typ:
     
@@ -452,7 +450,7 @@ dostaneme seznam pozic:
       East  -> applyMoves (x+1,y) ms
 
 
-## `Banshee.Navigate`
+## 3.6 `Banshee.Navigate`
 
     module Banshee.Navigate(navigate) where
     import Data.Array
@@ -464,7 +462,7 @@ dostaneme seznam pozic:
 
     import Banshee.Castle
 
-### Popis algoritmu
+### 3.6.1 Popis algoritmu
 
 Náš algoritmus hledání cesty je založen na prohledávání všech možných cest do
 šířky s počátkem na startovní pozici bílé paní. O cestě hradem můžeme uvažovat
@@ -483,7 +481,7 @@ Ve skutečnosti vždy provedeme řádově méně kroků než <i>whp</i>, jeliko�
 hradech bez větších překážek nalezneme cestu rychle, v hradech s více překážkami
 sice cestu nalezneme po delší době, ale velká část časopozic bude nedostupných.
 
-### Typ `Path`
+### 3.6.2 Typ `Path`
 
 Během výpočtu budeme často manipulovat s cestami. Abychom nemuseli stále dokola
 počítat délky cest pomocí `length`, budeme používat typ `Path`, který
@@ -493,7 +491,7 @@ těchto pozic).
     data Path = Path Int [Loc] deriving Show
     pathLength (Path len _) = len
 
-### Určení možných pohybů z políčka
+### 3.6.3 Určení možných pohybů z políčka
 
 Funkce `moves` slouží k určení všech možných sousedních pozic, na které se
 bílá paní může dostat z dané pozice. Tato funkce má typ `moves :: Bool ->
@@ -542,7 +540,7 @@ tahu přesune na pole, ze kterého jsme vyšli, znamená to, že si bílá paní
 zvědem prohodí místo, což znamená, že by ji zvěd objevil a do této pozice tedy
 nemůžeme.
 
-### Monáda `ST`
+### 3.6.4 Monáda `ST`
 
 V našem algoritmu budeme pracovat s polem, ve kterém si budeme ukládat nejlepší
 cesty, které jsme nalezli do každé časopozice v hradě. Mohli bychom použít
@@ -585,7 +583,7 @@ jehož prvky jsou inicializované na hodnotu `x`.
 * `writeArray :: STArray s i e -> i -> e -> ST s ()` <br>
 `writeArray ary i x` zapíše hodnotu `x` do indexu `i` v poli `ary`.
 
-### Hledání cest v souvislých oblastech bez průchodu zdí
+### 3.6.5 Hledání cest v souvislých oblastech bez průchodu zdí
 
 Nyní si implementujeme funkci `flood`, která pro daný seznam výchozích pozic s
 příslušnými cestami nalezne nejlepší cestu do každé časopozice hradu, kam se
@@ -671,7 +669,7 @@ ano, tak tuto cestu vrátíme jako `Left`, jinak rekurzivně zavoláme `step`
 znovu a pomocí funkce `fmap` k jejímu výsledku přidáme ještě seznam
 `starts'`.
 
-### Hledání cest včetně procházení zdí
+### 3.6.6 Hledání cest včetně procházení zdí
 
 Jako poslední implementujeme vlastní funkci `navigate`. Budeme jí předávat
 hrad, seznam řezů tohoto hradu a hodnotu `Bool` značící, jestli povolíme
@@ -741,13 +739,13 @@ které můžou mít o jednu zeď v cestě více. S tímto seznamem poté znovu r
 zavoláme `wallStep`, která nyní najde i cesty za právě prošlými zdmi.
 
 
-## `Banshee.Main`
+## 3.7 `Banshee.Main`
 
 Modul `Banshee.Main` obsahuje uživatelské rozhraní programu. Podobně jako u
 Krunimíra budeme náš program spouštět v terminálu, ale umožníme uživateli pomocí
 argumentů zadaných na příkazovém řádku měnit chování programu.
 
-### Popis použití programu
+### 3.7.1 Popis použití programu
 
 Programu na příkazové řádce předáme jméno vstupního souboru s hradem a navíc
 můžeme předat některé z následujících přepínačů:
@@ -774,7 +772,7 @@ nevypisuje).
   čitelném formátu JSON <a href="bib.html#b5" class="cite">[5]</a> (využívá se
   při automatickém testování programu).
 
-### Zpracování argumentů z příkazové řádky
+### 3.7.2 Zpracování argumentů z příkazové řádky
 
 Na zpracování argumentů předaných na příkazové řádce použijeme modul
 `System.Console.GetOpt`, který je součástí standardní knihovny.
@@ -897,7 +895,7 @@ vypíšeme návod a skončíme.
           hPutStrLn stderr "Expected one input file with castle"
           exitFailure
 
-### Výpočet trasy
+### 3.7.3 Výpočet trasy
 
 Vstupní soubor přečteme a zparsujeme pomocí funkce `parseCastle`. Ta vrátí
 `Right` s výsledným hradem v případě úspěchu a `Left` s chybou v případě
@@ -917,7 +915,7 @@ hledání cesty uložíme do `result`.
           result =  navigate castle slices thruWalls
           thruWalls = NotThroughFlag `notElem` flags
 
-### Zobrazení výsledku
+### 3.7.4 Zobrazení výsledku
 
 Do proměnné `ui` na základě předaných přepínačů přiřadíme příslušnou
 zobrazovací funkci a vzápětí ji zavoláme s výsledkem hledání cesty, čímž končí
@@ -931,7 +929,7 @@ podsekcích.
              | otherwise                    = showCastle castle
       ui result
 
-### Tiché zobrazení
+### 3.7.5 Tiché zobrazení
 
 Funkce `showQuiet`, kterou použijeme u přepínače `--quiet`, jednoduše
 vypíše jeden řádek v závislosti na tom, jesli byla cesta nalezena nebo ne.
@@ -950,7 +948,7 @@ na dané cestě a kterou použijeme i v dalších funkcích.
     countWalls castle locs =
       length $ filter ((==Wall) . (castleFields castle !)) locs
 
-### Zobrazení ve formátu JSON
+### 3.7.6 Zobrazení ve formátu JSON
 
 Výsledek ve formátu JSON zobrazíme podobně jako ve funkci `showQuiet`, pouze
 vypíšeme objekt ve tvaru <code>{ "steps": <i>počet_kroků</i>, "walls":
@@ -963,7 +961,7 @@ vypíšeme objekt ve tvaru <code>{ "steps": <i>počet_kroků</i>, "walls":
       putStrLn . concat $ ["{ \"steps\": ",show $ length locs,
         ", \"walls\": ",show $ countWalls castle locs," }"]
 
-### Zobrazení cesty v hradu
+### 3.7.7 Zobrazení cesty v hradu
 
 Funkce `showCastle` vypíše celý hrad a vyznačí v něm nalezenou trasu,
 samozřejmě pouze pokud byla nějaká cesta nalezena. Zdi jsou zaznačeny znaky
@@ -1002,7 +1000,7 @@ políčka, která se nachází na cestě (v seznamu pozic `locs`), na znak `+`
 nebo `~` v závislosti na tom, jestli na tomto políčku je zeď
 nebo ne.
 
-### Interaktivní zobrazení
+### 3.7.8 Interaktivní zobrazení
 
 Interaktivní zobrazení zajišťuje funkce `showInteractive` z modulu
 `Banshee.Interactive`. Její typ je:
@@ -1015,7 +1013,7 @@ jelikož je poměrně rozsáhlý (přibližně 180 řádků) a využívá knihov
 <a href="bib.html#b15" class="cite">[15]</a>, jejíž popis je mimo rozsah této
 práce.
 
-## Závěr
+## 3.8 Závěr
 
 Zde prezentované řešení soutěžní úlohy je téměř kompletní, podobně jako u
 Krunimíra jsme ale vynechali část s grafickým uživatelským rozhraním (editorem
@@ -1035,7 +1033,7 @@ pohybuje okolo 10&nbsp;MB.
 Program je zároveň poměrně krátký, obsahuje méně než 300 řádků kódu (bez modulu
 `Banshee.Interactive`), včetně přívětivého uživatelského rozhraní.
 
-### Zdrojové kódy
+### 3.8.1 Zdrojové kódy
 
 Soubory související s úlohou Bílá paní se nachází ve složce
 [`banshee/`](https://github.com/honzasp/funsp/tree/master/banshee) v repozitáři
