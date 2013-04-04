@@ -12,6 +12,34 @@ body {
   margin: 0 auto 20px auto;
 }
 
+.paper #content {
+  width: 720px;
+  float: left;
+}
+
+.paper #side-menu {
+  width: 230px;
+  float: left;
+  font-size: 14px;
+  padding-left: 10px;
+}
+
+.paper #side-menu>ul {
+  position: fixed;
+}
+
+#side-menu ul {
+  list-style-type: none;
+}
+
+#side-menu ul li {
+  margin: 0;
+}
+
+#side-menu li li {
+  margin-left: 20px;
+}
+
 #content p {
   font-size: 15px;
   margin: 10px 0;
