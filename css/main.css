@@ -99,23 +99,26 @@ code.peg-grammar      { color: #000; }
 
 #main-menu ul {
   list-style-type: none;
+  border-bottom: 4px solid #abbed6;
 }
 
 #main-menu li {
   float: left;
+  margin: 0;
+  padding: 0;
 }
 
 #main-menu li a {
   display: block;
   height: 32px;
   line-height: 32px;
-  padding: 2px 10px;
+  padding: 4px 30px;
   text-decoration: none;
-  color: #000;
+  color: #1355a5;
 }
 
 #main-menu li a:hover {
-  background-color: #eee;
+  background-color: #dee7f2;
 }
 
 .footnotes {
