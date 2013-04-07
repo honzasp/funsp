@@ -282,7 +282,7 @@ body.impress-on-fun-ref-trans .step.active {
   -ms-transition-delay: 1s;
   -o-transition-delay: 1s;
   transition-delay: 1s;
-  color: #163352;
+  color: #02424e;
 }
 #haskell-root li.lazy {
   -webkit-transition-delay: 2s;
@@ -290,7 +290,7 @@ body.impress-on-fun-ref-trans .step.active {
   -ms-transition-delay: 2s;
   -o-transition-delay: 2s;
   transition-delay: 2s;
-  color: #7E731F;
+  color: #7e6603;
 }
 #haskell-root li.typing {
   -webkit-transition-delay: 3s;
@@ -298,7 +298,7 @@ body.impress-on-fun-ref-trans .step.active {
   -ms-transition-delay: 3s;
   -o-transition-delay: 3s;
   transition-delay: 3s;
-  color: #791E26;
+  color: #6f0227;
 }
 #haskell-root.future li {
   opacity: 0;
@@ -316,13 +316,13 @@ body.impress-on-fun-ref-trans .step.active {
   transition: color 0.5s;
 }
 #functional .step.active {
-  color: #163352;
+  color: #02424e;
 }
 #lazy .step.active {
-  color: #7E731F;
+  color: #7e6603;
 }
 #strong-typing .step.active {
-  color: #791E26;
+  color: #6f0227;
 }
 #paper .step.active {
   color: #333;
@@ -400,6 +400,9 @@ body.impress-on-lazy-fibs-live #lazy-fibs-hs .funs {
 #fibs-live.going-forward .zip-top .num:nth-last-child(2),
 #fibs-live.going-forward .list .num:nth-last-child(2) {
   -webkit-animation: fadein-num 1s;
+  -moz-animation: fadein-num 1s;
+  -ms-animation: fadein-num 1s;
+  -o-animation: fadein-num 1s;
   animation: fadein-num 1s;
 }
 #fibs-live.going-back {
@@ -410,6 +413,9 @@ body.impress-on-lazy-fibs-live #lazy-fibs-hs .funs {
 #fibs-live.going-back .zip-top .num:nth-last-child(2),
 #fibs-live.going-back .list .num:nth-last-child(2) {
   -webkit-animation: fadeout-num 1s;
+  -moz-animation: fadeout-num 1s;
+  -ms-animation: fadeout-num 1s;
+  -o-animation: fadeout-num 1s;
   animation: fadeout-num 1s;
 }
 #fibs-live .controls {
@@ -514,13 +520,13 @@ body.impress-on-typing-cpp-highlight #typing-cpp {
   color: #777;
 }
 body.impress-on-typing-cpp-highlight #typing-cpp .type {
-  color: #791E26;
+  color: #6f0227;
 }
 body.impress-on-typing-ruby-highlight #typing-ruby {
   color: #777;
 }
 body.impress-on-typing-ruby-highlight #typing-ruby .duck {
-  color: #791E26;
+  color: #6f0227;
 }
 #typing-ruby-highlight p {
   position: relative;
@@ -608,6 +614,14 @@ body.impress-on-sum-root-again #haskell-root .the-three li {
   width: 200px;
   display: block;
 }
+body.impress-on-result-goal #result,
+body.impress-on-result-question #result,
+body.impress-on-overview #result {
+  opacity: 1;
+}
+#result {
+  opacity: 0;
+}
 #result .step {
   width: 700px;
   background: rgba(255, 255, 255, 0.9);
@@ -620,15 +634,41 @@ body.impress-on-sum-root-again #haskell-root .the-three li {
   margin-top: 50px;
   color: #222;
 }
+#overview {
+  pointer-events: none;
+}
 #overview .contact {
+  pointer-events: auto;
   margin-top: 500px;
   background-color: #fff;
   width: 900px;
   text-align: center;
   font-size: 40px;
+  opacity: 0;
+  -webkit-transition: opacity 1s;
+  -moz-transition: opacity 1s;
+  -ms-transition: opacity 1s;
+  -o-transition: opacity 1s;
+  transition: opacity 1s;
 }
 #overview .contact span {
   margin: 20px;
+}
+#overview.active .contact {
+  opacity: 1;
+}
+#timer {
+  position: fixed;
+  right: 5px;
+  bottom: 0px;
+  width: 50px;
+  height: 20px;
+  font-size: 15px;
+  font-family: 'Inconsolata', monospace;
+  color: #000;
+  pointer-events: auto;
+  text-align: right;
+  cursor: pointer;
 }
 .pros-cons {
   font-size: 36px;
@@ -642,7 +682,7 @@ body.impress-on-sum-root-again #haskell-root .the-three li {
   margin-right: 20px;
 }
 .pros-cons .pros .mark {
-  color: #4bce00;
+  color: #43891a;
 }
 .pros-cons .cons .mark {
   color: #f4003d;
@@ -651,13 +691,13 @@ code {
   font-family: 'Inconsolata', monospace;
 }
 .c1 {
-  color: #62023E;
+  color: #62023e;
 }
 .c2 {
-  color: #7E1103;
+  color: #7e1103;
 }
 .c3 {
-  color: #025E1A;
+  color: #025e1a;
 }
 .c4 {
   color: #547602;
@@ -683,4 +723,10 @@ pre.huge {
   visibility: hidden;
   width: 0;
   height: 0;
+}
+.impress-enabled {
+  pointer-events: none;
+}
+.impress-enabled #impress {
+  pointer-events: auto;
 }
