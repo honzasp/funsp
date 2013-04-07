@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1000">
+  <title>Líně, čistě, funkcionálně</title>
+  <link rel="stylesheet" href="pres.css">
+  <link href='http://fonts.googleapis.com/css?family=Enriqueta:400,700&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Inconsolata:400,700&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+</head>
+
+<body class="impress-not-supported">
+
+<div id="impress">
+
+  <div id="intro" class="step" data-x="-6000" data-y="0">
+    <h1>Líně, čistě, funkcionálně</h1>
+    <p class="subtitle">Práce SOČ, obor 18: <b>Informatika</b></p>
+    <p class="author">Jan Špaček</p>
+  </div>
+
+  <div id="old-path">
+    <div id="programming-langs" class="step" data-x="-4600" data-y="0">
+      <h2>Programovací jazyky</h2>
+
+      <ul class="language-cloud">
+        <li style="left:243px; top:182px;">C</li>
+        <li style="left:772px; top:204px;">C++</li>
+        <li style="left:486px; top:160px;">Java</li>
+        <li style="left:342px; top:477px;">Python</li>
+        <li style="left:120px; top:389px;">Fortran</li>
+        <li style="left:662px; top:314px;">CoffeeScript</li>
+        <li style="left:228px; top:330px;">JavaScript</li>
+        <li style="left:417px; top:395px;">Perl</li>
+        <li style="left:628px; top:440px;">Scala</li>
+        <li style="left:562px; top:78px;" >Ruby</li>
+        <li style="left:645px; top:123px;">C#</li>
+        <li style="left:826px; top:380px;">Pascal</li>
+        <li style="left:97px;  top:269px;">Befunge</li>
+        <li style="left:183px; top:95px;" >PHP</li>
+      </ul>
+    </div>
+
+    <div id="imperative-banner" class="step" data-x="-4600" data-y="0" data-z="100px">
+      <p><b>Imperativní</b></p>
+    </div>
+
+    <div id="imperative-algorithms" class="step" data-x="-3400" data-y="0">
+      <h2>Imperativní jazyky</h2>
+      <p> <b>Výpočty</b> se provádí <b>vykonáváním</b> operací, které <b>mění
+        stav</b> programu (uložený v&nbsp;paměti).</p>
+
+      <p><b>Algoritmy</b> jsou sekvence kroků.</p>
+    </div>
+
+    <div id="imperative-algorithms-euclid" class="step example" data-x="-3400" data-y="700">
+      <h3>Euklidův algoritmus</h3>
+
+      <p>Určení největšího společného dělitele dvou čísel &mdash; menší číslo
+      odečítáme od většího dokud se nedostaneme k&nbsp;nule.</p>
+
+      <div class="compare-two">
+        <div class="left">
+          <p>Nestrukturovaný jazyk<p>
+
+          <pre><code>10 INPUT A,B
+20 IF B=0 THEN GOTO 80
+30 IF A&gt;B THEN GOTO 60
+40 LET B=B-A
+50 GOTO 20
+60 LET A=A-B
+70 GOTO 20
+80 OUTPUT A
+90 END</code></pre>
+        </div>
+
+        <div class="right">
+          <p>Strukturovaný jazyk (C)</p>
+          <pre><code>int gcd(int a, int b)
+{
+  while(b != 0) {
+    if(a &gt; b) {
+      a = a - b;
+    } else {
+      b = b - a;
+    }
+  }
+  return a;
+}</code></pre>
+        </div>
+
+        <div class="clear">.</div>
+      </div>
+    </div>
+
+    <div id="imperative-alts" class="step" data-x="-2000" data-y="0">
+      <h2>Alternativy</h2>
+
+      <p>Imperativní přístup k&nbsp;programování je dnes dominantní, není ale
+      jediný.</p>
+    </div>
+
+  </div>
+
+  <div id="haskell-root" class="step" data-x="0" data-y="0" data-scale="2">
+    <h2>Haskell</h2>
+
+    <ul class="the-three">
+      <li class="functional">Funkcionální</li>
+      <li class="lazy">Líný</li>
+      <li class="typing">Silný typový systém</li>
+    </ul>
+  </div>
+
+  <div id="functional">
+    <div id="fun-eval" class="step" data-x="-1600" data-y="1200" data-rotate="26.56">
+      <p><b>Výpočty</b> se provádí <b>vyhodnocováním výrazů.</b></p>
+    </div>
+
+    <div id="fun-algorithms" class="step" data-x="-1700" data-y="1400" data-rotate="26.56">
+      <p><b>Algoritmy</b> jsou vyjádřeny pomocí <b>funkcí</b>.</p>
+    </div>
+
+    <div id="fun-examples" class="example step" data-x="-1800" data-y="1600" data-rotate="26.56">
+      <p>Funkce, která zdvojnásobí argument:</p>
+      <pre><code>double x = x + x</code></pre>
+
+      <p>Řešení kvadratické rovnice:<p>
+      <pre><code>quadratic a b c
+ | d &lt; 0     = []
+ | d == 0    = [-b/(2*a)]
+ | otherwise = [(-b+sqrt d)/(2*a),(-b-sqrt d)/(2*a)]
+ where d = b^2 - 4*a*c</code></pre>
+    </div>
+    
+    <div id="fun-higher-order" class="step" data-x="-1970" data-y="1940" data-rotate="26.56">
+      <p>Funkce jsou <b>hodnoty</b>, lze je tedy předávat jiným funkcím nebo vracet jako výsledek:
+      <b>funkce vyššího řádu</b>.</p>
+
+      <div class="example">
+        <pre class="repl"
+          ><code class="read"
+            >map double [2,3,-4,1]</code> = <code class="print">[4,6,-8,2]</code
+          ><br><code class="read"
+            >filter odd [0,4,1,6,3]</code> = <code class="print">[1,3]</code
+          ></code></pre>
+      </div>
+    </div>
+
+    <div id="fun-compose" class="step example" data-x="-2100" data-y="2200" data-rotate="26.56">
+      <p><b>Skládání</b> funkcí</p>
+
+      <pre><code>(f . g) x = f (g x)</code></pre>
+      <pre class="repl"
+        ><code class="read"
+          >map (negate . abs) [5,0,-3,2]</code> = <code class="print">[-5,0,-3,-2]</code></code></pre>
+    </div>
+
+    <div id="fun-lists" class="step" data-x="-2200" data-y="2400" data-rotate="26.56">
+      <p>Mezi nejčastěji používané datové typy patří <b>seznamy</b></p>
+
+      <pre><code>[1,2,3] = 1:2:3:[] = 1:(2:(3:[]))
+['Ž', 'e', 'l', 'v', 'a'] = "Želva"
+
+[1..5] = [1,2,3,4,5]
+[3,5..11] = [3,5,7,9,11]</code></pre>
+    </div>
+
+    <div id="fun-lists-patterns" class="step" data-x="-2350" data-y="2700" data-rotate="26.56">
+      <pre><code>map f [] = []
+map f (x:xs) = f x : map f xs
+
+map double [<code class="c1">1</code>,<code class="c2">2</code>,<code class="c3">3</code>] =
+  map double (<code class="c1">1</code>:(<code class="c2">2</code>:(<code class="c3">3</code>:[]))) =
+  <code class="c1">double 1</code> : map double (<code class="c2">2</code>:(<code class="c3">3</code>:[])) =
+  <code class="c1">double 1</code> : <code class="c2">double 2</code> : map double (<code class="c3">3</code>:[]) =
+  <code class="c1">double 1</code> : <code class="c2">double 2</code> : <code class="c3">double 3</code> : map double [] =
+  <code class="c1">double 1</code> : <code class="c2">double 2</code> : <code class="c3">double 3</code> : [] =
+  <code class="c1">2</code> : <code class="c2">4</code> : <code class="c3">6</code> : [] =
+  [<code class="c1">2</code>,<code class="c2">4</code>,<code class="c3">6</code>]</code></pre>
+    </div>
+
+    <div id="fun-curry" class="step" data-x="-2600" data-y="3200" data-rotate="26.56">
+      <p>Každá funkce má právě <b>jeden argument</b> &mdash; funkce s&nbsp;více
+      argumenty jsou <b>curryfikované</b>.</p>
+
+      <pre><code>max 5 4 = 5
+
+max :: Int -&gt; Int -&gt; Int
+max 5 :: Int -&gt; Int
+max 5 4 :: Int</code></pre>
+    </div>
+
+    <div id="fun-curry-example" class="step" data-x="-2770" data-y="3540" data-rotate="26.56">
+      <p>Funkce tedy můžeme <b>částečně aplikovat</b> &mdash; zavolat je
+      s&nbsp;menším množstvím argumentů a získat tak novou funkci.</p>
+
+      <pre class="repl"
+        ><code><code class="read"
+        >map (max 5) [-2,8,-6,3,7]</code> = <code class="print">[5,8,5,5,7]</code><br
+        ><code class="read"
+        >map (max 5 . abs) [-2,8,-6,3,7]</code> = <code class="print">[5,8,6,5,7]</code></code
+        ></pre>
+    </div>
+
+    <div id="fun-operators" class="step" data-x="-2900" data-y="3800" data-rotate="26.56">
+      <p><b>Operátory</b> jsou funkce:</p>
+
+      <pre class="repl"><code
+        ><code class="read"
+          >5 + 4</code> = <code class="print">9</code><br
+        ><code class="read"
+          >(+) 5 4</code> = <code class="print">9</code><br
+        ><code class="read"
+          >map ((+) 3) [1,0,2]</code> = <code class="print">[4,3,5]</code><br
+        ></code></pre>
+
+      <pre class="repl"><code
+        ><code class="read"
+          >(* 2) 3</code> = <code class="print">6</code><br
+        ><code class="read"
+          >(12 /) 3</code> = <code class="print">4</code><br
+        ><code class="read"
+          >map (/ 3) [3,12,6]</code> = <code class="print">[1,4,2]</code><br
+        ><code class="read"
+          >filter ((&lt; 40) . (^2)) [2,5,7,3,9]</code> = <code class="print">[2,5,3]</code><br
+        ></code></pre>
+    </div>
+  </div>
+
+  <div id="lazy">
+    <div id="lazy-intro" class="step" data-x="0" data-y="1200">
+      <h2>Líné vyhodnocování</h2>
+      <p>Hodnoty výrazů se zjišťují <b>až když jsou zapotřebí</b>.</p>
+    </div>
+
+    <div id="lazy-order" class="step" data-x="0" data-y="1400">
+      <p>O&nbsp;pořadí vyhodnocování se tedy stará jazyk, nikoli programátor.</p>
+    </div>
+
+    <div id="lazy-list-example" class="step" data-x="0" data-y="1600">
+      <p>Je snadné používat nekonečné struktury:</p>
+
+      <pre class="repl"><code
+        ><code class="read">take 6 [1,3..]</code> = <code class="print">[1,3,5,7,9,11]</code
+      ></code></pre>
+
+      <pre class="repl"><code
+        ><code class="read">takeWhile (&lt; 100) (map (^2) [1..])</code> = <code class="print"
+          >[1,4,9,16,25,36,49,64,81]</code
+      ></code></pre>
+    </div>
+
+    <div id="lazy-fibs" class="step example" data-x="-500" data-y="1900">
+      <p><b>Fibonacciho posloupnost:</b></p>
+
+      <p>1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144 ...</p>
+
+      <p><i>f<sub>n</sub></i> = <i>f<sub>n-1</sub></i> + <i>f<sub>n-2</sub></i></p>
+    </div>
+
+    <div id="lazy-fibs-hs" class="step example" data-x="-500" data-y="2100">
+      <p>Funkce <code>zipWith</code> a <code>tail</code> ze standardní knihovny:</p>
+
+      <pre class="repl"><code
+        ><code class="read">zipWith (*) [<code class="c1"
+          >2</code>,<code class="c2">3</code>,<code class="c3">4</code
+          >] [<code class="c1">-1</code>,<code class="c2">2</code>,<code class="c3">0</code
+          >]</code> = <code class="print"
+          >[<code class="c1">-2</code>,<code class="c2">6</code>,<code class="c3">0</code>]</code><br
+        ><code class="read">tail [1,2,3,4]</code> = <code class="print"
+          >[2,3,4]</code
+        ></code></pre>
+
+      <p>Fibonacciho posloupnost jako seznam:</p>
+
+      <pre class="huge def"><code>fibs = 1:1:zipWith (+) fibs (tail fibs)</code></pre>
+      <pre class="repl taken"><code><code class="read"
+        >fibs</code> = <code class="print">[1,1,2,3,5,8,13,...</code
+        ></code></pre>
+    </div>
+
+    <div id="lazy-fibs-live" class="step example" data-x="-500" data-y="2520">
+      <div id="fibs-live">
+        <div class="fibs-var">
+          <code class="var-name">fibs = </code> <div class="list"><code></code></div>
+        </div>
+
+        <div class="zip-with">
+          <code>zipWith (+)</code>
+        </div>
+
+        <div class="zip-top"><code></code></div>
+        <div class="zip-bottom"><code></code></div>
+
+        <div class="controls">
+          <div title="Krok zpět" class="back">&lt;</div>
+          <div title="Krok vpřed" class="forward">&gt;</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="lazy-primes" class="step example" data-x="500" data-y="2100" data-rotate="-90">
+      <p><b>Prvočísla</b></p>
+
+      <p>Číslo <code>x</code> je prvočíslo právě tehdy, pokud pro všechna
+      prvočísla <code>p</code>, <code>p<sup>2</sup>&nbsp;&le;&nbsp;x</code>, je
+      zbytek po dělení <code>x&nbsp;/&nbsp;p</code> nenulový.</p>
+
+      <pre class="huge"><code>primes = 2:filter isPrime [3,5..]
+isPrime x = all ((/= 0) . (mod x)) ps
+  where ps = takeWhile ((&lt; x) . (^2)) primes
+</code></pre>
+    </div>
+  </div>
+
+  <div id="strong-typing">
+    <div id="typing-intro" class="step" data-x="1600" data-y="1200" data-rotate="-26.56">
+      <h2>Silný typový systém</h2>
+
+      <p>Haskell je <b>staticky typovaný</b>, většinu typů ale <b>odvozuje</b>.</p>
+    </div>
+
+    <div id="typing-imperative" class="step" data-x="1800" data-y="1600" data-rotate="-26.56">
+      <p>Typování v&nbsp;<b>imperativních</b> jazycích je obvykle statické nebo
+      dynamické.</p>
+    </div>
+
+    <div id="typing-cpp" class="step example" data-x="1900" data-y="1800" data-rotate="-26.56">
+      <h3>Staticky typovaný jazyk (C++)</h3>
+
+      <p>Programátor u všech proměnných a funkcí uvádí typy.</p>
+
+      <pre><code><span class="type">std::vector&lt;int&gt;</span> selectLarger(<span class="type">std::vector&lt;int&gt;&amp;</span> xs, <span class="type">int</span> limit)
+{
+  <span class="type">std::vector&lt;int&gt;::const_iterator</span> end = xs.end();
+  <span class="type">std::vector&lt;int&gt;</span> result;
+
+  for(<span class="type">std::vector&lt;int&gt;::const_iterator</span> it = result.begin();
+    it != end; ++it) {
+      if(*it &gt; limit) {
+        result.push_back(*it);
+      }
+  }
+
+  return result;
+}</code></pre>
+    </div>
+
+    <div id="typing-cpp-highlight" class="step" data-x="1900" data-y="1800" data-rotate="-26.56">
+    </div>
+  </div>
+
+  <div id="overview" class="step" data-x="0" data-y="2000" data-scale="10">
+
+  </div>
+</div>
+
+<script src="impress.js"></script>
+<script>impress().init();</script>
+
+<script src="jquery.js"></script>
+<script src="fibs-live.js"></script>
+
+</body>
+</html>
