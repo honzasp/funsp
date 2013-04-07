@@ -77,6 +77,8 @@ sub {
 }
 
 .step {
+  cursor: pointer;
+
   p {
     margin: 20px;
     font-size: 46px;
@@ -168,8 +170,17 @@ sub {
   }
 }
 
-body.impress-on-haskell-root {
+body.impress-on-haskell-root,
+body.impress-on-fun-immutable,
+body.impress-on-fun-ref-trans {
   background-color: #aaa;
+
+  .step {
+    opacity: 0.2;
+  }
+  .step.active {
+    opacity: 1;
+  }
 }
 
 #haskell-root {
@@ -178,6 +189,7 @@ body.impress-on-haskell-root {
   h2 {
     font-size: 200px;
     color: #000;
+    text-shadow: 0px 0px 20px #fff;
   }
 
   &.active h2 {
@@ -218,18 +230,18 @@ body.impress-on-haskell-root {
   }
 }
 
-#functional, #lazy, #strong-typing {
+#functional, #lazy, #strong-typing, #paper {
   .step {
     width: 960px;
-    height: 500px;
     color: #555;
     .transition(color, 0.5s);
   }
 }
 
-#functional .step.active { color: #163352; }
-#lazy .step.active { color: #7E731F; }
+#functional    .step.active { color: #163352; }
+#lazy          .step.active { color: #7E731F; }
 #strong-typing .step.active { color: #791E26; }
+#paper         .step.active { color: #333; }
 
 #lazy-fibs-hs {
   .def {
@@ -238,15 +250,15 @@ body.impress-on-haskell-root {
     .transition(top, 1s);
   }
 
-  .taken {
+  .funs {
     opacity: 1;
     .transition(opacity, 1s);
   }
 }
 
 body.impress-on-lazy-fibs-live #lazy-fibs-hs {
-  .def { top: 50px; }
-  .taken { opacity: 0; }
+  .def { top: 240px; }
+  .funs { opacity: 0; }
 }
 
 #fibs-live {
@@ -270,7 +282,7 @@ body.impress-on-lazy-fibs-live #lazy-fibs-hs {
 
   .num, .bracket, .ellipsis {
     display: block;
-    width: 42px;
+    min-width: 42px;
     float: left;
     text-align: right;
   }
@@ -288,11 +300,11 @@ body.impress-on-lazy-fibs-live #lazy-fibs-hs {
     left: 20px;
   }
 
-  .zip-bottom .num:nth-last-child(2) {
+  .zip-bottom .num:nth-last-child(3) {
     font-weight: bold;
   }
 
-  .zip-top .num:nth-last-child(3) {
+  .zip-top .num:nth-last-child(4) {
     font-weight: bold;
   }
 
@@ -319,21 +331,8 @@ body.impress-on-lazy-fibs-live #lazy-fibs-hs {
     left: 20px;
 
     .back, .forward {
-      width: 60px;
-      height: 40px;
       float: left;
-      text-align: center;
-      line-height: 35px;
-      margin: 10px;
-
-      cursor: pointer;
-      color: #333;
-      border-radius: 4px;
-      font-weight: bold;
-
-      background-color: #cec792;
-      .transition(background-color, 0.3s);
-      &:hover { background-color: #e5dea5; }
+      .button;
     }
   }
 }
@@ -348,10 +347,6 @@ body.impress-on-lazy-fibs-live #lazy-fibs-hs {
 @-ms-keyframes     fadeout-num { from { opacity: 1; } to { opacity: 0; } }
 @-o-keyframes      fadeout-num { from { opacity: 1; } to { opacity: 0; } }
 
-#typing-cpp .type {
-  .transition(color, 0.5s);
-}
-
 body.impress-on-typing-cpp-highlight #typing-cpp {
   color: #777;
   .type {
@@ -359,8 +354,166 @@ body.impress-on-typing-cpp-highlight #typing-cpp {
   }
 }
 
+body.impress-on-typing-ruby-highlight #typing-ruby {
+  color: #777;
+  .duck {
+    color:#791E26; 
+  }
+}
+
+#typing-ruby-highlight p {
+  position: relative;
+  top: 300px;
+}
+
+body.impress-on-sum-root,
+body.impress-on-sum-root-again {
+  #haskell-root .the-three li {
+    opacity: 1;
+  }
+}
+
+#summary {
+  .step {
+    width: 700px;
+    color: #555;
+    .transition(color, 0.5s);
+  }
+
+  .step.active {
+    color: #111;
+  }
+}
+
+#paper {
+  .step {
+    min-height: 600px;
+  }
+
+  #paper-back .subtitle {
+    font-size: 30px;
+  }
+
+  #paper-tasks {
+    ol {
+      margin: 20px;
+      list-style-type: decimal;
+      font-size: 48px;
+    }
+
+    li {
+      margin-left: 60px;
+    }
+  }
+
+  .example {
+    .program {
+      width: 400px;
+    }
+    .image {
+      position: absolute;
+      top: 0;
+      left: 500px;
+    }
+  }
+
+  #banshee-castle {
+    width: 320px;
+    margin: auto;
+
+    .back, .forward {
+      float: left;
+      .button(2);
+    }
+
+    pre {
+      width: 240px;
+      padding: 20px;
+      font-size: 80px;
+      margin: auto;
+
+      code {
+        margin: auto;
+        width: 200px;
+        display: block;
+      }
+    }
+  }
+}
+
+#result {
+  .step {
+    width: 700px;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 80px;
+    min-height: 400px;
+  }
+
+  .question {
+    font-size: 300px;
+    text-align: center;
+    margin-top: 50px;
+    color: #222;
+  }
+}
+
+#overview {
+  .contact {
+    margin-top: 500px;
+    background-color: #fff;
+    width: 900px;
+    text-align: center;
+    font-size: 40px;
+
+    span {
+      margin: 20px;
+    }
+  }
+}
+
+.pros-cons {
+  font-size: 36px;
+
+  li {
+    margin: 30px;
+
+    .mark {
+      font-family: 'Inconsolata', monospace;
+      font-weight: bold;
+      margin-right: 20px;
+    }
+  }
+
+  .pros .mark { color: #4bce00; }
+  .cons .mark { color: #f4003d; }
+}
+
 code {
   font-family: 'Inconsolata', monospace;
+}
+
+.button (@scale : 1) {
+  width: (60px * @scale);
+  height: (40px * @scale);
+  text-align: center;
+  line-height: (35px * @scale);
+  margin: (10px * @scale);
+
+  cursor: pointer;
+  color: #333;
+  border-radius: (4px * @scale);
+  font-weight: bold;
+  font-size: (22px * @scale);
+
+  background-color: #cec792;
+  .transition(background-color, 0.3s);
+  &:hover { background-color: #e5dea5; }
+
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: -moz-none;
+  -o-user-select: none;
+  user-select: none;
 }
 
 .c1 { color: #62023E; }

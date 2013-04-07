@@ -155,6 +155,9 @@ sub {
   width: 960px;
   min-height: 560px;
 }
+.step {
+  cursor: pointer;
+}
 .step p {
   margin: 20px;
   font-size: 46px;
@@ -234,8 +237,20 @@ sub {
   width: 445px;
   margin: 2px;
 }
-body.impress-on-haskell-root {
+body.impress-on-haskell-root,
+body.impress-on-fun-immutable,
+body.impress-on-fun-ref-trans {
   background-color: #aaa;
+}
+body.impress-on-haskell-root .step,
+body.impress-on-fun-immutable .step,
+body.impress-on-fun-ref-trans .step {
+  opacity: 0.2;
+}
+body.impress-on-haskell-root .step.active,
+body.impress-on-fun-immutable .step.active,
+body.impress-on-fun-ref-trans .step.active {
+  opacity: 1;
 }
 #haskell-root {
   width: 960px;
@@ -243,6 +258,7 @@ body.impress-on-haskell-root {
 #haskell-root h2 {
   font-size: 200px;
   color: #000;
+  text-shadow: 0px 0px 20px #fff;
 }
 #haskell-root .the-three {
   margin-top: 100px;
@@ -289,9 +305,9 @@ body.impress-on-haskell-root {
 }
 #functional .step,
 #lazy .step,
-#strong-typing .step {
+#strong-typing .step,
+#paper .step {
   width: 960px;
-  height: 500px;
   color: #555;
   -webkit-transition: color 0.5s;
   -moz-transition: color 0.5s;
@@ -308,6 +324,9 @@ body.impress-on-haskell-root {
 #strong-typing .step.active {
   color: #791E26;
 }
+#paper .step.active {
+  color: #333;
+}
 #lazy-fibs-hs .def {
   position: relative;
   top: 0px;
@@ -317,7 +336,7 @@ body.impress-on-haskell-root {
   -o-transition: top 1s;
   transition: top 1s;
 }
-#lazy-fibs-hs .taken {
+#lazy-fibs-hs .funs {
   opacity: 1;
   -webkit-transition: opacity 1s;
   -moz-transition: opacity 1s;
@@ -326,9 +345,9 @@ body.impress-on-haskell-root {
   transition: opacity 1s;
 }
 body.impress-on-lazy-fibs-live #lazy-fibs-hs .def {
-  top: 50px;
+  top: 240px;
 }
-body.impress-on-lazy-fibs-live #lazy-fibs-hs .taken {
+body.impress-on-lazy-fibs-live #lazy-fibs-hs .funs {
   opacity: 0;
 }
 #fibs-live {
@@ -351,7 +370,7 @@ body.impress-on-lazy-fibs-live #lazy-fibs-hs .taken {
 #fibs-live .bracket,
 #fibs-live .ellipsis {
   display: block;
-  width: 42px;
+  min-width: 42px;
   float: left;
   text-align: right;
 }
@@ -371,10 +390,10 @@ body.impress-on-lazy-fibs-live #lazy-fibs-hs .taken {
   top: 40px;
   left: 20px;
 }
-#fibs-live .zip-bottom .num:nth-last-child(2) {
+#fibs-live .zip-bottom .num:nth-last-child(3) {
   font-weight: bold;
 }
-#fibs-live .zip-top .num:nth-last-child(3) {
+#fibs-live .zip-top .num:nth-last-child(4) {
   font-weight: bold;
 }
 #fibs-live.going-forward .zip-bottom .num:nth-last-child(2),
@@ -400,9 +419,9 @@ body.impress-on-lazy-fibs-live #lazy-fibs-hs .taken {
 }
 #fibs-live .controls .back,
 #fibs-live .controls .forward {
+  float: left;
   width: 60px;
   height: 40px;
-  float: left;
   text-align: center;
   line-height: 35px;
   margin: 10px;
@@ -410,12 +429,18 @@ body.impress-on-lazy-fibs-live #lazy-fibs-hs .taken {
   color: #333;
   border-radius: 4px;
   font-weight: bold;
+  font-size: 22px;
   background-color: #cec792;
   -webkit-transition: background-color 0.3s;
   -moz-transition: background-color 0.3s;
   -ms-transition: background-color 0.3s;
   -o-transition: background-color 0.3s;
   transition: background-color 0.3s;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: -moz-none;
+  -o-user-select: none;
+  user-select: none;
 }
 #fibs-live .controls .back:hover,
 #fibs-live .controls .forward:hover {
@@ -485,18 +510,142 @@ body.impress-on-lazy-fibs-live #lazy-fibs-hs .taken {
     opacity: 0;
   }
 }
-#typing-cpp .type {
+body.impress-on-typing-cpp-highlight #typing-cpp {
+  color: #777;
+}
+body.impress-on-typing-cpp-highlight #typing-cpp .type {
+  color: #791E26;
+}
+body.impress-on-typing-ruby-highlight #typing-ruby {
+  color: #777;
+}
+body.impress-on-typing-ruby-highlight #typing-ruby .duck {
+  color: #791E26;
+}
+#typing-ruby-highlight p {
+  position: relative;
+  top: 300px;
+}
+body.impress-on-sum-root #haskell-root .the-three li,
+body.impress-on-sum-root-again #haskell-root .the-three li {
+  opacity: 1;
+}
+#summary .step {
+  width: 700px;
+  color: #555;
   -webkit-transition: color 0.5s;
   -moz-transition: color 0.5s;
   -ms-transition: color 0.5s;
   -o-transition: color 0.5s;
   transition: color 0.5s;
 }
-body.impress-on-typing-cpp-highlight #typing-cpp {
-  color: #777;
+#summary .step.active {
+  color: #111;
 }
-body.impress-on-typing-cpp-highlight #typing-cpp .type {
-  color: #791E26;
+#paper .step {
+  min-height: 600px;
+}
+#paper #paper-back .subtitle {
+  font-size: 30px;
+}
+#paper #paper-tasks ol {
+  margin: 20px;
+  list-style-type: decimal;
+  font-size: 48px;
+}
+#paper #paper-tasks li {
+  margin-left: 60px;
+}
+#paper .example .program {
+  width: 400px;
+}
+#paper .example .image {
+  position: absolute;
+  top: 0;
+  left: 500px;
+}
+#paper #banshee-castle {
+  width: 320px;
+  margin: auto;
+}
+#paper #banshee-castle .back,
+#paper #banshee-castle .forward {
+  float: left;
+  width: 120px;
+  height: 80px;
+  text-align: center;
+  line-height: 70px;
+  margin: 20px;
+  cursor: pointer;
+  color: #333;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 44px;
+  background-color: #cec792;
+  -webkit-transition: background-color 0.3s;
+  -moz-transition: background-color 0.3s;
+  -ms-transition: background-color 0.3s;
+  -o-transition: background-color 0.3s;
+  transition: background-color 0.3s;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: -moz-none;
+  -o-user-select: none;
+  user-select: none;
+}
+#paper #banshee-castle .back:hover,
+#paper #banshee-castle .forward:hover {
+  background-color: #e5dea5;
+}
+#paper #banshee-castle pre {
+  width: 240px;
+  padding: 20px;
+  font-size: 80px;
+  margin: auto;
+}
+#paper #banshee-castle pre code {
+  margin: auto;
+  width: 200px;
+  display: block;
+}
+#result .step {
+  width: 700px;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 80px;
+  min-height: 400px;
+}
+#result .question {
+  font-size: 300px;
+  text-align: center;
+  margin-top: 50px;
+  color: #222;
+}
+#overview .contact {
+  margin-top: 500px;
+  background-color: #fff;
+  width: 900px;
+  text-align: center;
+  font-size: 40px;
+}
+#overview .contact span {
+  margin: 20px;
+}
+.pros-cons {
+  font-size: 36px;
+}
+.pros-cons li {
+  margin: 30px;
+}
+.pros-cons li .mark {
+  font-family: 'Inconsolata', monospace;
+  font-weight: bold;
+  margin-right: 20px;
+}
+.pros-cons .pros .mark {
+  color: #4bce00;
+}
+.pros-cons .cons .mark {
+  color: #f4003d;
 }
 code {
   font-family: 'Inconsolata', monospace;
