@@ -1,4 +1,4 @@
-{-# LANGUAGE CPP #-}
+{-# LANGUAGE CPP, PatternGuards #-}
 module Banshee.Interactive (showInteractive) where
 
 #ifndef ENABLE_INTERACTIVE
@@ -76,13 +76,13 @@ showInteractive castle slices (Just locs) = runCurses $ do
 
               updateField x y = do
                 moveCursor (y-startY) (x-startX)
-                let (char,colorID) = 
-                      if (x,y) == (tvX,tvY) then ('#',tvColorID)
-                      else if (x,y) == (bansheeX,bansheeY) then ('&',bansheeColorID)
-                      else case slice ! (fromInteger x,fromInteger y) of
-                          FreeSF -> ('.',normalColorID)
-                          WallSF -> ('X',normalColorID)
-                          ScoutSF _ -> ('@',scoutColorID)
+                let (char,colorID) = case () of
+                      () | ScoutSF{} <- field_sf -> ('@',scoutColorID)
+                         | (x,y) == (bansheeX,bansheeY) -> ('&',bansheeColorID)
+                         | (x,y) == (tvX,tvY) -> ('#',tvColorID)
+                         | FreeSF <- field_sf -> ('.',normalColorID)
+                         | WallSF <- field_sf -> ('X',normalColorID)
+                    field_sf = slice ! (fromInteger x,fromInteger y)
                 setColor colorID
                 drawString [char]
 
