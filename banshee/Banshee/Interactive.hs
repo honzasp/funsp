@@ -117,16 +117,18 @@ showInteractive castle slices (Just locs) = runCurses $ do
   let loop :: Curses ()
       loop = do
         redraw
-        Just ev <- getEvent win Nothing
-        case ev of
-          EventCharacter 'q' -> return ()
-          EventCharacter '?' -> showHelp >> loop
-          EventCharacter ' ' -> playLoop >> loop
-          EventSpecialKey KeyRightArrow   -> forward 1  >> loop
-          EventSpecialKey KeyLeftArrow    -> backward 1 >> loop
-          EventSpecialKey KeyNextPage     -> forward 5  >> loop
-          EventSpecialKey KeyPreviousPage -> backward 5 >> loop
-          EventResized -> loop
+        mev <- getEvent win Nothing
+        case mev of
+          Just ev -> case ev of
+            EventCharacter 'q' -> return ()
+            EventCharacter '?' -> showHelp >> loop
+            EventCharacter ' ' -> playLoop >> loop
+            EventSpecialKey KeyRightArrow   -> forward 1  >> loop
+            EventSpecialKey KeyLeftArrow    -> backward 1 >> loop
+            EventSpecialKey KeyNextPage     -> forward 5  >> loop
+            EventSpecialKey KeyPreviousPage -> backward 5 >> loop
+            EventResized -> loop
+            _ -> loop
           _ -> loop
 
         where
