@@ -493,15 +493,10 @@ body.impress-on-krunex-arrowhead {
   left: 0px;
 }
 #banshee #castle-anim .screen .frames img {
-  opacity: 0;
-  -webkit-transition: opacity 0.3s;
-  -moz-transition: opacity 0.3s;
-  -ms-transition: opacity 0.3s;
-  -o-transition: opacity 0.3s;
-  transition: opacity 0.3s;
+  display: none;
 }
 #banshee #castle-anim .screen .frames img.active {
-  opacity: 1;
+  display: block;
 }
 #banshee #castle-anim .controls {
   width: 240px;
