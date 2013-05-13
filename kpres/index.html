@@ -1,0 +1,512 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1000">
+  <title>Líně, čistě, funkcionálně</title>
+  <link rel="stylesheet" href="pres.css">
+  <link href='http://fonts.googleapis.com/css?family=Enriqueta:400,700&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Inconsolata:400,700&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+</head>
+
+<body class="impress-not-supported">
+
+<div id="impress">
+
+  <div id="intro" class="step" data-x="-6000" data-y="0">
+    <h1>Líně, čistě, funkcionálně</h1>
+    <p class="subtitle">Práce SOČ, obor 18: <b>Informatika</b></p>
+    <p class="author">Jan Špaček</p>
+  </div>
+
+  <div id="describe">
+    <div id="content" class="step" data-x="-4000" data-y="0">
+      <h2>Obsah práce</h2>
+      <p>&bdquo;Užití funkcionálního programovacího jazyka <b>Haskell</b> k&nbsp;řešení úloh
+        Ústředních kol ČR Soutěže v programování&ldquo;</p>
+    </div>
+
+    <div id="tasks" class="step" data-x="-4000" data-y="300">
+      <h3>Řešené úlohy</h3>
+
+      <p><strong><a href="#/krun-intro">Krunimír</a></strong> &dash; jednoduchý
+      programovací jazyk kreslící želví grafiku</p>
+      
+      <p><strong><a href="#/ban-intro">Bílá paní</a></strong> &dash; hledání cesty
+      v&nbsp;bludišti s&nbsp;pohyblivými zvědy a možností procházet zdmi.</p>
+    </div>
+  </div>
+
+  <div id="haskell-root" class="step" data-x="0" data-y="0">
+    <h2>Haskell</h2>
+
+    <ul class="the-three">
+      <li class="functional">Funkcionální</li>
+      <li class="lazy">Líný</li>
+      <li class="typing">Silný typový systém</li>
+    </ul>
+  </div>
+
+  <div id="functional"></div>
+  <div id="lazy"></div>
+  <div id="strong-typing"></div>
+
+  <div id="krunimir">
+    <div id="krun-intro" class="step" data-x="-5000" data-y="1000" data-z="1000">
+      <h2>Krunimír</h2>
+      <p>Jednoduchý programovací jazyk na kreslení želví grafiky.</p>
+    </div>
+
+    <div id="krun-turtle" class="step" data-x="-5000" data-y="1300" data-z="1000">
+      <h3>Želví grafika</h3>
+      <p>Po písku se pohybuje želva a kreslí za sebou stopu. Uživatel želvu
+      ovládá jednoduchým procedurálním programovacím jazykem.</p>
+    </div>
+
+    <div id="krun-stmts" class="step" data-x="-4000" data-y="1100" data-z="1000">
+      <h3>Jazyk</h3>
+
+      <p>Základní <b>příkazy</b>:</p>
+
+      <ul>
+        <li><code><b>forward</b>(délka)</code></li>
+        <li><code><b>right</b>(úhel)</code>, <code><b>left</b>(úhel)</code></li>
+        <li><code><b>pen</b>(tloušťka pera)</code></li>
+        <li><code><b>color</b>(červená,zelená,modrá)</code></li>
+      </ul>
+
+      <p>Řídící struktury:</p>
+
+      <ul>
+        <li><code><b>if</b>(podmínka) { ... }</code></li>
+        <li><code><b>repeat</b>(počet iterací) { ... }</code></li>
+        <li><code><b>define</b>&nbsp;jméno_procedury(param1, param2, ...)
+          {...}</code></li>
+        <li><code>jméno_procedury(arg1, arg2, ...)</code></li>
+        <li><code><b>split</b> { ... }</code></li>
+      </ul>
+    </div>
+
+    <div id="krun-exprs" class="step" data-x="-4000" data-y="1700" data-z="1000">
+      <p>Jako výrazy (argumenty příkazů a procedur) lze použít:</p>
+      <ul>
+        <li>číselné <b>literály,</b></li>
+        <li><b>parametry</b> aktuální procedury,</li>
+        <li>binární <b>operace</b> <code>+</code>, <code>-</code>, <code>*</code>,
+        <code>/</code> (dělení celočíselné, priority a asociativity jako
+        v&nbsp;matematice),</li>
+        <li>prefixovou <b>negaci</b> (operátor <code>-</code>).</li>
+      </ul>
+      <p>Jediným &bdquo;typem&ldquo; je <b>celé číslo</b>.</p>
+    </div>
+
+    <div id="krun-example-squares" class="step example" data-x="-3000" data-y="1000" data-z="1000">
+      <pre class="program"><code>define square(side) {
+  pen(1)
+  repeat(4) {
+    forward(side) right(90)
+  }
+  pen(0)
+}
+
+define row() {
+  repeat(4) {
+    square(114) forward(163) 
+  }
+  forward(-652) right(90)
+  forward(163) left(90)
+}
+
+forward(301) left(90)
+forward(301) right(180)
+repeat(4) { row() }</code></pre>
+
+      <div class="image"><img src="squares.svg" width="400" height="400"></div>
+    </div>
+
+    <div id="krun-example-koch" class="step example" data-x="-3000" data-y="1700" data-z="1000">
+      <pre class="program"><code>define koch(n) {
+  if(n) {
+    koch(n-1)
+    left(60) koch(n-1)
+    right(120) koch(n-1)
+    left(60) koch(n-1)
+  }
+  if(1-n) {
+    forward(2)
+  }
+}
+
+pen(0) forward(-175) 
+left(90) forward(250) 
+pen(1)
+right(120) koch(5)
+right(120) koch(5)
+right(120) koch(5)</code></pre>
+
+      <div class="image"><img src="koch.svg" width="500" height="500"></div>
+    </div>
+
+    <div id="krun-solution" class="step" data-x="-2000" data-y="1000" data-z="1000">
+      <h3>Řešení</h3>
+
+      <p>Program je rozdělen na několik částí:</p>
+
+      <ul>
+        <li><b>Parser</b> přečte program a vytvoří abstraktní syntaktický strom (AST).</li>
+        <li><b>Evaluator</b> vyhodnotí dané AST a vrátí výslednou stopu, kterou
+        želva za sebou zanechá.</li>
+        <li><b>Renderer</b> stopu vykreslí do obrázku.</li>
+      </ul>
+
+      <p>Jednotlivé části jsou víceméně <b>nezávislé</b>.</p>
+    </div>
+
+    <div id="krun-ast" class="step" data-x="-1000" data-y="1000" data-z="1000">
+      <h3><code>Krunimir.Ast</code></h3>
+
+      <p>Definice typů představující <b>syntaktický strom</b> (<b>AST</b>)</p>
+    </div>
+
+    <div id="krun-ast-stmt" class="step" data-x="-1000" data-y="1200" data-z="1000">
+      <p>Typ <code>Stmt</code> reprezentuje <b>příkaz</b>:</p>
+
+      <pre><code>data Stmt = 
+    ForwardStmt Expr
+  | LeftStmt Expr
+  | RightStmt Expr
+  | PenStmt Expr
+  | ColorStmt Expr Expr Expr
+  | RepeatStmt Expr [Stmt]
+  | IfStmt Expr [Stmt]
+  | SplitStmt [Stmt]
+  | CallStmt String [Expr]
+  deriving Show</code></pre>
+    </div>
+
+    <div id="krun-ast-expr" class="step" data-x="-1000" data-y="1700" data-z="1000">
+      <p><code>Expr</code> představuje <b>výraz</b>:</p>
+
+      <pre><code>data Expr =
+    LiteralExpr Integer
+  | VariableExpr String
+  | BinopExpr Op Expr Expr
+  | NegateExpr Expr
+  deriving Show
+
+data Op = AddOp | SubOp | MulOp | DivOp
+  deriving Show</code></pre>
+    </div>
+
+    <div id="krun-parser" class="step" data-x="0" data-y="1000" data-z="1000">
+      <h3><code>Krunimir.Parser</code></h3>
+
+      <p>Exportuje jedinou funkci <code>parse</code>:</p>
+
+      <p><code>parse :: FilePath -&gt; String -&gt; 
+        Either&nbsp;ParseError&nbsp;Program</code></p>
+    </div>
+
+    <div id="krun-parser-peg" class="step" data-x="0" data-y="1300" data-z="1000">
+      <p>Založen na <b>PEG</b> gramatice:</p>
+
+      <pre class="peg"><code>program      &lt;- space* top-stmt* eof
+top-stmt     &lt;- define / stmt
+
+define       &lt;- "define" space+ identifier 
+                lparen (identifier (comma identifier)*)? rparen
+                lbrace stmt* rbrace
+
+stmt         &lt;- repeat-stmt / if-stmt / split-stmt / proc-stmt
+repeat-stmt  &lt;- "repeat" lparen expr rparen lbrace stmt* rbrace
+if-stmt      &lt;- "if" space* lparen expr rparen lbrace stmt* rbrace
+split-stmt   &lt;- "split" space* lbrace stmt* rbrace
+proc-stmt    &lt;- "forward" space* lparen expr rparen
+              / "left" space* lparen expr rparen
+              / "right" space* lparen expr rparen
+              / "pen" space* lparen expr rparen
+              / "color" space* lparen expr comma expr comma expr rparen
+              / identifier space* lparen (expr (comma expr)*)? rparen</code></pre>
+    </div>
+
+    <div id="krun-parser-peg-cont" class="step" data-x="0" data-y="1900" data-z="1000">
+      <pre class="peg"><code>expr         &lt;- add-expr
+add-expr     &lt;- mul-expr (add-op space* mul-expr)*
+mul-expr     &lt;- neg-expr (mul-op space* neg-expr)*
+neg-expr     &lt;- (neg-op space*)? a-expr
+
+add-op       &lt;- "+" / "-"
+mul-op       &lt;- "*" / "/"
+neg-op       &lt;- "-"
+
+a-expr       &lt;- lit-expr / var-expr / lparen expr rparen
+lit-expr     &lt;- integer
+var-expr     &lt;- identifier
+
+integer      &lt;- digit+ space*
+identifier   &lt;- letter alpha-num space*
+
+lparen       &lt;- "(" space*
+rparen       &lt;- ")" space*
+lbrace       &lt;- "{" space*
+rbrace       &lt;- "}" space*
+comma        &lt;- "," space*
+
+digit        &lt;- [0-9]
+letter       &lt;- [a-zA-Z]
+alpha-num    &lt;- [a-zA-Z0-9]
+space        &lt;- [ \t\r\n\v\f]
+eof          &lt;- !.</code></pre>
+    </div>
+
+    <div id="krun-parser-parsec" class="step" data-x="0" data-y="2600" data-z="1000">
+      <p>Implementován pomocí <b>monadických parserů</b> z knihovny
+      <code><b>parsec</b></code>.</p>
+
+      <p>Gramatika PEG:</p>
+
+      <pre><code>define       &lt;- <code class="c1">"define" space+</code> <code class="c2">identifier</code>
+              <code class="c3">lparen (identifier (comma identifier)*)? rparen</code>
+              <code class="c4">lbrace stmt* rbrace</code></code></pre>
+
+      <p>Odpovídající kód Haskellu:</p>
+
+      <pre><code>define :: <code class="combin">Parser</code> <code class="ast">Define</code>
+define = do
+  <code class="c1"><code class="sub">string "define"</code> <code class="combin">&gt;&gt;</code> <code class="combin">skipMany1</code> <code class="sub">space</code></code>
+  <code class="c2"><code class="ast">name</code> &lt;- <code class="sub">identifier</code></code>
+  <code class="c3"><code class="ast">params</code> &lt;- <code class="sub">parens</code> $ <code class="sub">identifier</code> <code class="combin">`sepBy`</code> <code class="sub">comma</code></code>
+  <code class="c4"><code class="ast">stmts</code> &lt;- <code class="sub">braces</code> $ <code class="combin">many</code> <code class="sub">stmt</code></code>
+  <code class="combin">return</code> $ <code class="ast">Define name params stmts</code></code></pre>
+
+    </div>
+
+    <div id="krun-parser-parsec-sub" class="step" data-x="0" data-y="2600" data-z="1000">
+      <p>Dílčí parsery se skládají do větších celků...</p>
+    </div>
+
+    <div id="krun-parser-parsec-combin" class="step" data-x="0" data-y="2600" data-z="1000">
+      <p>...užitím vysokoúrovňových kombinátorů.</p>
+    </div>
+
+    <div id="krun-parser-parsec-ast" class="step" data-x="0" data-y="2600" data-z="1000">
+      <p>Z&nbsp;výsledků se sestavuje AST.</p>
+    </div>
+
+    <div id="krun-eval" class="step" data-x="1000" data-y="1000" data-z="1000">
+      <h3><code>Krunimir.Evaluator</code></h3>
+
+      <p>Exportuje funkci <code>eval</code>, která vyhodnotí program:</p>
+
+      <pre class="def"><code>eval :: Program -&gt; Trace</code></pre>
+    </div>
+
+    <div id="krun-eval-trace" class="step" data-x="1000" data-y="1300" data-z="1000">
+      <p><code>Trace</code> představuje stopu želvy:</p>
+
+      <pre><code>data Trace
+  = EmptyTrace
+  | SplitTrace Trace Trace
+  | SegmentTrace Segment Trace
+  deriving Show
+
+data Segment = Segment Point Point Color Int 
+  deriving Show
+
+type Point = (Float,Float)
+type Color = (Int,Int,Int)</code></pre>
+    </div>
+
+    <div id="krun-render" class="step" data-x="2000" data-y="1000" data-z="1000">
+      <h3>Vykreslování</h3>
+
+      <ul>
+        <li><b>PNG</b> &mdash; rastrový formát, použita knihovna <b>GD</b>.</li>
+        <li><b>SVG</b> &mdash; vektorový formát, založen na <b>XML</b>.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="krun-examples">
+    <div id="krunex-gosper" class="step" data-x="-2000" data-y="1000" data-z="3000" data-rotate-x="-10">
+      <div class="image"><img src="gosper.svg" width="600" height="600" alt="Gosperova křivka"></div>
+      <h4>Gosperova křivka</h4>
+    </div>
+
+    <div id="krunex-hilbert" class="step" data-x="-1000" data-y="1000" data-z="3000" data-rotate-x="-10">
+      <div class="image"><img src="hilbert.svg" width="600" height="600" alt="Hilbertova křivka"></div>
+      <h4>Hilbertova křivka</h4>
+    </div>
+
+    <div id="krunex-arrowhead" class="step" data-x="0" data-y="1000" data-z="3000" data-rotate-x="-10">
+      <div class="image"><img src="arrowhead.svg" width="600" height="600" alt="Křivka arrowhead"></div>
+      <h4>Křivka arrowhead</h4>
+    </div>
+
+  </div>
+
+  <div id="banshee">
+    <div id="ban-intro" class="step main" data-x="-5000" data-y="-1000" data-z="1000">
+      <h2>Bílá paní</h2>
+
+      <p>Hledání nejkratší cesty v&nbsp;bludišti (hradu)</p>
+
+      <ul>
+        <li>v&nbsp;hradě se po cyklických drahách pohybují zvědové</li>
+        <li>bílá paní může procházet zdmi (nerada)</li>
+      </ul>
+    </div>
+
+    <div id="ban-anim" class="step" data-x="-5000" data-y="-400" data-z="1200">
+      <div id="castle-anim">
+        <div class="screen">
+          <div class="static"><img src="ban/anim/static.png" width="960" height="704"></div>
+          <div class="frames">
+            <img src="ban/anim/s0.png" width="960" height="704">
+            <img src="ban/anim/s1.png" width="960" height="704">
+            <img src="ban/anim/s2.png" width="960" height="704">
+            <img src="ban/anim/s3.png" width="960" height="704">
+            <img src="ban/anim/s4.png" width="960" height="704">
+            <img src="ban/anim/s5.png" width="960" height="704">
+            <img src="ban/anim/s6.png" width="960" height="704">
+            <img src="ban/anim/s7.png" width="960" height="704">
+            <img src="ban/anim/s8.png" width="960" height="704">
+            <img src="ban/anim/s9.png" width="960" height="704">
+            <img src="ban/anim/s10.png" width="960" height="704">
+            <img src="ban/anim/s11.png" width="960" height="704">
+          </div>
+        </div>
+        <div class="controls">
+          <div title="Zpět" class="backward">&lt;</div>
+          <div title="Plej" class="play">@</div>
+          <div title="Vpřed" class="forward">&gt;</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="ban-algo" class="step" data-x="-4000" data-y="-1000" data-z="1000">
+      <h3>Algoritmus</h3>
+
+      <p>Použitý algoritmus je založen na <b>prohledávání do šířky</b>.</p>
+    </div>
+
+    <div id="algo">
+      <div id="ban-algo-simple" class="full step" data-x="-4000" data-y="-800" data-z="2100">
+        <h4>Jednoduché hledání nejkratší cesty</h4>
+        <p>Přechody mezi stavy <code>(x,y)</code>, konec jakmile dorazíme do cíle.</p>
+        <div class="image"><img src="ban/breath_first_simple.png" width="448" height="384"></div>
+      </div>
+
+      <div id="ban-algo-scouts-3d" class="full step" data-x="-4000" data-y="-800" data-z="3200">
+        <h4>Hledání nejkratší cesty se zvědy</h4>
+        <p>Přechody mezi stavy <code>(x,y,<b>t</b>)</code>, konec jakmile dorazíme do cíle.</p>
+        <p>Dva zvědové s&nbsp;periodou 2:</p>
+        <div class="image-3d"><img src="ban/breath_first_3d.png" width="768" height="3584"></div>
+      </div>
+
+      <div id="ban-algo-s1" class="step" data-x="-4000" data-y="-700" data-z="3200"></div>
+      <div id="ban-algo-s2" class="step" data-x="-4000" data-y="-374" data-z="3200"></div>
+      <div id="ban-algo-s3" class="step" data-x="-4000" data-y="-48" data-z="3200"></div>
+      <div id="ban-algo-s5" class="step" data-x="-4000" data-y="604" data-z="3200"></div>
+      <div id="ban-algo-s8" class="step" data-x="-4000" data-y="1582" data-z="3200"></div>
+      <div id="ban-algo-s11" class="step" data-x="-4000" data-y="2560" data-z="3200"></div>
+
+      <div id="ban-algo-scouts-2d" class="full step" data-x="-4000" data-y="-800" data-z="4300">
+        <p>Stačí sledovat stavy <code>(x,y,t <b>mod</b> p)</code></p>
+        <div class="image"><img src="ban/breath_first_scouts.png" width="800" height="253"></div>
+      </div>
+
+      <div id="ban-algo-rounds" class="full step" data-x="-4000" data-y="-800" data-z="5400">
+        <h4>Hledání nejkratší cesty se zvědy a procházením zdí</h4>
+        <p>Projdeme zdí pouze pokud neexistuje žádná jiná cesta k&nbsp;cíli.</p>
+        <div id="ban-rounds">
+          <div class="screen">
+            <img src="ban/round0.png" class="r0" width="800" height="244">
+            <img src="ban/round1.png" class="r1" width="800" height="244">
+            <img src="ban/round2.png" class="r2" width="800" height="244">
+          </div>
+
+          <div class="controls">
+            <div title="Předchozí kolo" class="backward">&lt;</div>
+            <div title="Následující kolo" class="forward">&gt;</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="ban-impl" class="step" data-x="-3000" data-y="-1000" data-z="1000">
+      <h3>Implementace</h3>
+
+      <pre><code>moves :: Bool -&gt; Slice -&gt; Slice -&gt; (Loc,Path) -&gt; [(Loc,Path)]
+flood :: Castle -&gt; [Slice] -&gt; STArray s (Int,Loc) (Maybe Path) -&gt;
+  [(Loc,Path)] -&gt; ST s (Either Path [(Loc,Path)])
+navigate :: Castle -&gt; [Slice] -&gt; Bool -&gt; Maybe [Loc]</code></pre>
+    </div>
+
+    <div id="ban-demo" class="step" data-x="-3000" data-y="-800" data-z="2000">
+      <h3>Demo</h3>
+      <div id="demo">
+        <div class="frames">
+          <img width="484" height="339" src="ban/demo/f00.png">
+          <img width="484" height="339" src="ban/demo/f01.png">
+          <img width="484" height="339" src="ban/demo/f02.png">
+          <img width="484" height="339" src="ban/demo/f03.png">
+          <img width="484" height="339" src="ban/demo/f04.png">
+          <img width="484" height="339" src="ban/demo/f05.png">
+          <img width="484" height="339" src="ban/demo/f06.png">
+          <img width="484" height="339" src="ban/demo/f07.png">
+          <img width="484" height="339" src="ban/demo/f08.png">
+          <img width="484" height="339" src="ban/demo/f09.png">
+          <img width="484" height="339" src="ban/demo/f10.png">
+          <img width="484" height="339" src="ban/demo/f11.png">
+          <img width="484" height="339" src="ban/demo/f12.png">
+          <img width="484" height="339" src="ban/demo/f13.png">
+          <img width="484" height="339" src="ban/demo/f14.png">
+          <img width="484" height="339" src="ban/demo/f15.png">
+          <img width="484" height="339" src="ban/demo/f16.png">
+          <img width="484" height="339" src="ban/demo/f17.png">
+          <img width="484" height="339" src="ban/demo/f18.png">
+          <img width="484" height="339" src="ban/demo/f19.png">
+          <img width="484" height="339" src="ban/demo/f20.png">
+          <img width="484" height="339" src="ban/demo/f21.png">
+          <img width="484" height="339" src="ban/demo/f22.png">
+          <img width="484" height="339" src="ban/demo/f23.png">
+          <img width="484" height="339" src="ban/demo/f24.png">
+          <img width="484" height="339" src="ban/demo/f25.png">
+          <img width="484" height="339" src="ban/demo/f26.png">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="overview" class="step" data-x="-1000" data-y="3000" data-z="6000" 
+    data-scale="3" data-rotate-x="-20">
+    <div class="sources">
+      <p>Zdrojové kódy na serveru GitHub: <a
+        href="http://github.com/honzasp/funsp">github.com/honzasp/funsp</a></p>
+      <p>Stránky (včetně prezentace) <a
+        href="http://honzasp.github.io/funsp">honzasp.github.io/funsp</a></p>
+    </div>
+
+    <div class="contact">
+      <span class="author">Jan Špaček</span>
+      <span class="email"><code>patek.mail@gmail.com</code></span>
+      <span class="school">Wichterlovo gymnázium, Ostrava-Poruba</span>
+    </div>
+  </div>
+
+</div>
+
+<div id="timer">?</div>
+
+<script src="impress.js"></script>
+<script>impress().init();</script>
+
+<script src="jquery.js"></script>
+<script src="timer.js"></script>
+<script src="ban-rounds.js"></script>
+<script src="castle-anim.js"></script>
+<script src="ban-demo.js"></script>
+
+</body>
+</html>

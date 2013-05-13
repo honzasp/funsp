@@ -1,0 +1,667 @@
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+  display: block;
+}
+body {
+  line-height: 1;
+}
+ol,
+ul {
+  list-style: none;
+}
+blockquote,
+q {
+  quotes: none;
+}
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: '';
+  content: none;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+body {
+  font-family: 'Enriqueta', serif;
+  background-color: #fff;
+  -webkit-transition: background-color 1s;
+  -moz-transition: background-color 1s;
+  -ms-transition: background-color 1s;
+  -o-transition: background-color 1s;
+  transition: background-color 1s;
+}
+b,
+strong {
+  font-weight: bold;
+}
+i,
+em {
+  font-style: italic;
+}
+sup {
+  vertical-align: super;
+  font-size: smaller;
+}
+sub {
+  vertical-align: sub;
+  font-size: smaller;
+}
+#describe .step {
+  width: 960px;
+  min-height: 560px;
+}
+.step {
+  cursor: pointer;
+  font-size: 46px;
+}
+.step p,
+.step ul {
+  margin: 20px;
+}
+.step li {
+  margin-top: 10px;
+  margin-left: 20px;
+  list-style-type: disc;
+}
+.step a {
+  color: #7e1103;
+  text-decoration: none;
+  -webkit-transition: color 0.3s;
+  -moz-transition: color 0.3s;
+  -ms-transition: color 0.3s;
+  -o-transition: color 0.3s;
+  transition: color 0.3s;
+}
+.step a:hover {
+  color: #62023e;
+}
+.step.dense p,
+.step .dense p,
+.step.dense ul,
+.step .dense ul {
+  font-size: 30px;
+}
+.step h1,
+.step h2,
+.step h3,
+.step h4 {
+  font-weight: bold;
+  text-align: center;
+}
+.step h2 {
+  font-size: 60px;
+  margin-top: 10px;
+}
+.step h3 {
+  font-size: 40px;
+  margin-top: 30px;
+}
+.step h4 {
+  font-size: 30px;
+}
+#intro {
+  height: 600px;
+  width: 960px;
+  text-align: center;
+}
+#intro h1 {
+  font-size: 80px;
+  font-weight: bold;
+}
+#intro .subtitle {
+  margin-top: 100px;
+}
+#intro .author {
+  margin-top: 200px;
+  color: #333;
+}
+.compare-two {
+  margin: 20px auto;
+  width: 900px;
+}
+.compare-two .left,
+.compare-two .right {
+  float: left;
+  width: 445px;
+  margin: 2px;
+}
+#haskell-root {
+  width: 960px;
+}
+#haskell-root h2 {
+  font-size: 100px;
+  color: #000;
+  text-shadow: 0px 0px 20px #999;
+}
+#haskell-root .the-three {
+  margin-top: 100px;
+}
+#haskell-root li {
+  display: block;
+  height: 100px;
+  text-align: center;
+  font-size: 60px;
+  font-weight: bold;
+  -webkit-transition: opacity 0.5s;
+  -moz-transition: opacity 0.5s;
+  -ms-transition: opacity 0.5s;
+  -o-transition: opacity 0.5s;
+  transition: opacity 0.5s;
+  opacity: 1.0;
+}
+#haskell-root li.functional {
+  -webkit-transition-delay: 0.4s;
+  -moz-transition-delay: 0.4s;
+  -ms-transition-delay: 0.4s;
+  -o-transition-delay: 0.4s;
+  transition-delay: 0.4s;
+  color: #02424e;
+}
+#haskell-root li.lazy {
+  -webkit-transition-delay: 0.8s;
+  -moz-transition-delay: 0.8s;
+  -ms-transition-delay: 0.8s;
+  -o-transition-delay: 0.8s;
+  transition-delay: 0.8s;
+  color: #7e6603;
+}
+#haskell-root li.typing {
+  -webkit-transition-delay: 1.2s;
+  -moz-transition-delay: 1.2s;
+  -ms-transition-delay: 1.2s;
+  -o-transition-delay: 1.2s;
+  transition-delay: 1.2s;
+  color: #6f0227;
+}
+#haskell-root.future li {
+  opacity: 0;
+}
+#functional .step,
+#lazy .step,
+#strong-typing .step,
+#krunimir .step,
+#banshee .step {
+  width: 960px;
+  color: #555;
+  -webkit-transition: color 0.5s;
+  -moz-transition: color 0.5s;
+  -ms-transition: color 0.5s;
+  -o-transition: color 0.5s;
+  transition: color 0.5s;
+}
+#functional .step.active {
+  color: #02424e;
+}
+#lazy .step.active {
+  color: #7e6603;
+}
+#strong-typing .step.active {
+  color: #6f0227;
+}
+#krunimir .step.active {
+  color: #333;
+}
+#banshee .step.active {
+  color: #333;
+}
+#krunimir .step,
+#banshee .step {
+  min-height: 600px;
+  font-size: 30px;
+}
+#krunimir .step.main,
+#banshee .step.main {
+  font-size: 40px;
+}
+#krunimir .example,
+#banshee .example {
+  position: relative;
+}
+#krunimir .example .program,
+#banshee .example .program {
+  width: 400px;
+}
+#krunimir .example .image,
+#banshee .example .image {
+  position: absolute;
+  top: 0;
+  left: 500px;
+}
+#krunimir .peg,
+#banshee .peg {
+  font-size: 24px;
+}
+#krun-parser-parsec code {
+  -webkit-transition: color 0.5s;
+  -moz-transition: color 0.5s;
+  -ms-transition: color 0.5s;
+  -o-transition: color 0.5s;
+  transition: color 0.5s;
+}
+.impress-on-krun-parser-parsec-sub #krun-parser-parsec .sub,
+#krun-parser-parsec-sub p {
+  color: #62023e;
+  opacity: 1;
+}
+.impress-on-krun-parser-parsec-combin #krun-parser-parsec .combin,
+#krun-parser-parsec-combin p {
+  color: #7e1103;
+  opacity: 1;
+}
+.impress-on-krun-parser-parsec-ast #krun-parser-parsec .ast,
+#krun-parser-parsec-ast p {
+  color: #025e1a;
+  opacity: 1;
+}
+.impress-on-krun-parser-parsec-sub #krun-parser-parsec .c1,
+.impress-on-krun-parser-parsec-combin #krun-parser-parsec .c1,
+.impress-on-krun-parser-parsec-ast #krun-parser-parsec .c1,
+.impress-on-krun-parser-parsec-sub #krun-parser-parsec .c2,
+.impress-on-krun-parser-parsec-combin #krun-parser-parsec .c2,
+.impress-on-krun-parser-parsec-ast #krun-parser-parsec .c2,
+.impress-on-krun-parser-parsec-sub #krun-parser-parsec .c3,
+.impress-on-krun-parser-parsec-combin #krun-parser-parsec .c3,
+.impress-on-krun-parser-parsec-ast #krun-parser-parsec .c3,
+.impress-on-krun-parser-parsec-sub #krun-parser-parsec .c4,
+.impress-on-krun-parser-parsec-combin #krun-parser-parsec .c4,
+.impress-on-krun-parser-parsec-ast #krun-parser-parsec .c4 {
+  color: inherit;
+}
+#krun-parser-parsec-sub p,
+#krun-parser-parsec-combin p,
+#krun-parser-parsec-ast p {
+  position: relative;
+  top: 550px;
+  font-size: 40px;
+  -webkit-transition: opacity 0.9s;
+  -moz-transition: opacity 0.9s;
+  -ms-transition: opacity 0.9s;
+  -o-transition: opacity 0.9s;
+  transition: opacity 0.9s;
+  opacity: 0.0;
+}
+#krun-parser-parsec-sub.active p,
+#krun-parser-parsec-combin.active p,
+#krun-parser-parsec-ast.active p {
+  opacity: 1;
+}
+#krun-eval .def {
+  position: relative;
+  top: 0px;
+  -webkit-transition: top 1s;
+  -moz-transition: top 1s;
+  -ms-transition: top 1s;
+  -o-transition: top 1s;
+  transition: top 1s;
+}
+body.impress-on-krun-eval-trace #krun-eval .def {
+  top: 100px;
+}
+body.impress-on-krunex-gosper,
+body.impress-on-krunex-hilbert,
+body.impress-on-krunex-arrowhead {
+  background-color: #eee;
+}
+#krun-examples .step {
+  min-height: 650px;
+  min-width: 650px;
+  padding: 25px;
+  background-color: rgba(255, 255, 255, 0.9);
+}
+#krun-examples .step .image {
+  width: 600px;
+  height: 600px;
+  margin: auto;
+}
+#krun-examples .step h4 {
+  margin-top: 40px;
+}
+#banshee #algo .image img {
+  display: block;
+  margin: auto;
+}
+#banshee #algo .image-3d {
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.9);
+}
+#banshee #algo .full.step {
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 50px;
+  width: 800px;
+}
+#banshee #algo #ban-rounds .controls {
+  margin: auto;
+  width: 160px;
+}
+#banshee #algo #ban-rounds .controls .backward,
+#banshee #algo #ban-rounds .controls .forward {
+  width: 60px;
+  height: 40px;
+  text-align: center;
+  line-height: 35px;
+  margin: 10px;
+  cursor: pointer;
+  color: #333;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 22px;
+  background-color: #cec792;
+  -webkit-transition: background-color 0.3s;
+  -moz-transition: background-color 0.3s;
+  -ms-transition: background-color 0.3s;
+  -o-transition: background-color 0.3s;
+  transition: background-color 0.3s;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: -moz-none;
+  -o-user-select: none;
+  user-select: none;
+  float: left;
+}
+#banshee #algo #ban-rounds .controls .backward:hover,
+#banshee #algo #ban-rounds .controls .forward:hover {
+  background-color: #e5dea5;
+}
+#banshee #algo #ban-rounds .screen {
+  width: 800px;
+  height: 244px;
+  margin: 30px 0;
+}
+#banshee #algo #ban-rounds .screen img {
+  display: none;
+}
+#banshee #algo #ban-rounds .screen img.active {
+  display: block;
+}
+#banshee #castle-anim {
+  position: relative;
+  background-color: rgba(255, 255, 255, 0.9);
+}
+#banshee #castle-anim .screen {
+  width: 960px;
+  height: 704px;
+}
+#banshee #castle-anim .screen img {
+  position: absolute;
+  display: block;
+  top: 0px;
+  left: 0px;
+}
+#banshee #castle-anim .screen .frames img {
+  opacity: 0;
+  -webkit-transition: opacity 0.3s;
+  -moz-transition: opacity 0.3s;
+  -ms-transition: opacity 0.3s;
+  -o-transition: opacity 0.3s;
+  transition: opacity 0.3s;
+}
+#banshee #castle-anim .screen .frames img.active {
+  opacity: 1;
+}
+#banshee #castle-anim .controls {
+  width: 240px;
+  margin: auto;
+}
+#banshee #castle-anim .controls .backward,
+#banshee #castle-anim .controls .play,
+#banshee #castle-anim .controls .forward {
+  float: left;
+  width: 60px;
+  height: 40px;
+  text-align: center;
+  line-height: 35px;
+  margin: 10px;
+  cursor: pointer;
+  color: #333;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 22px;
+  background-color: #cec792;
+  -webkit-transition: background-color 0.3s;
+  -moz-transition: background-color 0.3s;
+  -ms-transition: background-color 0.3s;
+  -o-transition: background-color 0.3s;
+  transition: background-color 0.3s;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: -moz-none;
+  -o-user-select: none;
+  user-select: none;
+}
+#banshee #castle-anim .controls .backward:hover,
+#banshee #castle-anim .controls .play:hover,
+#banshee #castle-anim .controls .forward:hover {
+  background-color: #e5dea5;
+}
+#banshee #ban-demo {
+  background-color: rgba(255, 255, 255, 0.9);
+  width: 484px;
+  padding: 20px;
+}
+#banshee #ban-demo .frames {
+  position: relative;
+  cursor: text;
+  opacity: 0.8;
+  width: 484px;
+  height: 339px;
+  margin-top: 20px;
+}
+#banshee #ban-demo .frames img {
+  display: block;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  visibility: hidden;
+}
+#banshee #ban-demo .frames img.active {
+  visibility: visible;
+}
+#overview {
+  pointer-events: none;
+  color: #000;
+  text-shadow: 0px 0px 40px #fff;
+  opacity: 0;
+  -webkit-transition: opacity 1s;
+  -moz-transition: opacity 1s;
+  -ms-transition: opacity 1s;
+  -o-transition: opacity 1s;
+  transition: opacity 1s;
+}
+#overview .sources {
+  margin-top: 250px;
+}
+#overview .contact {
+  margin-top: 50px;
+}
+#overview .contact,
+#overview .sources {
+  pointer-events: auto;
+  width: 900px;
+  text-align: center;
+  font-size: 40px;
+}
+#overview .contact span,
+#overview .sources span {
+  margin: 20px;
+}
+#overview.active {
+  opacity: 1;
+}
+#timer {
+  position: fixed;
+  right: 5px;
+  bottom: 0px;
+  width: 50px;
+  height: 20px;
+  font-size: 15px;
+  font-family: 'Inconsolata', monospace;
+  color: #000;
+  pointer-events: auto;
+  text-align: right;
+  cursor: pointer;
+}
+.pros-cons {
+  font-size: 36px;
+}
+.pros-cons li {
+  margin: 30px;
+}
+.pros-cons li .mark {
+  font-family: 'Inconsolata', monospace;
+  font-weight: bold;
+  margin-right: 20px;
+}
+.pros-cons .pros .mark {
+  color: #43891a;
+}
+.pros-cons .cons .mark {
+  color: #f4003d;
+}
+code {
+  font-family: 'Inconsolata', monospace;
+}
+.c1 {
+  color: #62023e;
+}
+.c2 {
+  color: #7e1103;
+}
+.c3 {
+  color: #025e1a;
+}
+.c4 {
+  color: #547602;
+}
+pre {
+  display: block;
+  font-size: 28px;
+  background-color: #eee;
+  margin: 10px;
+  padding: 10px;
+}
+pre.repl .print {
+  font-weight: bold;
+  opacity: 0.8;
+}
+pre.huge {
+  font-size: 35px;
+  margin: 40px 10px;
+}
+.clear {
+  display: block;
+  clear: both;
+  visibility: hidden;
+  width: 0;
+  height: 0;
+}
+.impress-enabled {
+  pointer-events: none;
+}
+.impress-enabled #impress {
+  pointer-events: auto;
+}
